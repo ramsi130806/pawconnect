@@ -6,7 +6,7 @@
 <div class="bg-white border-b border-slate-200 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 class="text-3xl font-black text-slate-900">{{ t.nav_pets }}</h1>
-        <p class="text-slate-600 mt-1">Sığınacaqlardakı bütün heyvanların tam siyahısı və axtarışı</p>
+        <p class="text-slate-600 mt-1">{{ t.pets_title_desc }}</p>
     </div>
 </div>
 
@@ -65,7 +65,7 @@
 
                 <!-- Status -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Status</label>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{{ t.pet_status_label }}</label>
                     <select name="status" class="w-full py-2.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-paw-500">
                         <option value="all" {% if status == 'all' %}selected{% endif %}>{{ t.filter_all }}</option>
                         <option value="available" {% if status == 'available' %}selected{% endif %}>{{ t.badge_available }}</option>
@@ -90,7 +90,7 @@
     <!-- Results Header -->
     <div class="flex items-center justify-between mb-6">
         <p class="text-sm font-bold text-slate-600">
-            Tapılan heyvan sayı: <span class="text-paw-600 font-black text-base">{{ pets|length }}</span>
+            {{ t.pets_found_count }}: <span class="text-paw-600 font-black text-base">{{ pets|length }}</span>
         </p>
     </div>
 
@@ -123,7 +123,7 @@
 
                 <!-- Species Tag -->
                 <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm capitalize">
-                    {% if pet.species == 'dog' %}🐶 İt{% elif pet.species == 'cat' %}🐱 Pişik{% elif pet.species == 'rabbit' %}🐰 Dovşan{% elif pet.species == 'bird' %}🦜 Quş{% else %}🐾 Digər{% endif %}
+                    {% if pet.species == 'dog' %}🐶 {{ t.filter_dog }}{% elif pet.species == 'cat' %}🐱 {{ t.filter_cat }}{% elif pet.species == 'rabbit' %}🐰 {{ t.filter_rabbit }}{% elif pet.species == 'bird' %}🦜 {{ t.filter_bird }}{% else %}🐾 {{ t.filter_other }}{% endif %}
                 </div>
             </div>
 
@@ -132,7 +132,7 @@
                 <div class="flex items-start justify-between">
                     <div>
                         <h3 class="text-2xl font-black text-slate-900 group-hover:text-paw-600 transition-colors">{{ pet.name }}</h3>
-                        <p class="text-xs font-semibold text-slate-500">{{ pet.breed }} • {{ pet.gender }}</p>
+                        <p class="text-xs font-semibold text-slate-500">{{ pet.breed }} • {% if pet.gender == 'Male' %}{{ t.filter_male }}{% else %}{{ t.filter_female }}{% endif %}</p>
                     </div>
                     <span class="text-xs font-bold px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg">
                         {{ pet.age_years }} {{ t.label_years }}
@@ -147,17 +147,17 @@
                 <div class="flex flex-wrap gap-1.5 mt-4">
                     {% if pet.good_with_children %}
                     <span class="inline-flex items-center text-xs font-semibold bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-md border border-emerald-200">
-                        <i data-lucide="smile" class="w-3.5 h-3.5 mr-1"></i> Uşaqcanlı
+                        <i data-lucide="smile" class="w-3.5 h-3.5 mr-1"></i> {{ t.badge_kid_friendly }}
                     </span>
                     {% endif %}
                     {% if pet.house_trained %}
                     <span class="inline-flex items-center text-xs font-semibold bg-sky-50 text-sky-700 px-2.5 py-1 rounded-md border border-sky-200">
-                        <i data-lucide="home" class="w-3.5 h-3.5 mr-1"></i> Ev vərdişli
+                        <i data-lucide="home" class="w-3.5 h-3.5 mr-1"></i> {{ t.badge_house_trained }}
                     </span>
                     {% endif %}
                     {% if pet.neutered %}
                     <span class="inline-flex items-center text-xs font-semibold bg-purple-50 text-purple-700 px-2.5 py-1 rounded-md border border-purple-200">
-                        <i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1"></i> Sterilizə
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1"></i> {{ t.badge_sterilized }}
                     </span>
                     {% endif %}
                 </div>
@@ -182,10 +182,10 @@
         <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-4">
             <i data-lucide="search-x" class="w-8 h-8"></i>
         </div>
-        <h3 class="text-lg font-bold text-slate-800">Seçilmiş filtrlərə uyğun heç bir heyvan tapılmadı</h3>
-        <p class="text-sm text-slate-500 mt-1">Zəhmət olmasa axtarış sorğusunu və ya filtrləri dəyişdirin.</p>
+        <h3 class="text-lg font-bold text-slate-800">{{ t.no_pets_found }}</h3>
+        <p class="text-sm text-slate-500 mt-1">{{ t.no_pets_hint }}</p>
         <a href="/pets?lang={{ lang }}" class="inline-block mt-4 text-sm font-bold text-paw-600 hover:underline">
-            Bütün filtrləri sıfırla
+            {{ t.reset_all_filters }}
         </a>
     </div>
     {% endif %}

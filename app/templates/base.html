@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ t.app_name }} — {{ t.tagline }}{% endblock %}</title>
-    <!-- Tailwind CSS CDN -->
+    <!-- Vendored Tailwind CSS for Offline Compliance (SW01.5.9) -->
     <script src="/static/vendor/tailwind.js"></script>
     <script>
         tailwind.config = {
@@ -35,10 +35,9 @@
             }
         }
     </script>
-    <!-- Lucide Icons CDN -->
+    <!-- Vendored Lucide Icons for Offline Compliance -->
     <script src="/static/vendor/lucide.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         body {
             font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
         }
@@ -91,23 +90,23 @@
 
                 <!-- Language Switcher & Offline Status -->
                 <div class="flex items-center space-x-3">
-                    <!-- Language Selector (AZ, EN, RU) -->
+                    <!-- Language Selector (AZ, EN, RU) with persistent JS cookie switcher -->
                     <div class="flex items-center bg-slate-100 p-1 rounded-xl text-xs font-bold border border-slate-200">
-                        <a href="?lang=az" class="px-2.5 py-1.5 rounded-lg transition-colors {% if lang == 'az' %}bg-white text-paw-600 shadow-sm font-black{% else %}text-slate-600 hover:text-slate-900{% endif %}">
+                        <button onclick="setLanguage('az')" class="px-2.5 py-1.5 rounded-lg transition-colors {% if lang == 'az' %}bg-white text-paw-600 shadow-sm font-black{% else %}text-slate-600 hover:text-slate-900{% endif %}">
                             AZ
-                        </a>
-                        <a href="?lang=en" class="px-2.5 py-1.5 rounded-lg transition-colors {% if lang == 'en' %}bg-white text-paw-600 shadow-sm font-black{% else %}text-slate-600 hover:text-slate-900{% endif %}">
+                        </button>
+                        <button onclick="setLanguage('en')" class="px-2.5 py-1.5 rounded-lg transition-colors {% if lang == 'en' %}bg-white text-paw-600 shadow-sm font-black{% else %}text-slate-600 hover:text-slate-900{% endif %}">
                             EN
-                        </a>
-                        <a href="?lang=ru" class="px-2.5 py-1.5 rounded-lg transition-colors {% if lang == 'ru' %}bg-white text-paw-600 shadow-sm font-black{% else %}text-slate-600 hover:text-slate-900{% endif %}">
+                        </button>
+                        <button onclick="setLanguage('ru')" class="px-2.5 py-1.5 rounded-lg transition-colors {% if lang == 'ru' %}bg-white text-paw-600 shadow-sm font-black{% else %}text-slate-600 hover:text-slate-900{% endif %}">
                             RU
-                        </a>
+                        </button>
                     </div>
 
                     <!-- Offline / Safe Demo Status Pill (Rule SW01.5.9) -->
                     <div class="hidden lg:flex items-center space-x-1.5 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-xl text-xs font-semibold border border-emerald-200">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span>Offline Ready</span>
+                        <span>{{ t.nav_system_ready }}</span>
                     </div>
 
                     <!-- Mobile menu button -->
@@ -166,7 +165,7 @@
 
                 <!-- Col 2: Navigation -->
                 <div>
-                    <h3 class="text-white font-bold text-sm mb-4 uppercase tracking-wider">Naviqasiya</h3>
+                    <h3 class="text-white font-bold text-sm mb-4 uppercase tracking-wider">{{ t.footer_nav_title }}</h3>
                     <ul class="space-y-2 text-sm">
                         <li><a href="/?lang={{ lang }}" class="hover:text-paw-400 transition-colors">{{ t.nav_home }}</a></li>
                         <li><a href="/pets?lang={{ lang }}" class="hover:text-paw-400 transition-colors">{{ t.nav_pets }}</a></li>
@@ -178,7 +177,7 @@
 
                 <!-- Col 3: Technical Specs -->
                 <div>
-                    <h3 class="text-white font-bold text-sm mb-4 uppercase tracking-wider">Texnologiya & Standart</h3>
+                    <h3 class="text-white font-bold text-sm mb-4 uppercase tracking-wider">{{ t.footer_tech_title }}</h3>
                     <ul class="space-y-2 text-sm text-slate-400">
                         <li><span class="text-emerald-400 font-bold">FastAPI</span> (Python 3.14)</li>
                         <li><span class="text-sky-400 font-bold">SQLite / PostgreSQL</span></li>
@@ -190,21 +189,29 @@
             </div>
 
             <div class="border-t border-slate-800 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500">
-                <p>&copy; 2026 PawConnect. Bütün hüquqlar qorunur.</p>
+                <p>&copy; 2026 PawConnect. {{ t.footer_copyright }}</p>
                 <p class="mt-2 sm:mt-0 flex items-center space-x-1">
-                    <span>Qayda SW01.5.9 uyğun olaraq lokal və onlayn nümayişə hazırdır.</span>
+                    <span>{{ t.footer_offline_note }}</span>
                 </p>
             </div>
         </div>
     </footer>
 
-    <!-- Lucide init script -->
+    <!-- Global Scripts & Lucide init -->
     <script>
         lucide.createIcons();
         document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
             const m = document.getElementById('mobileMenu');
             m.classList.toggle('hidden');
         });
+
+        // Global language switcher that preserves query params and updates cookie
+        function setLanguage(newLang) {
+            document.cookie = "preferred_lang=" + newLang + ";path=/;max-age=" + (30*86400);
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set("lang", newLang);
+            window.location.href = currentUrl.pathname + currentUrl.search;
+        }
     </script>
     {% block extra_scripts %}{% endblock %}
 </body>

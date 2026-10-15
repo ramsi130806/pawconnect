@@ -10,7 +10,7 @@
         <div class="text-center mb-10">
             <span class="inline-flex items-center space-x-1.5 bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider mb-3">
                 <i data-lucide="sparkles" class="w-4 h-4 text-amber-600"></i>
-                <span>İntellektual Uyğunlaşdırma Modulu</span>
+                <span>{{ t.quiz_badge }}</span>
             </span>
             <h1 class="text-3xl sm:text-4xl font-black text-slate-900">{{ t.quiz_title }}</h1>
             <p class="text-slate-600 text-sm sm:text-base mt-2 max-w-xl mx-auto">{{ t.quiz_subtitle }}</p>
@@ -28,14 +28,14 @@
                             <input type="radio" name="living_space" value="apartment" checked class="w-4 h-4 text-paw-600">
                             <div class="ml-3">
                                 <span class="block text-sm font-bold text-slate-900">🏢 {{ t.form_apartment }}</span>
-                                <span class="block text-xs text-slate-500">Məhdud sahə, lift və ya pilləkən</span>
+                                <span class="block text-xs text-slate-500">{{ t.quiz_q1_apt_sub }}</span>
                             </div>
                         </label>
                         <label class="relative flex items-center p-4 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60">
                             <input type="radio" name="living_space" value="house_with_yard" class="w-4 h-4 text-paw-600">
                             <div class="ml-3">
                                 <span class="block text-sm font-bold text-slate-900">🏡 {{ t.form_house_yard }}</span>
-                                <span class="block text-xs text-slate-500">Geniş qapalı həyət və sərbəst qaçış sahəsi</span>
+                                <span class="block text-xs text-slate-500">{{ t.quiz_q1_yard_sub }}</span>
                             </div>
                         </label>
                     </div>
@@ -45,7 +45,7 @@
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <label class="text-sm font-extrabold text-slate-900">{{ t.quiz_q2 }}</label>
-                        <span id="energyVal" class="text-xs font-black px-2.5 py-1 bg-amber-100 text-amber-800 rounded-lg">3 / 5 (Balanslı)</span>
+                        <span id="energyVal" class="text-xs font-black px-2.5 py-1 bg-amber-100 text-amber-800 rounded-lg">{{ t.quiz_energy_3 }}</span>
                     </div>
                     <input 
                         type="range" 
@@ -58,9 +58,9 @@
                         oninput="updateEnergyDisplay(this.value)"
                     >
                     <div class="flex justify-between text-xs text-slate-400 mt-1 font-semibold">
-                        <span>1 (Sakit, yatan)</span>
-                        <span>3 (Orta aktiv)</span>
-                        <span>5 (Çox enerjili)</span>
+                        <span>{{ t.quiz_energy_1 }}</span>
+                        <span>{{ t.quiz_energy_3 }}</span>
+                        <span>{{ t.quiz_energy_5 }}</span>
                     </div>
                 </div>
 
@@ -70,11 +70,11 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <label class="flex items-center p-4 rounded-2xl border border-slate-200 bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors">
                             <input type="checkbox" name="has_children" class="w-5 h-5 text-paw-600 rounded">
-                            <span class="ml-3 text-sm font-bold text-slate-800">👶 Evdə azyaşlı uşaqlar var</span>
+                            <span class="ml-3 text-sm font-bold text-slate-800">👶 {{ t.quiz_q3_kids }}</span>
                         </label>
                         <label class="flex items-center p-4 rounded-2xl border border-slate-200 bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors">
                             <input type="checkbox" name="has_other_pets" class="w-5 h-5 text-paw-600 rounded">
-                            <span class="ml-3 text-sm font-bold text-slate-800">🐾 Evdə başqa heyvan var</span>
+                            <span class="ml-3 text-sm font-bold text-slate-800">🐾 {{ t.quiz_q3_pets }}</span>
                         </label>
                     </div>
                 </div>
@@ -86,20 +86,20 @@
                         <div>
                             <span class="block text-xs font-bold text-slate-500 uppercase mb-1">{{ t.filter_species }}</span>
                             <select name="preferred_species" class="w-full py-2.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-paw-500">
-                                <option value="any">Fərqi yoxdur (Ən uyğun olan)</option>
-                                <option value="dog">🐶 İt</option>
-                                <option value="cat">🐱 Pişik</option>
-                                <option value="rabbit">🐰 Dovşan</option>
-                                <option value="bird">🦜 Quş</option>
+                                <option value="any">{{ t.quiz_species_any }}</option>
+                                <option value="dog">🐶 {{ t.filter_dog }}</option>
+                                <option value="cat">🐱 {{ t.filter_cat }}</option>
+                                <option value="rabbit">🐰 {{ t.filter_rabbit }}</option>
+                                <option value="bird">🦜 {{ t.filter_bird }}</option>
                             </select>
                         </div>
                         <div>
                             <span class="block text-xs font-bold text-slate-500 uppercase mb-1">{{ t.filter_size }}</span>
                             <select name="preferred_size" class="w-full py-2.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-paw-500">
-                                <option value="any">Fərqi yoxdur</option>
-                                <option value="Small">Kiçik</option>
-                                <option value="Medium">Orta</option>
-                                <option value="Large">Böyük</option>
+                                <option value="any">{{ t.quiz_size_any }}</option>
+                                <option value="Small">{{ t.filter_small }}</option>
+                                <option value="Medium">{{ t.filter_medium }}</option>
+                                <option value="Large">{{ t.filter_large }}</option>
                             </select>
                         </div>
                     </div>
@@ -117,11 +117,11 @@
         <div id="resultsSection" class="hidden">
             <div class="flex items-center justify-between mb-6">
                 <div>
-                    <span class="text-xs font-bold text-paw-600 uppercase tracking-widest">Nəticə</span>
-                    <h2 class="text-2xl font-black text-slate-900">Sizin üçün ən uyğun tövsiyələr</h2>
+                    <span class="text-xs font-bold text-paw-600 uppercase tracking-widest">{{ t.quiz_match_score }}</span>
+                    <h2 class="text-2xl font-black text-slate-900">{{ t.quiz_results_title }}</h2>
                 </div>
                 <button onclick="document.getElementById('quizForm').scrollIntoView({behavior: 'smooth'})" class="text-xs font-bold text-slate-500 hover:text-paw-600">
-                    Cavabları Dəyişdir
+                    {{ t.quiz_change_answers }}
                 </button>
             </div>
 
@@ -134,15 +134,17 @@
 
 {% block extra_scripts %}
 <script>
+    const currentLang = "{{ lang }}";
+    const energyLabels = {
+        '1': '{{ t.quiz_energy_1 }}',
+        '2': '{{ t.quiz_energy_2 }}',
+        '3': '{{ t.quiz_energy_3 }}',
+        '4': '{{ t.quiz_energy_4 }}',
+        '5': '{{ t.quiz_energy_5 }}'
+    };
+
     function updateEnergyDisplay(val) {
-        const labels = {
-            '1': '1 / 5 (Tamamilə Sakit)',
-            '2': '2 / 5 (Təmkinli)',
-            '3': '3 / 5 (Balanslı)',
-            '4': '4 / 5 (Çevik və Aktiv)',
-            '5': '5 / 5 (Yüksək Enerjili)'
-        };
-        document.getElementById('energyVal').innerText = labels[val] || val;
+        document.getElementById('energyVal').innerText = energyLabels[val] || val;
     }
 
     async function calculateMatches(e) {
@@ -153,7 +155,7 @@
         const resultsGrid = document.getElementById('resultsGrid');
 
         btn.disabled = true;
-        btn.innerHTML = '<span class="animate-spin mr-2">⚙️</span> Alqoritm hesablayır...';
+        btn.innerHTML = '<span class="animate-spin mr-2">⚙️</span> {{ t.quiz_calculating }}';
 
         const payload = {
             living_space: form.living_space.value,
@@ -165,7 +167,7 @@
         };
 
         try {
-            const res = await fetch('/api/quiz/match', {
+            const res = await fetch(`/api/quiz/match?lang=${currentLang}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -185,7 +187,7 @@
                         <div class="relative h-48 overflow-hidden bg-slate-100">
                             <img src="${item.photo_url || '/static/img/pets/placeholder.svg'}" onerror="this.onerror=null;this.src='/static/img/pets/placeholder.svg'" alt="${item.name}" class="w-full h-full object-cover">
                             <div class="absolute top-4 left-4 ${scoreColor} text-white font-black text-xs px-3.5 py-1.5 rounded-full shadow-lg flex items-center space-x-1">
-                                <span>⚡ ${item.compatibility_score}% Uyğunluq</span>
+                                <span>⚡ ${item.compatibility_score}% {{ t.quiz_match_suffix }}</span>
                             </div>
                             <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-slate-900 text-xs font-bold px-3 py-1 rounded-full capitalize">
                                 ${item.species}
@@ -195,7 +197,7 @@
                             <div>
                                 <div class="flex items-center justify-between">
                                     <h3 class="text-xl font-black text-slate-900">${item.name}</h3>
-                                    <span class="text-xs font-bold px-2 py-1 bg-slate-100 rounded-lg text-slate-600">${item.age_years} yaş</span>
+                                    <span class="text-xs font-bold px-2 py-1 bg-slate-100 rounded-lg text-slate-600">${item.age_years} {{ t.label_years }}</span>
                                 </div>
                                 <p class="text-xs text-slate-500 font-semibold mb-3">${item.breed} • ${item.size}</p>
                                 
@@ -208,8 +210,8 @@
                                     `).join('')}
                                 </div>
                             </div>
-                            <a href="/pets/${item.pet_id}?lang={{ lang }}" class="w-full text-center bg-paw-50 hover:bg-paw-100 text-paw-700 font-extrabold text-xs py-2.5 rounded-xl border border-paw-200 transition-colors">
-                                Profilə və Tibbi Karta Bax
+                            <a href="/pets/${item.pet_id}?lang=${currentLang}" class="w-full text-center bg-paw-50 hover:bg-paw-100 text-paw-700 font-extrabold text-xs py-2.5 rounded-xl border border-paw-200 transition-colors">
+                                {{ t.quiz_view_passport_btn }}
                             </a>
                         </div>
                     `;
@@ -221,7 +223,7 @@
                 lucide.createIcons();
             }
         } catch (err) {
-            alert('Alqoritmdə xəta baş verdi');
+            alert('Quiz error');
         } finally {
             btn.disabled = false;
             btn.innerHTML = '<i data-lucide="sparkles" class="w-5 h-5"></i><span>{{ t.quiz_calculate }}</span>';

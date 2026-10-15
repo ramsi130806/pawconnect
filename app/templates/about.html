@@ -9,9 +9,9 @@
             <i data-lucide="award" class="w-4 h-4"></i>
             <span>Atlântia International STEM Olympiad</span>
         </span>
-        <h1 class="text-4xl sm:text-5xl font-black mb-4">PawConnect Layihəsi Haqqında</h1>
+        <h1 class="text-4xl sm:text-5xl font-black mb-4">{{ t.about_title }}</h1>
         <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto">
-            SW01 (Software Projects) kateqoriyası üzrə hazırlanmış tamfunksiyalı, müasir və sosial əhəmiyyətli heyvan sahibləndirmə ekosistemi.
+            {{ t.about_hero_sub }}
         </p>
     </div>
 </div>
@@ -24,9 +24,9 @@
             <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mb-4">
                 <i data-lucide="alert-circle" class="w-6 h-6"></i>
             </div>
-            <h3 class="text-xl font-black text-slate-900 mb-2">Problem (Niyə bu layihə?)</h3>
+            <h3 class="text-xl font-black text-slate-900 mb-2">{{ t.about_problem_title }}</h3>
             <p class="text-slate-600 text-sm leading-relaxed">
-                Şəhərlərdə və regionlarda sığınacaqlar pərakəndə fəaliyyət göstərir. Sahiblənmək istəyən vətəndaşlar heyvanların sağlamlıq, peyvənd və xarakter məlumatlarını tapa bilmir. Nəticədə bir çox heyvan adaptasiya ola bilməyib yenidən küçəyə buraxılır.
+                {{ t.about_problem_desc }}
             </p>
         </div>
 
@@ -34,9 +34,9 @@
             <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
                 <i data-lucide="check-circle-2" class="w-6 h-6"></i>
             </div>
-            <h3 class="text-xl font-black text-slate-900 mb-2">Həll Yolu (PawConnect)</h3>
+            <h3 class="text-xl font-black text-slate-900 mb-2">{{ t.about_solution_title }}</h3>
             <p class="text-slate-600 text-sm leading-relaxed">
-                Vahid rəqəmsal reyestr, hər bir heyvan üçün rəqəmsal peyvənd pasportu, sığınacaqlar üçün idarəetmə paneli və ailə ilə heyvanın uyğunluğunu hesablayan <strong>Smart Matcher alqoritmi</strong>.
+                {{ t.about_solution_desc }}
             </p>
         </div>
     </div>
@@ -48,35 +48,35 @@
                 <i data-lucide="layers" class="w-6 h-6"></i>
             </div>
             <div>
-                <h2 class="text-2xl font-black text-slate-900">Proqram Təminatı Arxitekturası (D5 Record)</h2>
-                <p class="text-xs text-slate-500 font-semibold">Tələb olunan modul bölgüsü: User Interface $\rightarrow$ Application Logic $\rightarrow$ Data Services $\rightarrow$ Database</p>
+                <h2 class="text-2xl font-black text-slate-900">{{ t.about_arch_title }}</h2>
+                <p class="text-xs text-slate-500 font-semibold">{{ t.about_arch_sub }}</p>
             </div>
         </div>
 
         <!-- Visual Architecture Pipeline -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center my-8">
             <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200">
-                <span class="text-xs font-black text-paw-600 uppercase tracking-widest block mb-2">1. İstifadəçi İnterfeysi</span>
+                <span class="text-xs font-black text-paw-600 uppercase tracking-widest block mb-2">{{ t.about_arch_layer1_tag }}</span>
                 <h4 class="font-bold text-slate-900">Frontend (UI)</h4>
-                <p class="text-xs text-slate-500 mt-2">Tailwind CSS, Jinja2, Lucide Icons, Responsive SPA/Multi-page interfeys</p>
+                <p class="text-xs text-slate-500 mt-2">{{ t.about_arch_layer1_desc }}</p>
             </div>
 
             <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200">
-                <span class="text-xs font-black text-sky-600 uppercase tracking-widest block mb-2">2. Marşrutlaşdırma</span>
+                <span class="text-xs font-black text-sky-600 uppercase tracking-widest block mb-2">{{ t.about_arch_layer2_tag }}</span>
                 <h4 class="font-bold text-slate-900">Web & API Routers</h4>
-                <p class="text-xs text-slate-500 mt-2">FastAPI Asinxron marşrutlar: Pets, Adoptions, Vaccines, Smart Quiz</p>
+                <p class="text-xs text-slate-500 mt-2">{{ t.about_arch_layer2_desc }}</p>
             </div>
 
             <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200">
-                <span class="text-xs font-black text-amber-600 uppercase tracking-widest block mb-2">3. Biznes Məntiqi</span>
+                <span class="text-xs font-black text-amber-600 uppercase tracking-widest block mb-2">{{ t.about_arch_layer3_tag }}</span>
                 <h4 class="font-bold text-slate-900">Application Logic</h4>
-                <p class="text-xs text-slate-500 mt-2">Pydantic validasiyası, Smart Matcher uyğunluq balı hesablama alqoritmi</p>
+                <p class="text-xs text-slate-500 mt-2">{{ t.about_arch_layer3_desc }}</p>
             </div>
 
             <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200">
-                <span class="text-xs font-black text-emerald-600 uppercase tracking-widest block mb-2">4. Verilənlər Bazası</span>
+                <span class="text-xs font-black text-emerald-600 uppercase tracking-widest block mb-2">{{ t.about_arch_layer4_tag }}</span>
                 <h4 class="font-bold text-slate-900">SQLite / PostgreSQL</h4>
-                <p class="text-xs text-slate-500 mt-2">SQLAlchemy ORM modelləri (Shelter, Pet, VaccineRecord, AdoptionApplication)</p>
+                <p class="text-xs text-slate-500 mt-2">{{ t.about_arch_layer4_desc }}</p>
             </div>
         </div>
     </div>
@@ -86,33 +86,33 @@
         <div class="flex items-center space-x-3 mb-4">
             <i data-lucide="graduation-cap" class="w-8 h-8 text-amber-600"></i>
             <div>
-                <h3 class="text-xl font-black text-amber-900">Şagirdlərin Münsiflər Qarşısında Təqdimat İzahı (SW01.5.7)</h3>
-                <p class="text-xs text-amber-700">10-14 yaş qrupu üçün aydın Input $\rightarrow$ Processing $\rightarrow$ Output strukturu</p>
+                <h3 class="text-xl font-black text-amber-900">{{ t.about_defense_title }}</h3>
+                <p class="text-xs text-amber-700">{{ t.about_defense_sub }}</p>
             </div>
         </div>
 
         <div class="space-y-4 text-sm text-amber-900/90 leading-relaxed">
             <div class="p-4 bg-white/80 rounded-2xl border border-amber-200">
-                <strong class="text-amber-950 block mb-1">Giriş (Input):</strong>
-                İstifadəçi saytda axtarış edir, müraciət formasını doldurur və ya 4 suallıq testi tamamlayır.
+                <strong class="text-amber-950 block mb-1">{{ t.about_input_title }}</strong>
+                {{ t.about_input_desc }}
             </div>
             <div class="p-4 bg-white/80 rounded-2xl border border-amber-200">
-                <strong class="text-amber-950 block mb-1">Emal (Processing):</strong>
-                FastAPI backend daxil olan parametrləri `schemas.py` ilə yoxlayır, `api_quiz.py` alqoritmi ailənin şəraiti ilə heyvanın xüsusiyyətlərini müqayisə edərək 0-100% arası uyğunluq dərəcəsi çıxarır.
+                <strong class="text-amber-950 block mb-1">{{ t.about_proc_title }}</strong>
+                {{ t.about_proc_desc }}
             </div>
             <div class="p-4 bg-white/80 rounded-2xl border border-amber-200">
-                <strong class="text-amber-950 block mb-1">Çıxış (Output):</strong>
-                Sistem uyğun heyvanları dərəcələndirərək ekrana gətirir, sığınacaq əməkdaşına isə müraciəti idarə etmək üçün bildiriş ötürür.
+                <strong class="text-amber-950 block mb-1">{{ t.about_out_title }}</strong>
+                {{ t.about_out_desc }}
             </div>
         </div>
     </div>
 
     <!-- Annex 4.5 AI and Third-party Declaration -->
     <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm text-xs text-slate-600 space-y-2">
-        <h4 class="font-extrabold text-slate-900 text-sm uppercase tracking-wider mb-2">Annex 4.5 — Açıq Mənbə və Alət Bəyannaməsi</h4>
-        <p>• <strong>Kitabxanalar və Freymvorklar:</strong> FastAPI (Python), Uvicorn, SQLAlchemy, Pydantic, Jinja2, Tailwind CSS, Lucide Icons.</p>
-        <p>• <strong>Süni İntellekt Dəstəyi:</strong> Qayda SW01.7.4 və O4.5 uyğun olaraq layihənin kod strukturlaşdırılmasında, məlumat bazasının generasiyasında və çoxdilli lüğətin tərtibində süni intellekt köməkçi kimi iştirak etmiş, bütün məntiq və müdafiə şagirdlər tərəfindən mənimsənilmişdir.</p>
-        <p>• <strong>Məlumat Təhlükəsizliyi:</strong> Qayda SW01.4 uyğun olaraq heç bir real şəxsi gizli məlumat istifadə edilməmiş, bütün test məlumatları sintetik olaraq təhlükəsiz şəkildə yaradılmışdır.</p>
+        <h4 class="font-extrabold text-slate-900 text-sm uppercase tracking-wider mb-2">{{ t.about_annex_title }}</h4>
+        <p>• {{ t.about_annex_libs }}</p>
+        <p>• {{ t.about_annex_ai }}</p>
+        <p>• {{ t.about_annex_safety }}</p>
     </div>
 
 </div>

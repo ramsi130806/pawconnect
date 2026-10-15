@@ -8,7 +8,7 @@
         <div>
             <span class="inline-flex items-center space-x-1.5 text-xs font-bold text-paw-600 uppercase tracking-widest">
                 <i data-lucide="shield" class="w-3.5 h-3.5"></i>
-                <span>Sığınacaq İdarəetmə Mərkəzi</span>
+                <span>{{ t.admin_badge }}</span>
             </span>
             <h1 class="text-3xl font-black text-slate-900 mt-1">{{ t.admin_title }}</h1>
         </div>
@@ -29,7 +29,7 @@
                 <i data-lucide="paw-print" class="w-7 h-7"></i>
             </div>
             <div>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Bazada Olan</span>
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">{{ t.admin_total_in_db }}</span>
                 <span class="text-3xl font-black text-slate-900">{{ total_pets }}</span>
             </div>
         </div>
@@ -39,7 +39,7 @@
                 <i data-lucide="inbox" class="w-7 h-7"></i>
             </div>
             <div>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Baxılacaq Müraciət</span>
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">{{ t.admin_pending_review }}</span>
                 <span class="text-3xl font-black text-amber-600">{{ pending_apps }}</span>
             </div>
         </div>
@@ -49,7 +49,7 @@
                 <i data-lucide="heart-handshake" class="w-7 h-7"></i>
             </div>
             <div>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Sahibləndirildi</span>
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">{{ t.admin_adopted_count }}</span>
                 <span class="text-3xl font-black text-emerald-600">{{ adopted_pets }}</span>
             </div>
         </div>
@@ -59,7 +59,7 @@
                 <i data-lucide="alert-triangle" class="w-7 h-7"></i>
             </div>
             <div>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Vaxtı Keçən Peyvənd</span>
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">{{ t.admin_overdue_vaccine }}</span>
                 <span class="text-3xl font-black text-rose-600">{{ overdue_vaxes }}</span>
             </div>
         </div>
@@ -80,20 +80,20 @@
     <!-- TAB 1: Applications Table -->
     <div id="tabApplications" class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="p-6 border-b border-slate-100">
-            <h3 class="text-lg font-black text-slate-900">Daxil Olan Sahibləndirmə Müraciətləri</h3>
-            <p class="text-xs text-slate-500">Müraciətləri yoxlayın, namizədin ev şəraitini təhlil edin və təsdiq/imtina qərarı verin.</p>
+            <h3 class="text-lg font-black text-slate-900">{{ t.admin_tab_apps }}</h3>
+            <p class="text-xs text-slate-500">{{ t.admin_inquiries_desc }}</p>
         </div>
 
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
                 <thead>
                     <tr class="text-xs font-bold text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100">
-                        <th class="py-3.5 px-6">Namizəd</th>
-                        <th class="py-3.5 px-6">Heyvan</th>
-                        <th class="py-3.5 px-6">Məkan & Təcrübə</th>
-                        <th class="py-3.5 px-6">Mesaj</th>
-                        <th class="py-3.5 px-6">Status</th>
-                        <th class="py-3.5 px-6 text-right">Qərar</th>
+                        <th class="py-3.5 px-6">{{ t.admin_th_candidate }}</th>
+                        <th class="py-3.5 px-6">{{ t.admin_th_pet }}</th>
+                        <th class="py-3.5 px-6">{{ t.admin_th_space }}</th>
+                        <th class="py-3.5 px-6">{{ t.admin_th_message }}</th>
+                        <th class="py-3.5 px-6">{{ t.admin_th_status }}</th>
+                        <th class="py-3.5 px-6 text-right">{{ t.admin_th_decision }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
@@ -111,8 +111,12 @@
                             <span class="text-xs text-slate-400">{{ app.pet.breed }}</span>
                         </td>
                         <td class="py-4 px-6 text-xs">
-                            <span class="font-bold text-slate-800 block capitalize">{{ app.living_space.replace('_', ' ') }}</span>
-                            <span class="text-slate-500">Təcrübə: {{ app.experience_level }}</span>
+                            <span class="font-bold text-slate-800 block capitalize">
+                                {% if app.living_space == 'apartment' %}{{ t.form_apartment }}{% elif app.living_space == 'house_with_yard' %}{{ t.form_house_yard }}{% else %}{{ t.form_countryside }}{% endif %}
+                            </span>
+                            <span class="text-slate-500">
+                                {% if app.experience_level == 'beginner' %}{{ t.form_exp_beginner }}{% elif app.experience_level == 'experienced' %}{{ t.form_exp_expert }}{% else %}{{ t.form_exp_inter }}{% endif %}
+                            </span>
                         </td>
                         <td class="py-4 px-6 max-w-xs text-xs text-slate-600 truncate" title="{{ app.message }}">
                             {{ app.message or '—' }}
@@ -120,30 +124,30 @@
                         <td class="py-4 px-6">
                             {% if app.status == 'approved' %}
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800">
-                                ✓ Təsdiq edildi
+                                {{ t.admin_status_approved }}
                             </span>
                             {% elif app.status == 'rejected' %}
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-rose-100 text-rose-800">
-                                ✕ İmtina edildi
+                                {{ t.admin_status_rejected }}
                             </span>
                             {% elif app.status == 'reviewing' %}
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-sky-100 text-sky-800">
-                                ⏳ Baxılır
+                                {{ t.admin_status_reviewing }}
                             </span>
                             {% else %}
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-800">
-                                ● Gözləmədə
+                                {{ t.admin_status_pending }}
                             </span>
                             {% endif %}
                         </td>
                         <td class="py-4 px-6 text-right space-x-1.5">
                             {% if app.status != 'approved' %}
-                            <button onclick="updateAppStatus({{ app.id }}, 'approved')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors" title="Təsdiq et">
+                            <button onclick="updateAppStatus({{ app.id }}, 'approved')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors" title="{{ t.admin_btn_approve }}">
                                 {{ t.admin_btn_approve }}
                             </button>
                             {% endif %}
                             {% if app.status != 'rejected' %}
-                            <button onclick="updateAppStatus({{ app.id }}, 'rejected')" class="px-3 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded-lg text-xs font-bold transition-colors" title="İmtina et">
+                            <button onclick="updateAppStatus({{ app.id }}, 'rejected')" class="px-3 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded-lg text-xs font-bold transition-colors" title="{{ t.admin_btn_reject }}">
                                 {{ t.admin_btn_reject }}
                             </button>
                             {% endif %}
@@ -157,7 +161,7 @@
                     {% else %}
                     <tr>
                         <td colspan="6" class="py-12 text-center text-slate-400 font-semibold">
-                            Hələlik heç bir müraciət qeydə alınmayıb.
+                            {{ t.admin_no_inquiries }}
                         </td>
                     </tr>
                     {% endfor %}
@@ -169,20 +173,20 @@
     <!-- TAB 2: Pets List Table -->
     <div id="tabPets" class="hidden bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="p-6 border-b border-slate-100">
-            <h3 class="text-lg font-black text-slate-900">Sığınacaqdakı Heyvanlar</h3>
-            <p class="text-xs text-slate-500">Qeydiyyatda olan heyvanların pasport və status detalları</p>
+            <h3 class="text-lg font-black text-slate-900">{{ t.admin_tab_pets }}</h3>
+            <p class="text-xs text-slate-500">{{ t.admin_pets_table_sub }}</p>
         </div>
 
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
                 <thead>
                     <tr class="text-xs font-bold text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100">
-                        <th class="py-3.5 px-6">Heyvan</th>
-                        <th class="py-3.5 px-6">Növ & Cins</th>
-                        <th class="py-3.5 px-6">Yaş & Ölçü</th>
-                        <th class="py-3.5 px-6">Mikroçip</th>
-                        <th class="py-3.5 px-6">Sığınacaq</th>
-                        <th class="py-3.5 px-6">Status</th>
+                        <th class="py-3.5 px-6">{{ t.admin_th_pet }}</th>
+                        <th class="py-3.5 px-6">{{ t.admin_th_species_breed }}</th>
+                        <th class="py-3.5 px-6">{{ t.admin_th_age_size }}</th>
+                        <th class="py-3.5 px-6">{{ t.label_microchip }}</th>
+                        <th class="py-3.5 px-6">{{ t.label_shelter }}</th>
+                        <th class="py-3.5 px-6">{{ t.pet_status_label }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
@@ -198,14 +202,16 @@
                             </div>
                         </td>
                         <td class="py-4 px-6">
-                            <span class="block font-bold text-slate-800 capitalize">{{ p.species }}</span>
+                            <span class="block font-bold text-slate-800 capitalize">
+                                {% if p.species == 'dog' %}🐶 {{ t.filter_dog }}{% elif p.species == 'cat' %}🐱 {{ t.filter_cat }}{% elif p.species == 'rabbit' %}🐰 {{ t.filter_rabbit }}{% elif p.species == 'bird' %}🦜 {{ t.filter_bird }}{% else %}🐾 {{ t.filter_other }}{% endif %}
+                            </span>
                             <span class="block text-xs text-slate-500">{{ p.breed }}</span>
                         </td>
                         <td class="py-4 px-6 text-xs text-slate-600">
-                            {{ p.age_years }} il • {{ p.size }}
+                            {{ p.age_years }} {{ t.label_years }} • {% if p.size == 'Small' %}{{ t.filter_small }}{% elif p.size == 'Medium' %}{{ t.filter_medium }}{% else %}{{ t.filter_large }}{% endif %}
                         </td>
                         <td class="py-4 px-6 font-mono text-xs text-slate-500">
-                            {{ p.microchip_id or 'Qeydiyyatsız' }}
+                            {{ p.microchip_id or t.admin_unregistered_chip }}
                         </td>
                         <td class="py-4 px-6 text-xs text-slate-600">
                             {{ p.shelter.name }}
@@ -246,58 +252,58 @@
                 <i data-lucide="plus" class="w-6 h-6"></i>
             </div>
             <div>
-                <h3 class="text-xl font-black text-slate-900">Sığınacağa Yeni Heyvan Qeydiyyatı</h3>
-                <p class="text-xs font-semibold text-slate-500">Xilas edilmiş heyvanın məlumatlarını bazaya daxil edin</p>
+                <h3 class="text-xl font-black text-slate-900">{{ t.admin_modal_add_title }}</h3>
+                <p class="text-xs font-semibold text-slate-500">{{ t.admin_modal_add_desc }}</p>
             </div>
         </div>
 
         <form id="addPetForm" onsubmit="handleAddPetSubmit(event)" class="space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Heyvanın Adı *</label>
-                    <input type="text" name="name" required placeholder="Məs: Maks" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-paw-500 focus:bg-white outline-none">
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">{{ t.admin_form_pet_name }} *</label>
+                    <input type="text" name="name" required placeholder="Rex" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-paw-500 focus:bg-white outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Növü *</label>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">{{ t.admin_form_species }} *</label>
                     <select name="species" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold outline-none">
-                        <option value="dog">İt</option>
-                        <option value="cat">Pişik</option>
-                        <option value="rabbit">Dovşan</option>
-                        <option value="bird">Quş</option>
-                        <option value="other">Digər</option>
+                        <option value="dog">{{ t.filter_dog }}</option>
+                        <option value="cat">{{ t.filter_cat }}</option>
+                        <option value="rabbit">{{ t.filter_rabbit }}</option>
+                        <option value="bird">{{ t.filter_bird }}</option>
+                        <option value="other">{{ t.filter_other }}</option>
                     </select>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Cinsi (Breed) *</label>
-                    <input type="text" name="breed" required placeholder="Məs: Labrador / Qarışıq" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-paw-500 focus:bg-white outline-none">
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">{{ t.admin_form_breed }} *</label>
+                    <input type="text" name="breed" required placeholder="Labrador / Mix" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-paw-500 focus:bg-white outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Cinsiyyət *</label>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">{{ t.admin_form_gender }} *</label>
                     <select name="gender" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold outline-none">
-                        <option value="Male">Erkək</option>
-                        <option value="Female">Dişi</option>
+                        <option value="Male">{{ t.filter_male }}</option>
+                        <option value="Female">{{ t.filter_female }}</option>
                     </select>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Yaş (İl)</label>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">{{ t.admin_form_age_years }}</label>
                     <input type="number" name="age_years" value="1" min="0" max="25" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ölçü</label>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">{{ t.filter_size }}</label>
                     <select name="size" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold outline-none">
-                        <option value="Small">Kiçik</option>
-                        <option value="Medium" selected>Orta</option>
-                        <option value="Large">Böyük</option>
+                        <option value="Small">{{ t.filter_small }}</option>
+                        <option value="Medium" selected>{{ t.filter_medium }}</option>
+                        <option value="Large">{{ t.filter_large }}</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Sığınacaq</label>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">{{ t.label_shelter }}</label>
                     <select name="shelter_id" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold outline-none">
                         {% for s in shelters %}
                         <option value="{{ s.id }}">{{ s.name }} ({{ s.city }})</option>
@@ -307,39 +313,39 @@
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Şəkil URL</label>
-                <input type="url" name="photo_url" value="" placeholder="/static/img/pets/... (boş qalsa standart şəkil)" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none">
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">{{ t.admin_form_photo_url }}</label>
+                <input type="url" name="photo_url" value="" placeholder="/static/img/pets/placeholder.svg" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none">
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mikroçip Nömrəsi</label>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">{{ t.admin_form_chip }}</label>
                 <input type="text" name="microchip_id" placeholder="AZ-982-..." class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none">
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Təsvir və Hekayəsi</label>
-                <textarea name="description" rows="2" placeholder="Xilas olunma hekayəsi və xarakteri..." class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none"></textarea>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">{{ t.admin_form_story }}</label>
+                <textarea name="description" rows="2" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none"></textarea>
             </div>
 
             <div class="flex items-center space-x-6 pt-2">
                 <label class="flex items-center space-x-2 text-xs font-bold text-slate-700 cursor-pointer">
                     <input type="checkbox" name="good_with_children" checked class="w-4 h-4 text-paw-600 rounded">
-                    <span>Uşaqlarla yola gedir</span>
+                    <span>{{ t.label_good_kids }}</span>
                 </label>
                 <label class="flex items-center space-x-2 text-xs font-bold text-slate-700 cursor-pointer">
                     <input type="checkbox" name="good_with_other_pets" checked class="w-4 h-4 text-paw-600 rounded">
-                    <span>Digər heyvanlarla dostdur</span>
+                    <span>{{ t.label_good_pets }}</span>
                 </label>
                 <label class="flex items-center space-x-2 text-xs font-bold text-slate-700 cursor-pointer">
                     <input type="checkbox" name="neutered" checked class="w-4 h-4 text-paw-600 rounded">
-                    <span>Sterilizasiya olunub</span>
+                    <span>{{ t.label_neutered }}</span>
                 </label>
             </div>
 
             <div class="pt-4">
                 <button type="submit" id="addPetBtn" class="w-full bg-paw-600 hover:bg-paw-700 text-white font-black py-3 rounded-xl shadow-lg transition-all flex items-center justify-center space-x-2">
                     <i data-lucide="check" class="w-4 h-4"></i>
-                    <span>Bazada Qeydiyyata Al</span>
+                    <span>{{ t.admin_form_save_btn }}</span>
                 </button>
             </div>
         </form>
@@ -372,22 +378,22 @@
     }
 
     async function updateAppStatus(appId, newStatus) {
-        if (!confirm(`Müraciətin statusunu "${newStatus}" etmək istədiyinizdən əminsiniz?`)) return;
+        if (!confirm(`Are you sure you want to update status to "${newStatus}"?`)) return;
 
         try {
             const res = await fetch(`/api/adoptions/${appId}/status`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: newStatus, review_notes: `Status yeniləndi: ${newStatus}` })
+                body: JSON.stringify({ status: newStatus, review_notes: `Status updated: ${newStatus}` })
             });
 
             if (res.ok) {
                 window.location.reload();
             } else {
-                alert('Status yenilənmədi.');
+                alert('Update failed.');
             }
         } catch (e) {
-            alert('Əlaqə xətası.');
+            alert('Connection error.');
         }
     }
 
@@ -405,10 +411,10 @@
             age_years: parseInt(form.age_years.value),
             age_months: 0,
             size: form.size.value,
-            coat_color: "Qarışıq",
+            coat_color: "Mixed",
             description: form.description.value,
-            personality: "Aktiv, Mehriban",
-            photo_url: form.photo_url.value,
+            personality: "Friendly, Active",
+            photo_url: form.photo_url.value || '/static/img/pets/placeholder.svg',
             status: "available",
             energy_level: 3,
             good_with_children: form.good_with_children.checked,
@@ -427,13 +433,13 @@
             });
 
             if (res.ok) {
-                alert('Heyvan uğurla bazaya əlavə edildi!');
+                alert('Pet registered successfully!');
                 window.location.reload();
             } else {
-                alert('Xəta baş verdi');
+                alert('Registration error');
             }
         } catch (e) {
-            alert('Serverlə əlaqə kəsildi');
+            alert('Connection error');
         } finally {
             btn.disabled = false;
         }
