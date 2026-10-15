@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t.app_name }} — {{ t.hero_title }}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative overflow-hidden bg-gradient-to-b from-orange-50/80 via-white to-slate-50 pt-12 pb-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Left Text Content -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="inline-flex items-center space-x-2 bg-paw-100 text-paw-800 px-4 py-2 rounded-full text-sm font-semibold border border-paw-200">
+                    <i data-lucide="heart" class="w-4 h-4 text-paw-600 fill-paw-600"></i>
+                    <span>{{ t.tagline }}</span>
+                </div>
+
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-tight">
+                    {{ t.hero_title }}
+                </h1>
+
+                <p class="text-lg sm:text-xl text-slate-600 leading-relaxed max-w-2xl">
+                    {{ t.hero_subtitle }}
+                </p>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap gap-4 pt-4">
+                    <a href="/pets?lang={{ lang }}" class="inline-flex items-center space-x-2 bg-gradient-to-r from-paw-600 to-amber-500 hover:from-paw-700 hover:to-amber-600 text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-paw-500/25 transition-all transform hover:-translate-y-0.5">
+                        <i data-lucide="search" class="w-5 h-5"></i>
+                        <span>{{ t.hero_btn_explore }}</span>
+                    </a>
+                    <a href="/match?lang={{ lang }}" class="inline-flex items-center space-x-2 bg-white hover:bg-slate-100 text-slate-800 font-bold px-8 py-4 rounded-2xl border border-slate-300 shadow-sm transition-all transform hover:-translate-y-0.5">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-amber-500"></i>
+                        <span>{{ t.hero_btn_match }}</span>
+                    </a>
+                </div>
+
+                <!-- Trust badges -->
+                <div class="pt-6 grid grid-cols-2 sm:grid-cols-3 gap-4 border-t border-slate-200/80">
+                    <div class="flex items-center space-x-2 text-sm text-slate-600">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-emerald-600"></i>
+                        <span>Yoxlanmış Sığınacaqlar</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-sm text-slate-600">
+                        <i data-lucide="clipboard-check" class="w-5 h-5 text-sky-600"></i>
+                        <span>Rəqəmsal Tibbi Kart</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-sm text-slate-600">
+                        <i data-lucide="check-circle-2" class="w-5 h-5 text-paw-600"></i>
+                        <span>100% Pulsuz Sahiblənmə</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Hero Image with Floating Cards -->
+            <div class="lg:col-span-5 relative">
+                <div class="relative mx-auto max-w-md lg:max-w-none">
+                    <!-- Main Image Frame -->
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white aspect-square">
+                        <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&auto=format&fit=crop&q=80" alt="Happy rescue dog" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-4 left-4 right-4 text-white">
+                            <span class="inline-block bg-emerald-500 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1">
+                                Yeni Sahibləndirildi
+                            </span>
+                            <h3 class="text-lg font-bold">Luna & Qayıdan Təbəssümlər</h3>
+                            <p class="text-xs text-slate-200">Bakı Heyvanları Xilasetmə Mərkəzi vasitəsilə yeni ailəsinə qovuşdu</p>
+                        </div>
+                    </div>
+
+                    <!-- Floating Card 1: Medical Verification -->
+                    <div class="absolute -top-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-slate-100 flex items-center space-x-3 hidden sm:flex">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                            <i data-lucide="syringe" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-slate-400 uppercase">Tibbi Nəzarət</span>
+                            <p class="text-sm font-extrabold text-slate-900">Vaksinlər 100% Qüvvədə</p>
+                        </div>
+                    </div>
+
+                    <!-- Floating Card 2: Microchip Tag -->
+                    <div class="absolute -bottom-6 -right-6 bg-white p-4 rounded-2xl shadow-xl border border-slate-100 flex items-center space-x-3 hidden sm:flex">
+                        <div class="w-12 h-12 rounded-xl bg-paw-100 text-paw-600 flex items-center justify-center">
+                            <i data-lucide="qr-code" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-slate-400 uppercase">Dövlət Qeydiyyatı</span>
+                            <p class="text-sm font-extrabold text-slate-900">Mikroçip İnteqrasiyası</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Live Stats Section -->
+<section class="bg-white border-y border-slate-200 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div class="p-4 rounded-2xl bg-orange-50/50 border border-orange-100">
+                <div class="text-4xl lg:text-5xl font-black text-paw-600 mb-2">{{ total_pets }}</div>
+                <div class="text-sm font-semibold text-slate-600">{{ t.stats_pets }}</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-emerald-50/50 border border-emerald-100">
+                <div class="text-4xl lg:text-5xl font-black text-emerald-600 mb-2">{{ total_shelters }}</div>
+                <div class="text-sm font-semibold text-slate-600">{{ t.stats_shelters }}</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-amber-50/50 border border-amber-100">
+                <div class="text-4xl lg:text-5xl font-black text-amber-500 mb-2">{{ total_adopted }}</div>
+                <div class="text-sm font-semibold text-slate-600">{{ t.stats_adopted }}</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-sky-50/50 border border-sky-100">
+                <div class="text-4xl lg:text-5xl font-black text-sky-600 mb-2">100%</div>
+                <div class="text-sm font-semibold text-slate-600">{{ t.stats_vaccinated }}</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Adoptable Pets -->
+<section class="py-16 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+            <div>
+                <span class="text-xs font-bold text-paw-600 uppercase tracking-widest">{{ t.nav_pets }}</span>
+                <h2 class="text-3xl font-extrabold text-slate-900 mt-1">İsti Yuva Axtaran Canlılar</h2>
+            </div>
+            <a href="/pets?lang={{ lang }}" class="mt-4 md:mt-0 inline-flex items-center space-x-1 text-sm font-bold text-paw-600 hover:text-paw-700">
+                <span>Bütün heyvanlara bax ({{ total_pets }})</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+
+        <!-- Pet Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for pet in featured_pets %}
+            <div class="bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group">
+                <!-- Image & Badges -->
+                <div class="relative h-64 overflow-hidden bg-slate-100">
+                    <img src="{{ pet.photo_url }}" alt="{{ pet.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    
+                    <!-- Status Badge -->
+                    <div class="absolute top-4 left-4">
+                        {% if pet.status == 'available' %}
+                        <span class="bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md flex items-center space-x-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                            <span>{{ t.badge_available }}</span>
+                        </span>
+                        {% elif pet.status == 'pending' %}
+                        <span class="bg-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md">
+                            {{ t.badge_pending }}
+                        </span>
+                        {% else %}
+                        <span class="bg-slate-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md">
+                            {{ t.badge_adopted }}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Species Tag -->
+                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm capitalize">
+                        {% if pet.species == 'dog' %}🐶 İt{% elif pet.species == 'cat' %}🐱 Pişik{% elif pet.species == 'rabbit' %}🐰 Dovşan{% elif pet.species == 'bird' %}🦜 Quş{% else %}🐾 Digər{% endif %}
+                    </div>
+                </div>
+
+                <!-- Pet Body -->
+                <div class="p-6 flex flex-col flex-grow">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h3 class="text-2xl font-black text-slate-900 group-hover:text-paw-600 transition-colors">{{ pet.name }}</h3>
+                            <p class="text-xs font-semibold text-slate-500">{{ pet.breed }}</p>
+                        </div>
+                        <span class="text-xs font-bold px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg">
+                            {{ pet.age_years }} {{ t.label_years }}
+                        </span>
+                    </div>
+
+                    <p class="text-sm text-slate-600 mt-3 line-clamp-2">
+                        {{ pet.description }}
+                    </p>
+
+                    <!-- Key Attributes Badges -->
+                    <div class="flex flex-wrap gap-1.5 mt-4">
+                        {% if pet.good_with_children %}
+                        <span class="inline-flex items-center text-xs font-semibold bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-md border border-emerald-200">
+                            <i data-lucide="smile" class="w-3.5 h-3.5 mr-1"></i> Uşaqcanlı
+                        </span>
+                        {% endif %}
+                        {% if pet.house_trained %}
+                        <span class="inline-flex items-center text-xs font-semibold bg-sky-50 text-sky-700 px-2.5 py-1 rounded-md border border-sky-200">
+                            <i data-lucide="home" class="w-3.5 h-3.5 mr-1"></i> Ev vərdişli
+                        </span>
+                        {% endif %}
+                        {% if pet.neutered %}
+                        <span class="inline-flex items-center text-xs font-semibold bg-purple-50 text-purple-700 px-2.5 py-1 rounded-md border border-purple-200">
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1"></i> Sterilizə
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Card Footer: Shelter info + Button -->
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <div class="flex items-center space-x-2 text-xs text-slate-500 truncate max-w-[150px]">
+                            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-paw-500 flex-shrink-0"></i>
+                            <span class="truncate">{{ pet.shelter.city }}</span>
+                        </div>
+                        <a href="/pets/{{ pet.id }}?lang={{ lang }}" class="inline-flex items-center space-x-1.5 bg-paw-50 hover:bg-paw-100 text-paw-600 font-bold text-xs px-4 py-2 rounded-xl border border-paw-200 transition-colors">
+                            <span>{{ t.btn_view_details }}</span>
+                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Smart Matcher Interactive Callout -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-gradient-to-r from-paw-600 via-amber-600 to-paw-500 rounded-3xl p-8 sm:p-12 text-white shadow-2xl relative overflow-hidden">
+            <div class="relative z-10 max-w-2xl">
+                <span class="bg-white/20 backdrop-blur-md text-white text-xs font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider inline-block mb-3">
+                    İnnovasiya Xüsusiyyəti
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-black mb-4">
+                    {{ t.quiz_title }}
+                </h2>
+                <p class="text-white/90 text-base sm:text-lg mb-8 leading-relaxed">
+                    {{ t.quiz_subtitle }} Alqoritm evinizin sahəsini, gündəlik məşğulluğunuzu və ailə tərkibinizi hesablayaraq ən uyğun heyvanları təyin edir.
+                </p>
+                <a href="/match?lang={{ lang }}" class="inline-flex items-center space-x-2 bg-white text-paw-700 hover:bg-paw-50 font-black px-8 py-4 rounded-2xl shadow-xl transition-all transform hover:scale-105">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-amber-500"></i>
+                    <span>Testə Başla (1 Dəqiqə)</span>
+                </a>
+            </div>
+
+            <!-- Background Decorative Icon -->
+            <div class="absolute -right-12 -bottom-12 opacity-15 pointer-events-none">
+                <i data-lucide="paw-print" class="w-96 h-96 text-white"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Grid (Why PawConnect) -->
+<section class="py-16 bg-slate-50 border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+            <h2 class="text-3xl font-extrabold text-slate-900">{{ t.features_title }}</h2>
+            <p class="text-slate-600 mt-2">Müasir texnologiyaların heyvanların rifahı və cəmiyyət üçün tətbiqi.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white p-8 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
+                <div class="w-14 h-14 rounded-2xl bg-paw-100 text-paw-600 flex items-center justify-center mb-6">
+                    <i data-lucide="database" class="w-7 h-7"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">{{ t.feature_1_title }}</h3>
+                <p class="text-slate-600 text-sm leading-relaxed">{{ t.feature_1_desc }}</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-6">
+                    <i data-lucide="file-check-2" class="w-7 h-7"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">{{ t.feature_2_title }}</h3>
+                <p class="text-slate-600 text-sm leading-relaxed">{{ t.feature_2_desc }}</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
+                <div class="w-14 h-14 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center mb-6">
+                    <i data-lucide="cpu" class="w-7 h-7"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">{{ t.feature_3_title }}</h3>
+                <p class="text-slate-600 text-sm leading-relaxed">{{ t.feature_3_desc }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

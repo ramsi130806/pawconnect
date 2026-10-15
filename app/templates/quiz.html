@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t.quiz_title }} — {{ t.app_name }}{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-b from-amber-50/60 via-white to-slate-50 py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <span class="inline-flex items-center space-x-1.5 bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider mb-3">
+                <i data-lucide="sparkles" class="w-4 h-4 text-amber-600"></i>
+                <span>İntellektual Uyğunlaşdırma Modulu</span>
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-black text-slate-900">{{ t.quiz_title }}</h1>
+            <p class="text-slate-600 text-sm sm:text-base mt-2 max-w-xl mx-auto">{{ t.quiz_subtitle }}</p>
+        </div>
+
+        <!-- Quiz Form Card -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-10 mb-12">
+            <form id="quizForm" onsubmit="calculateMatches(event)" class="space-y-8">
+                
+                <!-- Q1: Living Space -->
+                <div>
+                    <label class="block text-sm font-extrabold text-slate-900 mb-3">{{ t.quiz_q1 }}</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <label class="relative flex items-center p-4 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60">
+                            <input type="radio" name="living_space" value="apartment" checked class="w-4 h-4 text-paw-600">
+                            <div class="ml-3">
+                                <span class="block text-sm font-bold text-slate-900">🏢 {{ t.form_apartment }}</span>
+                                <span class="block text-xs text-slate-500">Məhdud sahə, lift və ya pilləkən</span>
+                            </div>
+                        </label>
+                        <label class="relative flex items-center p-4 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60">
+                            <input type="radio" name="living_space" value="house_with_yard" class="w-4 h-4 text-paw-600">
+                            <div class="ml-3">
+                                <span class="block text-sm font-bold text-slate-900">🏡 {{ t.form_house_yard }}</span>
+                                <span class="block text-xs text-slate-500">Geniş qapalı həyət və sərbəst qaçış sahəsi</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q2: Energy Preference (1 to 5) -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="text-sm font-extrabold text-slate-900">{{ t.quiz_q2 }}</label>
+                        <span id="energyVal" class="text-xs font-black px-2.5 py-1 bg-amber-100 text-amber-800 rounded-lg">3 / 5 (Balanslı)</span>
+                    </div>
+                    <input 
+                        type="range" 
+                        name="energy_preference" 
+                        id="energySlider" 
+                        min="1" 
+                        max="5" 
+                        value="3" 
+                        class="w-full accent-paw-600 h-2 bg-slate-200 rounded-lg cursor-pointer"
+                        oninput="updateEnergyDisplay(this.value)"
+                    >
+                    <div class="flex justify-between text-xs text-slate-400 mt-1 font-semibold">
+                        <span>1 (Sakit, yatan)</span>
+                        <span>3 (Orta aktiv)</span>
+                        <span>5 (Çox enerjili)</span>
+                    </div>
+                </div>
+
+                <!-- Q3: Family Members & Pets -->
+                <div>
+                    <label class="block text-sm font-extrabold text-slate-900 mb-3">{{ t.quiz_q3 }}</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <label class="flex items-center p-4 rounded-2xl border border-slate-200 bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors">
+                            <input type="checkbox" name="has_children" class="w-5 h-5 text-paw-600 rounded">
+                            <span class="ml-3 text-sm font-bold text-slate-800">👶 Evdə azyaşlı uşaqlar var</span>
+                        </label>
+                        <label class="flex items-center p-4 rounded-2xl border border-slate-200 bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors">
+                            <input type="checkbox" name="has_other_pets" class="w-5 h-5 text-paw-600 rounded">
+                            <span class="ml-3 text-sm font-bold text-slate-800">🐾 Evdə başqa heyvan var</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q4: Preferred Species and Size -->
+                <div>
+                    <label class="block text-sm font-extrabold text-slate-900 mb-3">{{ t.quiz_q4 }}</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <span class="block text-xs font-bold text-slate-500 uppercase mb-1">{{ t.filter_species }}</span>
+                            <select name="preferred_species" class="w-full py-2.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-paw-500">
+                                <option value="any">Fərqi yoxdur (Ən uyğun olan)</option>
+                                <option value="dog">🐶 İt</option>
+                                <option value="cat">🐱 Pişik</option>
+                                <option value="rabbit">🐰 Dovşan</option>
+                                <option value="bird">🦜 Quş</option>
+                            </select>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-slate-500 uppercase mb-1">{{ t.filter_size }}</span>
+                            <select name="preferred_size" class="w-full py-2.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-paw-500">
+                                <option value="any">Fərqi yoxdur</option>
+                                <option value="Small">Kiçik</option>
+                                <option value="Medium">Orta</option>
+                                <option value="Large">Böyük</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="quizBtn" class="w-full bg-gradient-to-r from-paw-600 to-amber-500 hover:from-paw-700 hover:to-amber-600 text-white font-black py-4 rounded-2xl shadow-xl shadow-paw-600/25 transition-all flex items-center justify-center space-x-2 text-base">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    <span>{{ t.quiz_calculate }}</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Dynamic Results Container -->
+        <div id="resultsSection" class="hidden">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <span class="text-xs font-bold text-paw-600 uppercase tracking-widest">Nəticə</span>
+                    <h2 class="text-2xl font-black text-slate-900">Sizin üçün ən uyğun tövsiyələr</h2>
+                </div>
+                <button onclick="document.getElementById('quizForm').scrollIntoView({behavior: 'smooth'})" class="text-xs font-bold text-slate-500 hover:text-paw-600">
+                    Cavabları Dəyişdir
+                </button>
+            </div>
+
+            <div id="resultsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function updateEnergyDisplay(val) {
+        const labels = {
+            '1': '1 / 5 (Tamamilə Sakit)',
+            '2': '2 / 5 (Təmkinli)',
+            '3': '3 / 5 (Balanslı)',
+            '4': '4 / 5 (Çevik və Aktiv)',
+            '5': '5 / 5 (Yüksək Enerjili)'
+        };
+        document.getElementById('energyVal').innerText = labels[val] || val;
+    }
+
+    async function calculateMatches(e) {
+        e.preventDefault();
+        const form = e.target;
+        const btn = document.getElementById('quizBtn');
+        const resultsSec = document.getElementById('resultsSection');
+        const resultsGrid = document.getElementById('resultsGrid');
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="animate-spin mr-2">⚙️</span> Alqoritm hesablayır...';
+
+        const payload = {
+            living_space: form.living_space.value,
+            energy_preference: parseInt(form.energy_preference.value),
+            has_children: form.has_children.checked,
+            has_other_pets: form.has_other_pets.checked,
+            preferred_species: form.preferred_species.value,
+            preferred_size: form.preferred_size.value
+        };
+
+        try {
+            const res = await fetch('/api/quiz/match', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                const matches = await res.json();
+                resultsGrid.innerHTML = '';
+
+                matches.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-lg flex flex-col transition-all hover:shadow-2xl';
+                    
+                    const scoreColor = item.compatibility_score >= 85 ? 'bg-emerald-500' : (item.compatibility_score >= 70 ? 'bg-amber-500' : 'bg-slate-500');
+
+                    card.innerHTML = `
+                        <div class="relative h-48 overflow-hidden bg-slate-100">
+                            <img src="${item.photo_url}" alt="${item.name}" class="w-full h-full object-cover">
+                            <div class="absolute top-4 left-4 ${scoreColor} text-white font-black text-xs px-3.5 py-1.5 rounded-full shadow-lg flex items-center space-x-1">
+                                <span>⚡ ${item.compatibility_score}% Uyğunluq</span>
+                            </div>
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-slate-900 text-xs font-bold px-3 py-1 rounded-full capitalize">
+                                ${item.species}
+                            </div>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow justify-between">
+                            <div>
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-xl font-black text-slate-900">${item.name}</h3>
+                                    <span class="text-xs font-bold px-2 py-1 bg-slate-100 rounded-lg text-slate-600">${item.age_years} yaş</span>
+                                </div>
+                                <p class="text-xs text-slate-500 font-semibold mb-3">${item.breed} • ${item.size}</p>
+                                
+                                <div class="space-y-1.5 mb-4">
+                                    ${item.match_reasons.map(r => `
+                                        <p class="text-xs font-medium text-emerald-700 flex items-center">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2 flex-shrink-0"></span>
+                                            <span>${r}</span>
+                                        </p>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            <a href="/pets/${item.pet_id}?lang={{ lang }}" class="w-full text-center bg-paw-50 hover:bg-paw-100 text-paw-700 font-extrabold text-xs py-2.5 rounded-xl border border-paw-200 transition-colors">
+                                Profilə və Tibbi Karta Bax
+                            </a>
+                        </div>
+                    `;
+                    resultsGrid.appendChild(card);
+                });
+
+                resultsSec.classList.remove('hidden');
+                resultsSec.scrollIntoView({ behavior: 'smooth' });
+                lucide.createIcons();
+            }
+        } catch (err) {
+            alert('Alqoritmdə xəta baş verdi');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i data-lucide="sparkles" class="w-5 h-5"></i><span>{{ t.quiz_calculate }}</span>';
+            lucide.createIcons();
+        }
+    }
+</script>
+{% endblock %}
