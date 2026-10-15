@@ -101,7 +101,7 @@
         <div class="bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group">
             <!-- Image & Badges -->
             <div class="relative h-64 overflow-hidden bg-slate-100">
-                <img src="{{ pet.photo_url }}" alt="{{ pet.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <img src="{{ pet.photo_url or '/static/img/pets/placeholder.svg' }}" onerror="this.onerror=null;this.src='/static/img/pets/placeholder.svg'" alt="{{ pet.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 
                 <!-- Status Badge -->
                 <div class="absolute top-4 left-4">

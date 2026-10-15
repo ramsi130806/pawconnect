@@ -18,7 +18,7 @@
         <!-- Pet Photo -->
         <div class="lg:col-span-5">
             <div class="relative rounded-3xl overflow-hidden aspect-square border-2 border-slate-100 shadow-lg">
-                <img src="{{ pet.photo_url }}" alt="{{ pet.name }}" class="w-full h-full object-cover">
+                <img src="{{ pet.photo_url or '/static/img/pets/placeholder.svg' }}" onerror="this.onerror=null;this.src='/static/img/pets/placeholder.svg'" alt="{{ pet.name }}" class="w-full h-full object-cover">
                 <!-- Status Badge -->
                 <div class="absolute top-4 left-4">
                     {% if pet.status == 'available' %}

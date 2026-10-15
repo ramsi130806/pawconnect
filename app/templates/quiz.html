@@ -183,7 +183,7 @@
 
                     card.innerHTML = `
                         <div class="relative h-48 overflow-hidden bg-slate-100">
-                            <img src="${item.photo_url}" alt="${item.name}" class="w-full h-full object-cover">
+                            <img src="${item.photo_url || '/static/img/pets/placeholder.svg'}" onerror="this.onerror=null;this.src='/static/img/pets/placeholder.svg'" alt="${item.name}" class="w-full h-full object-cover">
                             <div class="absolute top-4 left-4 ${scoreColor} text-white font-black text-xs px-3.5 py-1.5 rounded-full shadow-lg flex items-center space-x-1">
                                 <span>⚡ ${item.compatibility_score}% Uyğunluq</span>
                             </div>

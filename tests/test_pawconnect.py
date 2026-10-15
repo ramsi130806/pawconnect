@@ -3,7 +3,11 @@ from fastapi.testclient import TestClient
 from app.main import app
 from app.database import SessionLocal
 from app.models import Pet, Shelter, VaccineRecord, AdoptionApplication
+from app.seed import seed_database
 
+# TestClient without a context manager does not run the app lifespan,
+# so create tables and seed data explicitly (works even on a fresh checkout).
+seed_database()
 client = TestClient(app)
 
 def test_health_check():

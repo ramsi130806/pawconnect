@@ -57,7 +57,7 @@
                 <div class="relative mx-auto max-w-md lg:max-w-none">
                     <!-- Main Image Frame -->
                     <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white aspect-square">
-                        <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&auto=format&fit=crop&q=80" alt="Happy rescue dog" class="w-full h-full object-cover">
+                        <img src="/static/img/pets/luna.jpg" alt="Happy rescue dog" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
                         <div class="absolute bottom-4 left-4 right-4 text-white">
                             <span class="inline-block bg-emerald-500 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-1">
@@ -140,7 +140,7 @@
             <div class="bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group">
                 <!-- Image & Badges -->
                 <div class="relative h-64 overflow-hidden bg-slate-100">
-                    <img src="{{ pet.photo_url }}" alt="{{ pet.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <img src="{{ pet.photo_url or '/static/img/pets/placeholder.svg' }}" onerror="this.onerror=null;this.src='/static/img/pets/placeholder.svg'" alt="{{ pet.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     
                     <!-- Status Badge -->
                     <div class="absolute top-4 left-4">
