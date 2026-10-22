@@ -76,8 +76,8 @@
             </div>
 
             <!-- Buttons -->
-            <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-2">
-                <a href="/pets?lang={{ lang }}" class="text-center px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-colors">
+            <div class="flex items-center justify-end space-x-3 pt-2">
+                <a href="/pets?lang={{ lang }}" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-colors">
                     {{ t.btn_reset }}
                 </a>
                 <button type="submit" class="px-6 py-2.5 rounded-xl bg-paw-600 hover:bg-paw-700 text-white font-bold text-sm shadow-md shadow-paw-500/20 transition-colors">
@@ -121,14 +121,9 @@
                     {% endif %}
                 </div>
 
-                <!-- Species Tag & Favorite Button -->
-                <div class="absolute top-4 right-4 flex items-center space-x-2">
-                    <button type="button" onclick="toggleFavorite(event, {{ pet.id }})" data-fav-btn="{{ pet.id }}" title="{{ t.fav_add }}" class="w-9 h-9 rounded-full bg-white/90 backdrop-blur-md text-slate-400 hover:text-rose-500 shadow-sm flex items-center justify-center transition-colors">
-                        <i data-lucide="heart" class="w-5 h-5"></i>
-                    </button>
-                    <div class="bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm capitalize">
-                        {% if pet.species == 'dog' %}🐶 {{ t.filter_dog }}{% elif pet.species == 'cat' %}🐱 {{ t.filter_cat }}{% elif pet.species == 'rabbit' %}🐰 {{ t.filter_rabbit }}{% elif pet.species == 'bird' %}🦜 {{ t.filter_bird }}{% else %}🐾 {{ t.filter_other }}{% endif %}
-                    </div>
+                <!-- Species Tag -->
+                <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm capitalize">
+                    {% if pet.species == 'dog' %}🐶 {{ t.filter_dog }}{% elif pet.species == 'cat' %}🐱 {{ t.filter_cat }}{% elif pet.species == 'rabbit' %}🐰 {{ t.filter_rabbit }}{% elif pet.species == 'bird' %}🦜 {{ t.filter_bird }}{% else %}🐾 {{ t.filter_other }}{% endif %}
                 </div>
             </div>
 
@@ -145,7 +140,7 @@
                 </div>
 
                 <p class="text-sm text-slate-600 mt-3 line-clamp-2">
-                    {{ pet.get_description(lang) }}
+                    {{ pet.description }}
                 </p>
 
                 <!-- Key Attributes Badges -->

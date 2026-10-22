@@ -23,74 +23,25 @@
                 <!-- Q1: Living Space -->
                 <div>
                     <label class="block text-sm font-extrabold text-slate-900 mb-3">{{ t.quiz_q1 }}</label>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-                        <label class="relative flex flex-col p-4 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60">
-                            <div class="flex items-center mb-1">
-                                <input type="radio" name="living_space" value="apartment" checked class="w-4 h-4 text-paw-600">
-                                <span class="ml-2 text-sm font-bold text-slate-900">🏢 {{ t.form_apartment }}</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <label class="relative flex items-center p-4 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60">
+                            <input type="radio" name="living_space" value="apartment" checked class="w-4 h-4 text-paw-600">
+                            <div class="ml-3">
+                                <span class="block text-sm font-bold text-slate-900">🏢 {{ t.form_apartment }}</span>
+                                <span class="block text-xs text-slate-500">{{ t.quiz_q1_apt_sub }}</span>
                             </div>
-                            <span class="text-xs text-slate-500 pl-6">{{ t.quiz_q1_apt_sub }}</span>
                         </label>
-                        <label class="relative flex flex-col p-4 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60">
-                            <div class="flex items-center mb-1">
-                                <input type="radio" name="living_space" value="house_with_yard" class="w-4 h-4 text-paw-600">
-                                <span class="ml-2 text-sm font-bold text-slate-900">🏡 {{ t.form_house_yard }}</span>
+                        <label class="relative flex items-center p-4 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60">
+                            <input type="radio" name="living_space" value="house_with_yard" class="w-4 h-4 text-paw-600">
+                            <div class="ml-3">
+                                <span class="block text-sm font-bold text-slate-900">🏡 {{ t.form_house_yard }}</span>
+                                <span class="block text-xs text-slate-500">{{ t.quiz_q1_yard_sub }}</span>
                             </div>
-                            <span class="text-xs text-slate-500 pl-6">{{ t.quiz_q1_yard_sub }}</span>
-                        </label>
-                        <label class="relative flex flex-col p-4 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60">
-                            <div class="flex items-center mb-1">
-                                <input type="radio" name="living_space" value="countryside" class="w-4 h-4 text-paw-600">
-                                <span class="ml-2 text-sm font-bold text-slate-900">🌾 {{ t.quiz_q1_country }}</span>
-                            </div>
-                            <span class="text-xs text-slate-500 pl-6">{{ t.quiz_q1_country_sub }}</span>
                         </label>
                     </div>
                 </div>
 
-                <!-- Q2: Daily Time Commitment -->
-                <div>
-                    <label class="block text-sm font-extrabold text-slate-900 mb-3">{{ t.quiz_q_time }}</label>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                        <label class="p-3.5 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60 flex items-center">
-                            <input type="radio" name="daily_time" value="1" class="w-4 h-4 text-paw-600">
-                            <span class="ml-2.5 text-xs sm:text-sm font-bold text-slate-800">{{ t.quiz_time_1 }}</span>
-                        </label>
-                        <label class="p-3.5 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60 flex items-center">
-                            <input type="radio" name="daily_time" value="2" checked class="w-4 h-4 text-paw-600">
-                            <span class="ml-2.5 text-xs sm:text-sm font-bold text-slate-800">{{ t.quiz_time_2 }}</span>
-                        </label>
-                        <label class="p-3.5 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60 flex items-center">
-                            <input type="radio" name="daily_time" value="3" class="w-4 h-4 text-paw-600">
-                            <span class="ml-2.5 text-xs sm:text-sm font-bold text-slate-800">{{ t.quiz_time_3 }}</span>
-                        </label>
-                        <label class="p-3.5 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60 flex items-center">
-                            <input type="radio" name="daily_time" value="4" class="w-4 h-4 text-paw-600">
-                            <span class="ml-2.5 text-xs sm:text-sm font-bold text-slate-800">{{ t.quiz_time_4 }}</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Q3: Experience Level -->
-                <div>
-                    <label class="block text-sm font-extrabold text-slate-900 mb-3">{{ t.quiz_q_exp }}</label>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <label class="p-4 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60 flex items-center">
-                            <input type="radio" name="experience_level" value="beginner" class="w-4 h-4 text-paw-600">
-                            <span class="ml-2.5 text-sm font-bold text-slate-800">🌱 {{ t.quiz_exp_first }}</span>
-                        </label>
-                        <label class="p-4 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60 flex items-center">
-                            <input type="radio" name="experience_level" value="intermediate" checked class="w-4 h-4 text-paw-600">
-                            <span class="ml-2.5 text-sm font-bold text-slate-800">🐾 {{ t.quiz_exp_some }}</span>
-                        </label>
-                        <label class="p-4 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60 flex items-center">
-                            <input type="radio" name="experience_level" value="experienced" class="w-4 h-4 text-paw-600">
-                            <span class="ml-2.5 text-sm font-bold text-slate-800">⭐ {{ t.quiz_exp_expert }}</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Q4: Energy Preference (1 to 5) -->
+                <!-- Q2: Energy Preference (1 to 5) -->
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <label class="text-sm font-extrabold text-slate-900">{{ t.quiz_q2 }}</label>
@@ -113,7 +64,7 @@
                     </div>
                 </div>
 
-                <!-- Q5: Family Members & Pets -->
+                <!-- Q3: Family Members & Pets -->
                 <div>
                     <label class="block text-sm font-extrabold text-slate-900 mb-3">{{ t.quiz_q3 }}</label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -128,22 +79,7 @@
                     </div>
                 </div>
 
-                <!-- Q6: Shedding & Allergies -->
-                <div>
-                    <label class="block text-sm font-extrabold text-slate-900 mb-3">{{ t.quiz_q_shedding }}</label>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <label class="p-4 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60 flex items-center">
-                            <input type="radio" name="shedding_preference" value="any" checked class="w-4 h-4 text-paw-600">
-                            <span class="ml-2.5 text-sm font-bold text-slate-800">🐕 {{ t.quiz_shed_any }}</span>
-                        </label>
-                        <label class="p-4 rounded-2xl border-2 border-slate-200 hover:border-paw-500 cursor-pointer transition-all has-[:checked]:border-paw-600 has-[:checked]:bg-paw-50/60 flex items-center">
-                            <input type="radio" name="shedding_preference" value="low_shedding" class="w-4 h-4 text-paw-600">
-                            <span class="ml-2.5 text-sm font-bold text-slate-800">✨ {{ t.quiz_shed_low }}</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Q7: Preferred Species and Size -->
+                <!-- Q4: Preferred Species and Size -->
                 <div>
                     <label class="block text-sm font-extrabold text-slate-900 mb-3">{{ t.quiz_q4 }}</label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -223,12 +159,9 @@
 
         const payload = {
             living_space: form.living_space.value,
-            daily_time: parseInt(form.daily_time.value),
-            experience_level: form.experience_level.value,
             energy_preference: parseInt(form.energy_preference.value),
             has_children: form.has_children.checked,
             has_other_pets: form.has_other_pets.checked,
-            shedding_preference: form.shedding_preference.value,
             preferred_species: form.preferred_species.value,
             preferred_size: form.preferred_size.value
         };
@@ -256,13 +189,8 @@
                             <div class="absolute top-4 left-4 ${scoreColor} text-white font-black text-xs px-3.5 py-1.5 rounded-full shadow-lg flex items-center space-x-1">
                                 <span>⚡ ${item.compatibility_score}% {{ t.quiz_match_suffix }}</span>
                             </div>
-                            <div class="absolute top-4 right-4 flex items-center space-x-2">
-                                <button type="button" onclick="toggleFavorite(event, ${item.pet_id})" data-fav-btn="${item.pet_id}" class="w-9 h-9 rounded-full bg-white/90 backdrop-blur-md text-slate-400 hover:text-rose-500 shadow-sm flex items-center justify-center transition-colors">
-                                    <i data-lucide="heart" class="w-5 h-5"></i>
-                                </button>
-                                <span class="bg-white/90 backdrop-blur-sm text-slate-900 text-xs font-bold px-3 py-1 rounded-full capitalize">
-                                    ${item.species}
-                                </span>
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-slate-900 text-xs font-bold px-3 py-1 rounded-full capitalize">
+                                ${item.species}
                             </div>
                         </div>
                         <div class="p-6 flex flex-col flex-grow justify-between">
@@ -293,7 +221,6 @@
                 resultsSec.classList.remove('hidden');
                 resultsSec.scrollIntoView({ behavior: 'smooth' });
                 lucide.createIcons();
-                updateNavbarFavoritesBadge();
             }
         } catch (err) {
             alert('Quiz error');

@@ -1,262 +1,747 @@
-"""
-PawConnect Seed and Multilingual Database Migration Module
-Populates shelters, 24 verified pets with full AZ/EN/RU details, vaccines, and default accounts.
-"""
 from datetime import date, timedelta, datetime
 from app.database import SessionLocal, engine, Base
-from app.models import Shelter, Pet, VaccineRecord, AdoptionApplication, User, Favorite
-from app.auth import hash_password
-
-PET_I18N = {
-    "Baron": {
-        "desc_en": "Baron is a highly intelligent, courageous, and loyal companion. He knows key obedience commands fluently and possesses strong protective instincts.",
-        "desc_ru": "Барон — очень умный, смелый и преданный пес. Отлично знает базовые команды («сидеть», «дай лапу», «ждать»). Обладает хорошим защитным инстинктом.",
-        "pers_en": "Loyal, Smart, Protective, Active",
-        "pers_ru": "Преданный, Умный, Защитник, Активный"
-    },
-    "Luna": {
-        "desc_en": "Luna is one of the gentlest souls in the world! She adores children, loves fetch games, and enjoys cozy cuddles on the rug.",
-        "desc_ru": "Луна — одно из самых добрых созданий! Безумно любит детей, обожает играть с мячом и ластиться в кругу семьи.",
-        "pers_en": "Friendly, Playful, Great with kids",
-        "pers_ru": "Дружелюбная, Жизнерадостная, Любит детей"
-    },
-    "Milo": {
-        "desc_en": "With silky ears and soulful eyes, Milo is peaceful, polite, and perfectly suited for a calm apartment setting.",
-        "desc_ru": "Майло с шелковистыми ушками и выразительными глазами идеально подходит для спокойной квартиры. С нетерпением ждет прогулок в парке.",
-        "pers_en": "Calm, Sensitive, Loyal",
-        "pers_ru": "Спокойный, Чуткий, Преданный"
-    },
-    "Qaytar": {
-        "desc_en": "An iconic Azerbaijani shepherd breed ideal for private residences with yards or countryside estates. Resilient, fearless, and composed.",
-        "desc_ru": "Идеальный выбор для частного дома с двором. Устойчив к холоду, обладает крепким телосложением и уравновешенным характером.",
-        "pers_en": "Dignified, Protective, Resilient",
-        "pers_ru": "Серьезный, Защитник, Выносливый"
-    },
-    "Bobi": {
-        "desc_en": "A compact explorer with an inquisitive nose and boundless good cheer. Great family companion for weekend nature trails.",
-        "desc_ru": "Боби — маленький исследователь с большим сердцем. Всегда увлечен поиском новых запахов и прогулками на природе.",
-        "pers_en": "Curious, Cheerful, Playful",
-        "pers_ru": "Любознательный, Веселый, Игривый"
-    },
-    "Bəyaz": {
-        "desc_en": "Her snow-white smile wins over everyone she meets. Fluffy, exceptionally clean, and loves calm human companionship.",
-        "desc_ru": "Белоснежка с пушистой шубкой и лучезарной улыбкой. Обожает, когда ее расчесывают, и ценит ласку.",
-        "pers_en": "Adorable, Lively, Cleanly",
-        "pers_ru": "Милая, Оживленная, Чистоплотная"
-    },
-    "Reks": {
-        "desc_en": "Tireless powerhouse of fun! He loves running, agility hurdles, and tennis balls. A dream companion for dynamic people.",
-        "desc_ru": "Неиссякаемый источник энергии! Обожает бегать, прыгать и играть в мяч. Прекрасно подойдет активным людям.",
-        "pers_en": "Energetic, Agile, Brave",
-        "pers_ru": "Энергичный, Шустрый, Смелый"
-    },
-    "Bella": {
-        "desc_en": "Gentle, patient, and loves swimming. Learned household manners quickly and stays close to family members.",
-        "desc_ru": "Умная и терпеливая собака, обожает воду и быстро осваивает команды. Очень ласковая.",
-        "pers_en": "Smart, Patient, Friendly",
-        "pers_ru": "Умная, Терпеливая, Дружелюбная"
-    },
-    "Oskar": {
-        "desc_en": "Charming companion who enjoys afternoon naps on comfy cushions and short, peaceful neighborhood strolls.",
-        "desc_ru": "Очаровательный мопс, который обожает уютно лежать на диване и носить любимую игрушку.",
-        "pers_en": "Calm, Cheerful, Laid-back",
-        "pers_ru": "Спокойный, Веселый, Ленивый"
-    },
-    "Simba": {
-        "desc_en": "Brave young puppy eager to explore the world. Very social with children and loves learning new tricks.",
-        "desc_ru": "Смелый и любознательный щенок. Прекрасно ладит с детьми и быстро привязывается к человеку.",
-        "pers_en": "Playful, Teachable, Brave",
-        "pers_ru": "Игривый, Обучаемый, Смелый"
-    },
-    "Çiko": {
-        "desc_en": "Tiny body, huge loyalty! Çiko forms deep bonds with his human and makes a wonderful devoted companion.",
-        "desc_ru": "Маленький компаньон с большим характером. Очень предан и любит быть рядом со своим человеком.",
-        "pers_en": "Loyal, Sensitive, Brave",
-        "pers_ru": "Преданный, Чуткий, Смелый"
-    },
-    "Tobi": {
-        "desc_en": "With his warm golden coat and sunny disposition, Tobi greets everyone with a wagging tail and boundless friendship.",
-        "desc_ru": "Радует всех золотистой шерсткой и веселым нравом. Очень любит ежедневные прогулки.",
-        "pers_en": "Cheerful, Social, Friendly",
-        "pers_ru": "Веселый, Общительный, Дружелюбный"
-    },
-    "Kömür": {
-        "desc_en": "Komur has silky obsidian fur and piercing emerald eyes. A polite, regal gentleman who purrs soothingly in the evening.",
-        "desc_ru": "Кёмур — угольно-черный кот с шелковистой шерстью и изумрудными глазами. Настоящий аристократ, чистоплотен и ласков.",
-        "pers_en": "Calm, Aristocratic, Affectionate",
-        "pers_ru": "Спокойный, Аристократичный, Ласковый"
-    },
-    "Pamıq": {
-        "desc_en": "Graceful Turkish Angora mix with cloud-soft white fur. Prefers serene rooms and sunny window perches.",
-        "desc_ru": "Изящная белоснежная кошечка. Любит наблюдать за птицами из окна и мирно спать рядом.",
-        "pers_en": "Gentle, Calm, Cleanly",
-        "pers_ru": "Нежная, Спокойная, Чистоплотная"
-    },
-    "Maya": {
-        "desc_en": "A cheerful calico good-luck charm! She loves chasing crinkly balls and purrs loudly during gentle chin scratches.",
-        "desc_ru": "Трехцветная кошка на счастье! Очень игривая, любит гонять мячики и приносить радость.",
-        "pers_en": "Playful, Cheerful, Curious",
-        "pers_ru": "Игривая, Веселая, Любознательная"
-    },
-    "Leo": {
-        "desc_en": "Striking tabby stripes and confident presence. Enjoys climbing cat towers and curling up next to you while reading.",
-        "desc_ru": "Полосатый красавец с независимым характером, который обожает уютно мурлыкать на коленях по вечерам.",
-        "pers_en": "Independent, Smart, Affectionate",
-        "pers_ru": "Независимый, Умный, Ласковый"
-    },
-    "Zümrüd": {
-        "desc_en": "Silvery-grey velvet coat and gentle green gaze. Exceptionally polite, discreet, and ideal for a serene apartment.",
-        "desc_ru": "Серебристо-серая шерстка и зеленые глаза. Очень тихая, деликатная и идеально подходит для квартиры.",
-        "pers_en": "Patient, Gentle, Calm",
-        "pers_ru": "Терпеливая, Нежная, Спокойная"
-    },
-    "Məstan": {
-        "desc_en": "Classic affectionate ginger cat. Loves basking in sunlight patches, head scratches, and a steady meal routine.",
-        "desc_ru": "Рыжий обаятельный кот. Обожает греться на солнышке, уютные уголки и вкусные угощения.",
-        "pers_en": "Laid-back, Friendly, Sweet",
-        "pers_ru": "Ленивый, Дружелюбный, Милый"
-    },
-    "Pudra": {
-        "desc_en": "Luxurious coat and royal demeanour. A quiet lady who flourishes in a peaceful, loving adult home.",
-        "desc_ru": "Пушистая и грациозная кошечка. Ищет спокойную и заботливую семью.",
-        "pers_en": "Calm, Gentle, Aristocratic",
-        "pers_ru": "Спокойная, Нежная, Аристократичная"
-    },
-    "Badam": {
-        "desc_en": "Vivid sapphire eyes and communicative personality. Badam loves participating in family chats and following you room to room.",
-        "desc_ru": "Голубоглазый, общительный кот, который сильно привязывается к хозяину и любит «поговорить».",
-        "pers_en": "Social, Talkative, Loyal",
-        "pers_ru": "Общительный, Разговорчивый, Преданный"
-    },
-    "Topuş": {
-        "desc_en": "Sweet Holland Lop bunny who loves fresh greens, gentle ear strokes, and carpet hopping.",
-        "desc_ru": "Очаровательный вислоухий кролик. С удовольствием ест зелень с рук и ведет себя тихо.",
-        "pers_en": "Calm, Sweet, Cleanly",
-        "pers_ru": "Спокойный, Милый, Чистоплотный"
-    },
-    "Kökə": {
-        "desc_en": "Spirited dwarf bunny with curious twitchy nose. Litter trained and fun to watch during indoor playtime.",
-        "desc_ru": "Любопытный карликовый кролик, который любит резвиться на мягком ковре.",
-        "pers_en": "Playful, Agile, Friendly",
-        "pers_ru": "Игривый, Шустрый, Дружелюбный"
-    },
-    "Riko": {
-        "desc_en": "Vibrant emerald-yellow budgie who tweets melodiously and loves listening to acoustic music.",
-        "desc_ru": "Волнистый попугайчик с ярким оперением. Прекрасно поет по утрам и обожает музыку.",
-        "pers_en": "Cheerful, Musical, Lively",
-        "pers_ru": "Веселый, Музыкальный, Жизнерадостный"
-    },
-    "Çarli": {
-        "desc_en": "Friendly crested cockatiel who mimics whistle tunes and enjoys hanging out on gentle perches.",
-        "desc_ru": "Попугай корелла с забавным хохолком. Умеет насвистывать мелодии и очень любит общение.",
-        "pers_en": "Talkative, Smart, Social",
-        "pers_ru": "Говорящий, Умный, Общительный"
-    }
-}
-
-def migrate_database_schema():
-    """Ensure newly added columns exist in SQLite database."""
-    with engine.connect() as conn:
-        try:
-            cols = [row[1] for row in conn.exec_driver_sql("PRAGMA table_info(pets)").fetchall()]
-            if "description_en" not in cols:
-                conn.exec_driver_sql("ALTER TABLE pets ADD COLUMN description_en TEXT")
-            if "description_ru" not in cols:
-                conn.exec_driver_sql("ALTER TABLE pets ADD COLUMN description_ru TEXT")
-            if "personality_en" not in cols:
-                conn.exec_driver_sql("ALTER TABLE pets ADD COLUMN personality_en VARCHAR(150)")
-            if "personality_ru" not in cols:
-                conn.exec_driver_sql("ALTER TABLE pets ADD COLUMN personality_ru VARCHAR(150)")
-            conn.commit()
-        except Exception as e:
-            print(f"Schema migration note: {e}")
+from app.models import Shelter, Pet, VaccineRecord, AdoptionApplication
 
 def seed_database():
-    """Populates and syncs database with shelters, multilingual pets, vaccines, and default accounts."""
-    migrate_database_schema()
+    """Populates the database with realistic shelters, 30+ pets, vaccines, and sample applications."""
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
 
-    try:
-        # Seed default Admin and User accounts if missing
-        if db.query(User).count() == 0:
-            admin_user = User(
-                name="Sistem İnzibatçısı",
-                email="admin@pawconnect.az",
-                password_hash=hash_password("idschool2026"),
-                role="admin",
-                phone="+994 (12) 555-01-00",
-                city="Bakı"
-            )
-            demo_user = User(
-                name="Leyla Məmmədova",
-                email="user@pawconnect.az",
-                password_hash=hash_password("user123456"),
-                role="user",
-                phone="+994 (50) 777-88-99",
-                city="Bakı"
-            )
-            db.add_all([admin_user, demo_user])
-            db.commit()
-
-        # Update existing pets with multilingual content
-        for pet in db.query(Pet).all():
-            if pet.name in PET_I18N:
-                info = PET_I18N[pet.name]
-                pet.description_en = info["desc_en"]
-                pet.description_ru = info["desc_ru"]
-                pet.personality_en = info["pers_en"]
-                pet.personality_ru = info["pers_ru"]
-        db.commit()
-
-        # If shelters not yet created, create full base
-        if db.query(Shelter).count() == 0:
-            shelters = [
-                Shelter(
-                    name="Bakı Heyvanları Xilasetmə Mərkəzi",
-                    city="Bakı",
-                    address="Nərimanov r., Təbriz küç. 45",
-                    phone="+994 (12) 555-01-12",
-                    email="info@baku-petrescue.az",
-                    website="https://pawconnect.az/shelters/baku",
-                    description="2018-ci ildən bəri fəaliyyət göstərən aparıcı sığınacaq.",
-                    logo_url=None
-                ),
-                Shelter(
-                    name="Gəncə Ümid Sığınacağı",
-                    city="Gəncə",
-                    address="Nizami r., Heydər Əliyev pr. 112",
-                    phone="+994 (22) 256-44-80",
-                    email="ganja.umid@pawconnect.az",
-                    website="https://pawconnect.az/shelters/ganja",
-                    description="Qərb regionunda heyvanları reabilitasiya edən şəfqət mərkəzi.",
-                    logo_url=None
-                ),
-                Shelter(
-                    name="Sumqayıt Can Dostları Mərkəzi",
-                    city="Sumqayıt",
-                    address="Sülh küçəsi, Məhəllə 18",
-                    phone="+994 (18) 642-19-05",
-                    email="sumqayit.candost@pawconnect.az",
-                    website="https://pawconnect.az/shelters/sumqayit",
-                    description="Küçə heyvanlarının sterilizasiyası və daimi ailələrə qovuşdurulması üçün könüllü mərkəz.",
-                    logo_url=None
-                ),
-                Shelter(
-                    name="Şamaxı Şəfqət Evi",
-                    city="Şamaxı",
-                    address="Çuxuryurd qəsəbəsi",
-                    phone="+994 (20) 265-11-20",
-                    email="shamakhi@pawconnect.az",
-                    website="https://pawconnect.az/shelters/shamakhi",
-                    description="Xüsusi qayğıya ehtiyacı olan heyvanların bərpa mərkəzi.",
-                    logo_url=None
-                )
-            ]
-            db.add_all(shelters)
-            db.commit()
-            for s in shelters:
-                db.refresh(s)
-
-    finally:
+    # Check if already seeded
+    if db.query(Shelter).count() > 0:
         db.close()
+        return
+
+    print("Seeding PawConnect database with shelters and pets...")
+
+    # 1. Seed Shelters
+    shelters = [
+        Shelter(
+            name="Bakı Heyvanları Xilasetmə Mərkəzi",
+            city="Bakı",
+            address="Nərimanov r., Təbriz küç. 45",
+            phone="+994 (12) 555-01-12",
+            email="info@baku-petrescue.az",
+            website="https://pawconnect.az/shelters/baku",
+            description="2018-ci ildən bəri fəaliyyət göstərən, sahibsiz heyvanların müalicəsi, peyvəndlənməsi və sahibləndirilməsi ilə məşğul olan aparıcı sığınacaq.",
+            logo_url=None
+        ),
+        Shelter(
+            name="Gəncə Ümid Sığınacağı",
+            city="Gəncə",
+            address="Nizami r., Heydər Əliyev pr. 112",
+            phone="+994 (22) 256-44-80",
+            email="ganja.umid@pawconnect.az",
+            website="https://pawconnect.az/shelters/ganja",
+            description="Qərb regionunda tərk edilmiş və yardıma ehtiyacı olan heyvanları reabilitasiya edən şəfqət mərkəzi.",
+            logo_url=None
+        ),
+        Shelter(
+            name="Sumqayıt Can Dostları Mərkəzi",
+            city="Sumqayıt",
+            address="Sülh küçəsi, Məhəllə 18",
+            phone="+994 (18) 642-19-05",
+            email="sumqayit.candost@pawconnect.az",
+            website="https://pawconnect.az/shelters/sumqayit",
+            description="Küçə heyvanlarının sterilizasiyası, vaksinasiyası və daimi ailələrə qovuşdurulması üçün könüllü mərkəz.",
+            logo_url=None
+        ),
+        Shelter(
+            name="Şamaxı Şəfqət Evi",
+            city="Şamaxı",
+            address="Şamaxı-Çuxuryurd yolu, km 4",
+            phone="+994 (20) 265-11-20",
+            email="shamakhi.haven@pawconnect.az",
+            website="https://pawconnect.az/shelters/shamakhi",
+            description="Təbiət qoynunda yerləşən, xüsusi qayğıya ehtiyacı olan travmalı heyvanların bərpa mərkəzi.",
+            logo_url=None
+        )
+    ]
+    db.add_all(shelters)
+    db.commit()
+
+    # Refresh shelters to get IDs
+    for s in shelters:
+        db.refresh(s)
+
+    s1, s2, s3, s4 = shelters[0].id, shelters[1].id, shelters[2].id, shelters[3].id
+
+    # 2. Seed 32 Pets (Diverse dogs, cats, rabbits, birds)
+    pets_data = [
+        # --- DOGS ---
+        {
+            "name": "Baron",
+            "species": "dog",
+            "breed": "Alman Çoban İti (Qarışıq)",
+            "gender": "Male",
+            "age_years": 2,
+            "age_months": 4,
+            "size": "Large",
+            "coat_color": "Qara və Qonur",
+            "description": "Baron çox intellektual, cəsur və sadiq bir itdir. Əsas komandaları ('otur', 'əl ver', 'gözlə') mükəmməl bilir. Qoruma instinkti yüksəkdir.",
+            "personality": "Sadiq, Ağıllı, Qoruyucu, Aktiv",
+            "photo_url": "/static/img/pets/baron.jpg",
+            "status": "available",
+            "energy_level": 4,
+            "good_with_children": True,
+            "good_with_other_pets": False,
+            "house_trained": True,
+            "microchip_id": "AZ-982-100-8801",
+            "neutered": True,
+            "shelter_id": s1
+        },
+        {
+            "name": "Luna",
+            "species": "dog",
+            "breed": "Golden Retriever",
+            "gender": "Female",
+            "age_years": 1,
+            "age_months": 8,
+            "size": "Medium",
+            "coat_color": "Qızılı",
+            "description": "Luna dünyadakı ən mehriban varlıqlardan biridir! Uşaqları hədsiz sevir, topla oynamağa bayılır və qucaqda yatmağı çox xoşlayır.",
+            "personality": "Mehriban, Gülərüz, Mehriban, Uşaqcanlı",
+            "photo_url": "/static/img/pets/luna.jpg",
+            "status": "available",
+            "energy_level": 5,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-100-8802",
+            "neutered": True,
+            "shelter_id": s1
+        },
+        {
+            "name": "Milo",
+            "species": "dog",
+            "breed": "Kokker Spaniel",
+            "gender": "Male",
+            "age_years": 3,
+            "age_months": 2,
+            "size": "Medium",
+            "coat_color": "Qəhvəyi-Boz",
+            "description": "İpək kimi qulaqları və kədərli baxışları olan Milo sakit mənzil mühitinə tam uyğundur. Park gəzintilərini səbirsizliklə gözləyir.",
+            "personality": "Sakit, Həssas, Sadiq",
+            "photo_url": "/static/img/pets/milo.jpg",
+            "status": "pending",
+            "energy_level": 3,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-100-8803",
+            "neutered": True,
+            "shelter_id": s2
+        },
+        {
+            "name": "Qaytar",
+            "species": "dog",
+            "breed": "Azərbaycan Çoban İti (Qurdbasar)",
+            "gender": "Male",
+            "age_years": 3,
+            "age_months": 0,
+            "size": "Large",
+            "coat_color": "Krem, qara üzlü",
+            "description": "Həyətli ev və ya fermer təsərrüfatı üçün ideal seçimdir. Soyuğa dözümlüdür, güclü fiziki quruluşa və təmkinli xarakterə malikdir.",
+            "personality": "Ciddi, Qoruyucu, Dözümlü",
+            "photo_url": "/static/img/pets/qaytar.jpg",
+            "status": "available",
+            "energy_level": 4,
+            "good_with_children": True,
+            "good_with_other_pets": False,
+            "house_trained": False,
+            "microchip_id": "AZ-982-100-8804",
+            "neutered": False,
+            "shelter_id": s4
+        },
+        {
+            "name": "Bobi",
+            "species": "dog",
+            "breed": "Baqi (Beagle)",
+            "gender": "Male",
+            "age_years": 1,
+            "age_months": 2,
+            "size": "Small",
+            "coat_color": "Üçrəngli (Tri-color)",
+            "description": "Bobi kiçik ölçülü, lakin böyük ürəkli bir kəşfiyyatçıdır. Həmişə burnu yerdə yeni qoxular axtarışındadır.",
+            "personality": "Maraqlı, Şən, Oynaq",
+            "photo_url": "/static/img/pets/bobi.jpg",
+            "status": "available",
+            "energy_level": 5,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-100-8805",
+            "neutered": True,
+            "shelter_id": s3
+        },
+        {
+            "name": "Bəyaz",
+            "species": "dog",
+            "breed": "Samoyed (Mix)",
+            "gender": "Female",
+            "age_years": 2,
+            "age_months": 1,
+            "size": "Medium",
+            "coat_color": "Qar kimi Ağ",
+            "description": "Təbəssümü ilə hər kəsin qəlbini fəth edən Bəyaz. Qalın tükləri var və gündəlik daramağı çox sevir.",
+            "personality": "Sevimli, Canlı, Təmizkar",
+            "photo_url": "/static/img/pets/beyaz.jpg",
+            "status": "available",
+            "energy_level": 4,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-100-8806",
+            "neutered": True,
+            "shelter_id": s2
+        },
+        {
+            "name": "Reks",
+            "species": "dog",
+            "breed": "Cek Rassel Teryer",
+            "gender": "Male",
+            "age_years": 1,
+            "age_months": 6,
+            "size": "Small",
+            "coat_color": "Ağ, Qara və Qəhvəyi",
+            "description": "Yorulmaz enerji mənbəyi! Qaçmağı, tullanmağı və çeviklik oyunlarını çox sevir. Aktiv gənclər üçün idealdır.",
+            "personality": "Enerjili, Cəld, Cəsur",
+            "photo_url": "/static/img/pets/reks.jpg",
+            "status": "available",
+            "energy_level": 5,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-100-8807",
+            "neutered": True,
+            "shelter_id": s1
+        },
+        {
+            "name": "Bella",
+            "species": "dog",
+            "breed": "Labrador Retriever",
+            "gender": "Female",
+            "age_years": 4,
+            "age_months": 0,
+            "size": "Large",
+            "coat_color": "Qara",
+            "description": "Bella təlim görmüş, çox sakit və mehriban xarakterli bir xanımdır. Su ilə oynamağı hədsiz dərəcədə sevir.",
+            "personality": "Təmkinli, Dostcanlı, Ailəpərəst",
+            "photo_url": "/static/img/pets/bella.jpg",
+            "status": "adopted",
+            "energy_level": 3,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-100-8808",
+            "neutered": True,
+            "shelter_id": s1
+        },
+
+        # --- CATS ---
+        {
+            "name": "Məstan",
+            "species": "cat",
+            "breed": "Britaniya Qısatüklüsü (Mix)",
+            "gender": "Male",
+            "age_years": 1,
+            "age_months": 5,
+            "size": "Medium",
+            "coat_color": "Dumanlı Boz",
+            "description": "Məstan pəncərə qarşısında quşları izləməyi və günəş şüaları altında mürgüləməyi sevir. Çox təmizkardır.",
+            "personality": "Sakit, Müstəqil, Məlahətli",
+            "photo_url": "/static/img/pets/mestan.jpg",
+            "status": "available",
+            "energy_level": 2,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-200-9901",
+            "neutered": True,
+            "shelter_id": s1
+        },
+        {
+            "name": "Zümrüd",
+            "species": "cat",
+            "breed": "Şotland Sallanqulaq (Scottish Fold)",
+            "gender": "Female",
+            "age_years": 2,
+            "age_months": 0,
+            "size": "Small",
+            "coat_color": "Krem",
+            "description": "Böyük kəhrəba gözləri və bükülü qulaqları ilə əsl aristokrat pişiyidir. Qucağı və sığallanmağı çox sevir.",
+            "personality": "Zərif, Şirin, Təmkinli",
+            "photo_url": "/static/img/pets/zumrud.jpg",
+            "status": "available",
+            "energy_level": 2,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-200-9902",
+            "neutered": True,
+            "shelter_id": s2
+        },
+        {
+            "name": "Leo",
+            "species": "cat",
+            "breed": "Meyn-Kun (Maine Coon Mix)",
+            "gender": "Male",
+            "age_years": 3,
+            "age_months": 6,
+            "size": "Large",
+            "coat_color": "Gümüşü Pələngvari (Silver Tabby)",
+            "description": "Nəhəng bədəni olsa da, ürəyi bir quş kimi kövrəkdir. Su krantı ilə oynamağa və mırıldamağa heyran qalacaqsınız.",
+            "personality": "Nəhəng, Mehriban, Su sevən",
+            "photo_url": "/static/img/pets/leo.jpg",
+            "status": "available",
+            "energy_level": 3,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-200-9903",
+            "neutered": True,
+            "shelter_id": s3
+        },
+        {
+            "name": "Pamuk",
+            "species": "cat",
+            "breed": "Van Pişiyi (Mix)",
+            "gender": "Female",
+            "age_years": 1,
+            "age_months": 0,
+            "size": "Medium",
+            "coat_color": "Ağ (Biri mavi, biri yaşıl gözlü)",
+            "description": "Möhtəşəm göz rəngləri ilə diqqət çəkən Pamuk küçədən körpə ikən xilas edilmişdir. İndi tamamilə sağlamdır.",
+            "personality": "Nadir, Oyunaq, Diqqətçəkən",
+            "photo_url": "/static/img/pets/pamuk.jpg",
+            "status": "available",
+            "energy_level": 4,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-200-9904",
+            "neutered": True,
+            "shelter_id": s1
+        },
+        {
+            "name": "Kömür",
+            "species": "cat",
+            "breed": "Bombey Pişiyi (Təmiz Qara)",
+            "gender": "Male",
+            "age_years": 2,
+            "age_months": 3,
+            "size": "Medium",
+            "coat_color": "Qara Parlaq",
+            "description": "Parıldayan qara tükləri və sarı gözləri ilə kiçik panteraya bənzəyir. Çox ağıllı və səssizdir.",
+            "personality": "Sirli, Zərif, Qucağı sevən",
+            "photo_url": "/static/img/pets/komur.jpg",
+            "status": "available",
+            "energy_level": 3,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-200-9905",
+            "neutered": True,
+            "shelter_id": s2
+        },
+        {
+            "name": "Simba",
+            "species": "cat",
+            "breed": "Ev Pişiyi (Tabby)",
+            "gender": "Male",
+            "age_years": 0,
+            "age_months": 7,
+            "size": "Small",
+            "coat_color": "Zolaqlı Narıncı",
+            "description": "Kiçik balaca pələng! Hər hərəkət edən oyuncağın arxasınca atılır, axşamlar isə sahibinin sinəsində yatır.",
+            "personality": "Balaca, Enerjili, Sevimli",
+            "photo_url": "/static/img/pets/simba.jpg",
+            "status": "pending",
+            "energy_level": 5,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-200-9906",
+            "neutered": False,
+            "shelter_id": s3
+        },
+        {
+            "name": "Maya",
+            "species": "cat",
+            "breed": "Siam Pişiyi (Mix)",
+            "gender": "Female",
+            "age_years": 2,
+            "age_months": 5,
+            "size": "Small",
+            "coat_color": "Krem və Şokolad",
+            "description": "Danışmağı (miyoldamağı) sevən, sahibinə dərin bağlanan və evdə tək qalmağı sevməyən gözəl bir qızdır.",
+            "personality": "Ünsiyyətcil, Həssas, Göygöz",
+            "photo_url": "/static/img/pets/maya.jpg",
+            "status": "available",
+            "energy_level": 3,
+            "good_with_children": True,
+            "good_with_other_pets": False,
+            "house_trained": True,
+            "microchip_id": "AZ-982-200-9907",
+            "neutered": True,
+            "shelter_id": s4
+        },
+
+        # --- RABBITS ---
+        {
+            "name": "Topuş",
+            "species": "rabbit",
+            "breed": "Holland Sallanqulaq Dovşan (Lop)",
+            "gender": "Female",
+            "age_years": 1,
+            "age_months": 1,
+            "size": "Small",
+            "coat_color": "Qara",
+            "description": "Topuş çox sakitdir, təzə kök və yonca yeməyə bayılır. Əllə toxunulmağı və burun sığallanmasını səbirlə gözləyir.",
+            "personality": "Sakit, İpək kimi, Zərərsiz",
+            "photo_url": "/static/img/pets/topus.jpg",
+            "status": "available",
+            "energy_level": 2,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-300-1101",
+            "neutered": True,
+            "shelter_id": s1
+        },
+        {
+            "name": "Kökə",
+            "species": "rabbit",
+            "breed": "Şirbaş Dovşan (Lionhead)",
+            "gender": "Male",
+            "age_years": 0,
+            "age_months": 9,
+            "size": "Small",
+            "coat_color": "Ağ və Boz",
+            "description": "Başının ətrafındakı qalın tükləri ilə balaca aslana bənzəyir. Qəfəsdən kənarda otaqda gəzməyi sevir.",
+            "personality": "Maraqlı, Şən, Yumşaq",
+            "photo_url": "/static/img/pets/koke.jpg",
+            "status": "available",
+            "energy_level": 3,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-300-1102",
+            "neutered": False,
+            "shelter_id": s2
+        },
+
+        # --- BIRDS ---
+        {
+            "name": "Çiko",
+            "species": "bird",
+            "breed": "Dalğalı Tutuquşu (Budgerigar)",
+            "gender": "Male",
+            "age_years": 1,
+            "age_months": 3,
+            "size": "Small",
+            "coat_color": "Parlaq Sarı və Yaşıl",
+            "description": "Çiko çox musiqisevərdir, səhərlər cəh-cəh vurur və 'Salam' kəlməsini təkrar etməyi öyrənir.",
+            "personality": "Musiqili, Canlı, Rəngarəng",
+            "photo_url": "/static/img/pets/ciko.jpg",
+            "status": "available",
+            "energy_level": 4,
+            "good_with_children": True,
+            "good_with_other_pets": False,
+            "house_trained": True,
+            "microchip_id": "AZ-982-400-2201",
+            "neutered": False,
+            "shelter_id": s3
+        },
+        {
+            "name": "Riko",
+            "species": "bird",
+            "breed": "Korella Tutuquşu (Cockatiel)",
+            "gender": "Male",
+            "age_years": 2,
+            "age_months": 0,
+            "size": "Small",
+            "coat_color": "Boz, Sarı kəkilli və Narıncı yanaqlı",
+            "description": "Fit çalmağı və melodiyaları təkrarlamağı bacaran istedadlı tutuquşu. Çiyində oturub baxmağı sevir.",
+            "personality": "Ağıllı, Melodik, Mehriban",
+            "photo_url": "/static/img/pets/riko.jpg",
+            "status": "available",
+            "energy_level": 3,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-400-2202",
+            "neutered": False,
+            "shelter_id": s1
+        },
+
+        # Additional diverse pets to reach 25+
+        {
+            "name": "Çarli",
+            "species": "dog",
+            "breed": "Qızılı Labrador",
+            "gender": "Male",
+            "age_years": 2,
+            "age_months": 8,
+            "size": "Large",
+            "coat_color": "Sarı-Qızılı",
+            "description": "Mükəmməl yoldaş və bələdçi it keyfiyyətlərinə malik Çarli ailəyə tam hazır vəziyyətdədir.",
+            "personality": "Səbirli, Sadiq, Ailəcanlı",
+            "photo_url": "/static/img/pets/carli.jpg",
+            "status": "available",
+            "energy_level": 3,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-100-8809",
+            "neutered": True,
+            "shelter_id": s1
+        },
+        {
+            "name": "Oskar",
+            "species": "dog",
+            "breed": "Sibiri Haskisi (Husky)",
+            "gender": "Male",
+            "age_years": 2,
+            "age_months": 2,
+            "size": "Large",
+            "coat_color": "Qara və Ağ",
+            "description": "Buz mavisi gözləri və sonsuz qaçış sevgisi olan Oskar dağ yürüşlərini və qaçışı sevən sahib axtarır.",
+            "personality": "Sərbəst, İdmançı, Güclü",
+            "photo_url": "/static/img/pets/oskar.jpg",
+            "status": "available",
+            "energy_level": 5,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-100-8810",
+            "neutered": True,
+            "shelter_id": s4
+        },
+        {
+            "name": "Pudra",
+            "species": "cat",
+            "breed": "Fars Pişiyi (Persian)",
+            "gender": "Female",
+            "age_years": 3,
+            "age_months": 1,
+            "size": "Medium",
+            "coat_color": "Qızılı-Narıncı",
+            "description": "Dünyanın ən sakit və kübar pişiyi. Həyatının 90%-ni yumşaq yastıqlarda istirahət edərək keçirir.",
+            "personality": "Tənbəl, Sakit, Əzəmətli",
+            "photo_url": "/static/img/pets/pudra.jpg",
+            "status": "available",
+            "energy_level": 1,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-200-9908",
+            "neutered": True,
+            "shelter_id": s2
+        },
+        {
+            "name": "Tobi",
+            "species": "dog",
+            "breed": "Pudel (Maltipoo Mix)",
+            "gender": "Male",
+            "age_years": 1,
+            "age_months": 4,
+            "size": "Small",
+            "coat_color": "Qıvrım Bej",
+            "description": "Allergiya yaratmayan tükləri ilə mənzil üçün əvəzedilməz dostdur. Çox öyrənməyə həvəslidir.",
+            "personality": "Ağıllı, Hipolallergen, Şən",
+            "photo_url": "/static/img/pets/tobi.jpg",
+            "status": "available",
+            "energy_level": 4,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-100-8811",
+            "neutered": True,
+            "shelter_id": s3
+        },
+        {
+            "name": "Badam",
+            "species": "cat",
+            "breed": "Kaliko (Üçrəngli Uğur Pişiyi)",
+            "gender": "Female",
+            "age_years": 1,
+            "age_months": 9,
+            "size": "Medium",
+            "coat_color": "Ağ, Narıncı və Qara",
+            "description": "Ənənəvi inanca görə evə bərəkət və uğur gətirən üçrəngli Badam sevgisini mırıldayaraq bildirir.",
+            "personality": "Uğurlu, Həlim, Mehriban",
+            "photo_url": "/static/img/pets/badam.jpg",
+            "status": "available",
+            "energy_level": 3,
+            "good_with_children": True,
+            "good_with_other_pets": True,
+            "house_trained": True,
+            "microchip_id": "AZ-982-200-9909",
+            "neutered": True,
+            "shelter_id": s1
+        }
+    ]
+
+    pet_entities = []
+    for p in pets_data:
+        pet = Pet(
+            name=p["name"],
+            species=p["species"],
+            breed=p["breed"],
+            gender=p["gender"],
+            age_years=p["age_years"],
+            age_months=p["age_months"],
+            size=p["size"],
+            coat_color=p["coat_color"],
+            description=p["description"],
+            personality=p["personality"],
+            photo_url=p["photo_url"],
+            status=p["status"],
+            energy_level=p["energy_level"],
+            good_with_children=p["good_with_children"],
+            good_with_other_pets=p["good_with_other_pets"],
+            house_trained=p["house_trained"],
+            microchip_id=p["microchip_id"],
+            neutered=p["neutered"],
+            intake_date=date.today() - timedelta(days=p["age_years"] * 60 + 30),
+            shelter_id=p["shelter_id"]
+        )
+        db.add(pet)
+        pet_entities.append(pet)
+
+    db.commit()
+
+    # 3. Seed Realistic Vaccine Records for each pet
+    vaccine_catalog = [
+        {"name": "Quduzluq Əleyhinə (Rabisin / Nobivac Rabies)", "cycle": 365},
+        {"name": "Kompleks DHPPi (İt taunu, Hepatit, Parvovirus)", "cycle": 365},
+        {"name": "Bordetella (Sığınacaq öskürəyi vaksini)", "cycle": 180},
+        {"name": "Parazitlərə qarşı daxili/xarici işləmə", "cycle": 90},
+        {"name": "Pişik Kompleks FVRCP (Rinotraxeit, Kalisivirus)", "cycle": 365},
+        {"name": "Dovşan Miksomatoz və RHD vaksini", "cycle": 365}
+    ]
+
+    for pet in pet_entities:
+        db.refresh(pet)
+        # Add 2 to 3 vaccine records based on species
+        if pet.species == "dog":
+            v1_date = date.today() - timedelta(days=120)
+            v2_date = date.today() - timedelta(days=40)
+            db.add(VaccineRecord(
+                pet_id=pet.id,
+                vaccine_name="Quduzluq Əleyhinə (Nobivac Rabies)",
+                administered_date=v1_date,
+                next_due_date=v1_date + timedelta(days=365),
+                batch_number=f"VAC-RB-{pet.id:04d}",
+                vet_name="Dr. Rəşad Əliyev",
+                clinic_name="Baku Vet Clinic",
+                status="valid",
+                notes="Normal reaksiya, heç bir yan təsir müşahidə edilmədi."
+            ))
+            db.add(VaccineRecord(
+                pet_id=pet.id,
+                vaccine_name="DHPPi Kompleks Polivalent",
+                administered_date=v2_date,
+                next_due_date=v2_date + timedelta(days=365),
+                batch_number=f"VAC-DH-{pet.id:04d}",
+                vet_name="Dr. Leyla Məmmədova",
+                clinic_name="VetCare Mərkəzi",
+                status="valid",
+                notes="İllik təkrar doza uğurla vuruldu."
+            ))
+        elif pet.species == "cat":
+            v1_date = date.today() - timedelta(days=90)
+            db.add(VaccineRecord(
+                pet_id=pet.id,
+                vaccine_name="FVRCP Pişik Kompleks Vaksini",
+                administered_date=v1_date,
+                next_due_date=v1_date + timedelta(days=365),
+                batch_number=f"VAC-FEL-{pet.id:04d}",
+                vet_name="Dr. Nigar Qasımova",
+                clinic_name="Cat Health Center",
+                status="valid",
+                notes="İmmun cavab yüksəkdir."
+            ))
+            db.add(VaccineRecord(
+                pet_id=pet.id,
+                vaccine_name="Quduzluq Vaksini (Rabisin)",
+                administered_date=v1_date,
+                next_due_date=v1_date + timedelta(days=365),
+                batch_number=f"VAC-RAB-{pet.id:04d}",
+                vet_name="Dr. Nigar Qasımova",
+                clinic_name="Cat Health Center",
+                status="valid",
+                notes="Sertifikatlaşdırılmışdır."
+            ))
+        elif pet.species == "rabbit":
+            v_date = date.today() - timedelta(days=60)
+            db.add(VaccineRecord(
+                pet_id=pet.id,
+                vaccine_name="Filavac VHD / Miksomatoz",
+                administered_date=v_date,
+                next_due_date=v_date + timedelta(days=365),
+                batch_number=f"VAC-RABBIT-{pet.id:04d}",
+                vet_name="Dr. Rəşad Əliyev",
+                clinic_name="Exotic Vet Baku",
+                status="valid",
+                notes="Dovşan sağlam vəziyyətdədir."
+            ))
+
+    db.commit()
+
+    # 4. Seed Sample Adoption Applications (so Admin Dashboard is rich with live reviewable cases)
+    sample_apps = [
+        AdoptionApplication(
+            pet_id=pet_entities[1].id,  # Luna
+            applicant_name="Kamran Məmmədov",
+            applicant_email="kamran.m@gmail.com",
+            applicant_phone="+994 (50) 412-33-44",
+            applicant_city="Bakı",
+            living_space="house_with_yard",
+            has_other_pets=False,
+            has_children=True,
+            experience_level="experienced",
+            hours_alone_per_day=3,
+            message="Ailəmizlə birlikdə geniş həyətimiz var, uşaqlarımız Lunanı çox sevdi. Daimi qayğı göstərə bilərik.",
+            status="pending",
+            review_notes="İlkin yoxlanış: Həyətli ev şəraiti və uşaqlarla təcrübəsi çox yaxşıdır."
+        ),
+        AdoptionApplication(
+            pet_id=pet_entities[2].id,  # Milo
+            applicant_name="Aysel Quliyeva",
+            applicant_email="aysel.quliyeva@mail.ru",
+            applicant_phone="+994 (55) 789-11-22",
+            applicant_city="Gəncə",
+            living_space="apartment",
+            has_other_pets=True,
+            has_children=False,
+            experience_level="intermediate",
+            hours_alone_per_day=4,
+            message="Evdə 3 yaşında sakit pişiyim var, Milonun digər heyvanlarla yola getdiyini gördüm.",
+            status="reviewing",
+            review_notes="Telefonla ilkin müsahibə planlaşdırılır."
+        ),
+        AdoptionApplication(
+            pet_id=pet_entities[7].id,  # Bella
+            applicant_name="Fərid Əliyev",
+            applicant_email="farid.aliyev@code.az",
+            applicant_phone="+994 (70) 234-55-66",
+            applicant_city="Bakı",
+            living_space="house_with_yard",
+            has_other_pets=False,
+            has_children=True,
+            experience_level="experienced",
+            hours_alone_per_day=2,
+            message="Əvvəl də Labrador saxlamışam, Bellaya xoşbəxt həyat bəxş etmək istəyirəm.",
+            status="approved",
+            review_notes="Bütün tələblər ödənildi, sənədlər imzalandı və heyvan sahibləndirildi."
+        )
+    ]
+    db.add_all(sample_apps)
+    db.commit()
+    db.close()
+    print("Database seeding completed successfully!")
+
+if __name__ == "__main__":
+    seed_database()
