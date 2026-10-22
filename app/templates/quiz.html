@@ -189,8 +189,13 @@
                             <div class="absolute top-4 left-4 ${scoreColor} text-white font-black text-xs px-3.5 py-1.5 rounded-full shadow-lg flex items-center space-x-1">
                                 <span>⚡ ${item.compatibility_score}% {{ t.quiz_match_suffix }}</span>
                             </div>
-                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-slate-900 text-xs font-bold px-3 py-1 rounded-full capitalize">
-                                ${item.species}
+                            <div class="absolute top-4 right-4 flex items-center space-x-2">
+                                <button type="button" onclick="toggleFavorite(event, ${item.pet_id})" data-fav-btn="${item.pet_id}" title="{{ t.fav_add }}" class="w-8 h-8 rounded-full bg-white/90 backdrop-blur-md text-slate-400 hover:text-rose-500 shadow-sm flex items-center justify-center transition-colors">
+                                    <i data-lucide="heart" class="w-4 h-4"></i>
+                                </button>
+                                <div class="bg-white/90 backdrop-blur-sm text-slate-900 text-xs font-bold px-3 py-1 rounded-full capitalize">
+                                    ${item.species}
+                                </div>
                             </div>
                         </div>
                         <div class="p-6 flex flex-col flex-grow justify-between">
@@ -221,6 +226,7 @@
                 resultsSec.classList.remove('hidden');
                 resultsSec.scrollIntoView({ behavior: 'smooth' });
                 lucide.createIcons();
+                updateNavbarFavoritesBadge();
             }
         } catch (err) {
             alert('Quiz error');

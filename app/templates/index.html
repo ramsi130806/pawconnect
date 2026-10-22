@@ -126,10 +126,10 @@
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
                 <span class="text-xs font-bold text-paw-600 uppercase tracking-widest">{{ t.nav_pets }}</span>
-                <h2 class="text-3xl font-extrabold text-slate-900 mt-1">İsti Yuva Axtaran Canlılar</h2>
+                <h2 class="text-3xl font-extrabold text-slate-900 mt-1">{{ t.home_featured_heading }}</h2>
             </div>
             <a href="/pets?lang={{ lang }}" class="mt-4 md:mt-0 inline-flex items-center space-x-1 text-sm font-bold text-paw-600 hover:text-paw-700">
-                <span>Bütün heyvanlara bax ({{ total_pets }})</span>
+                <span>{{ t.view_all_pets }} ({{ total_pets }})</span>
                 <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
         </div>
@@ -160,9 +160,14 @@
                         {% endif %}
                     </div>
 
-                    <!-- Species Tag -->
-                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm capitalize">
-                        {% if pet.species == 'dog' %}🐶 İt{% elif pet.species == 'cat' %}🐱 Pişik{% elif pet.species == 'rabbit' %}🐰 Dovşan{% elif pet.species == 'bird' %}🦜 Quş{% else %}🐾 Digər{% endif %}
+                    <!-- Species Tag & Favorite Button -->
+                    <div class="absolute top-4 right-4 flex items-center space-x-2">
+                        <button type="button" onclick="toggleFavorite(event, {{ pet.id }})" data-fav-btn="{{ pet.id }}" title="{{ t.fav_add }}" class="w-9 h-9 rounded-full bg-white/90 backdrop-blur-md text-slate-400 hover:text-rose-500 shadow-sm flex items-center justify-center transition-colors">
+                            <i data-lucide="heart" class="w-5 h-5"></i>
+                        </button>
+                        <div class="bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm capitalize">
+                            {% if pet.species == 'dog' %}🐶 {{ t.filter_dog }}{% elif pet.species == 'cat' %}🐱 {{ t.filter_cat }}{% elif pet.species == 'rabbit' %}🐰 {{ t.filter_rabbit }}{% elif pet.species == 'bird' %}🦜 {{ t.filter_bird }}{% else %}🐾 {{ t.filter_other }}{% endif %}
+                        </div>
                     </div>
                 </div>
 
@@ -179,24 +184,24 @@
                     </div>
 
                     <p class="text-sm text-slate-600 mt-3 line-clamp-2">
-                        {{ pet.description }}
+                        {{ pet.get_description(lang) }}
                     </p>
 
                     <!-- Key Attributes Badges -->
                     <div class="flex flex-wrap gap-1.5 mt-4">
                         {% if pet.good_with_children %}
                         <span class="inline-flex items-center text-xs font-semibold bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-md border border-emerald-200">
-                            <i data-lucide="smile" class="w-3.5 h-3.5 mr-1"></i> Uşaqcanlı
+                            <i data-lucide="smile" class="w-3.5 h-3.5 mr-1"></i> {{ t.badge_kid_friendly }}
                         </span>
                         {% endif %}
                         {% if pet.house_trained %}
                         <span class="inline-flex items-center text-xs font-semibold bg-sky-50 text-sky-700 px-2.5 py-1 rounded-md border border-sky-200">
-                            <i data-lucide="home" class="w-3.5 h-3.5 mr-1"></i> Ev vərdişli
+                            <i data-lucide="home" class="w-3.5 h-3.5 mr-1"></i> {{ t.badge_house_trained }}
                         </span>
                         {% endif %}
                         {% if pet.neutered %}
                         <span class="inline-flex items-center text-xs font-semibold bg-purple-50 text-purple-700 px-2.5 py-1 rounded-md border border-purple-200">
-                            <i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1"></i> Sterilizə
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1"></i> {{ t.badge_sterilized }}
                         </span>
                         {% endif %}
                     </div>

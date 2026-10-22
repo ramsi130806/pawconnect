@@ -121,9 +121,14 @@
                     {% endif %}
                 </div>
 
-                <!-- Species Tag -->
-                <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm capitalize">
-                    {% if pet.species == 'dog' %}🐶 {{ t.filter_dog }}{% elif pet.species == 'cat' %}🐱 {{ t.filter_cat }}{% elif pet.species == 'rabbit' %}🐰 {{ t.filter_rabbit }}{% elif pet.species == 'bird' %}🦜 {{ t.filter_bird }}{% else %}🐾 {{ t.filter_other }}{% endif %}
+                <!-- Species Tag & Favorite Button -->
+                <div class="absolute top-4 right-4 flex items-center space-x-2">
+                    <button type="button" onclick="toggleFavorite(event, {{ pet.id }})" data-fav-btn="{{ pet.id }}" title="{{ t.fav_add }}" class="w-9 h-9 rounded-full bg-white/90 backdrop-blur-md text-slate-400 hover:text-rose-500 shadow-sm flex items-center justify-center transition-colors">
+                        <i data-lucide="heart" class="w-5 h-5"></i>
+                    </button>
+                    <div class="bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm capitalize">
+                        {% if pet.species == 'dog' %}🐶 {{ t.filter_dog }}{% elif pet.species == 'cat' %}🐱 {{ t.filter_cat }}{% elif pet.species == 'rabbit' %}🐰 {{ t.filter_rabbit }}{% elif pet.species == 'bird' %}🦜 {{ t.filter_bird }}{% else %}🐾 {{ t.filter_other }}{% endif %}
+                    </div>
                 </div>
             </div>
 
@@ -140,7 +145,7 @@
                 </div>
 
                 <p class="text-sm text-slate-600 mt-3 line-clamp-2">
-                    {{ pet.description }}
+                    {{ pet.get_description(lang) }}
                 </p>
 
                 <!-- Key Attributes Badges -->

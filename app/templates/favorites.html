@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t.fav_title }} — {{ t.app_name }}{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-b from-paw-50/50 via-white to-slate-50 py-10 min-h-[75vh]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-6 border-b border-slate-200">
+            <div>
+                <span class="inline-flex items-center space-x-1.5 bg-rose-100 text-rose-800 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+                    <i data-lucide="heart" class="w-3.5 h-3.5 fill-rose-500 text-rose-500"></i>
+                    <span>{{ t.fav_badge_count }}</span>
+                </span>
+                <h1 class="text-3xl sm:text-4xl font-black text-slate-900">{{ t.fav_title }}</h1>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl">{{ t.fav_subtitle }}</p>
+            </div>
+            <a href="/pets?lang={{ lang }}" class="mt-4 sm:mt-0 inline-flex items-center space-x-2 bg-paw-600 hover:bg-paw-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-md transition-all">
+                <i data-lucide="compass" class="w-4 h-4"></i>
+                <span>{{ t.fav_explore_btn }}</span>
+            </a>
+        </div>
+
+        <!-- Server-rendered pets container (if user logged in with DB favorites) -->
+        <div id="favoritesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for pet in pets %}
+            <div data-favorite-card="{{ pet.id }}" class="bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group">
+                <div class="relative h-60 overflow-hidden bg-slate-100">
+                    <img src="{{ pet.photo_url or '/static/img/pets/placeholder.svg' }}" onerror="this.onerror=null;this.src='/static/img/pets/placeholder.svg'" alt="{{ pet.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    
+                    <!-- Remove Button -->
+                    <button type="button" onclick="removeFavoriteFromPage({{ pet.id }})" title="{{ t.fav_remove }}" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 backdrop-blur-md text-rose-500 hover:bg-rose-50 shadow-md flex items-center justify-center transition-colors">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+
+                    <!-- Species Tag -->
+                    <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm capitalize">
+                        {% if pet.species == 'dog' %}🐶 {{ t.filter_dog }}{% elif pet.species == 'cat' %}🐱 {{ t.filter_cat }}{% elif pet.species == 'rabbit' %}🐰 {{ t.filter_rabbit }}{% elif pet.species == 'bird' %}🦜 {{ t.filter_bird }}{% else %}🐾 {{ t.filter_other }}{% endif %}
+                    </div>
+                </div>
+
+                <div class="p-6 flex flex-col flex-grow justify-between">
+                    <div>
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 group-hover:text-paw-600 transition-colors">{{ pet.name }}</h3>
+                                <p class="text-xs font-semibold text-slate-500">{{ pet.breed }}</p>
+                            </div>
+                            <span class="text-xs font-bold px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg">
+                                {{ pet.age_years }} {{ t.label_years }}
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-600 mt-3 line-clamp-2">{{ pet.get_description(lang) }}</p>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-xs text-slate-400 font-semibold truncate">{{ pet.shelter.city }}</span>
+                        <a href="/pets/{{ pet.id }}?lang={{ lang }}" class="inline-flex items-center space-x-1.5 bg-paw-50 hover:bg-paw-100 text-paw-700 font-extrabold text-xs px-4 py-2 rounded-xl border border-paw-200 transition-colors">
+                            <span>{{ t.btn_view_details }}</span>
+                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Dynamic / Guest favorites container (if not logged in) -->
+        <div id="guestFavoritesGrid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+
+        <!-- Empty State -->
+        <div id="emptyFavoritesState" class="{% if pets|length > 0 %}hidden{% endif %} text-center py-20 bg-white rounded-3xl border border-slate-200/80 shadow-sm p-8 max-w-lg mx-auto">
+            <div class="w-16 h-16 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="heart-off" class="w-8 h-8"></i>
+            </div>
+            <h2 class="text-xl font-black text-slate-900 mb-2">{{ t.fav_empty_title }}</h2>
+            <p class="text-xs text-slate-500 mb-6 leading-relaxed">{{ t.fav_empty_desc }}</p>
+            <a href="/pets?lang={{ lang }}" class="inline-flex items-center space-x-2 bg-paw-600 hover:bg-paw-700 text-white font-extrabold text-xs px-6 py-3 rounded-xl shadow-lg shadow-paw-600/25 transition-all">
+                <i data-lucide="compass" class="w-4 h-4"></i>
+                <span>{{ t.fav_explore_btn }}</span>
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const currentLang = "{{ lang }}";
+    const isAuthenticated = {{ 'true' if user else 'false' }};
+
+    async function removeFavoriteFromPage(petId) {
+        // Remove locally
+        let favs = getStoredFavorites();
+        favs = favs.filter(id => id !== petId);
+        localStorage.setItem('pawconnect_favorites', JSON.stringify(favs));
+        updateNavbarFavoritesBadge();
+
+        // Notify server
+        try {
+            await fetch(`/api/favorites/${petId}`, { method: 'POST' });
+        } catch (e) {}
+
+        // Remove card element
+        const card = document.querySelector(`[data-favorite-card="${petId}"]`);
+        if (card) {
+            card.remove();
+        }
+
+        // Check if now empty
+        const remaining = document.querySelectorAll('[data-favorite-card]').length;
+        if (remaining === 0) {
+            document.getElementById('emptyFavoritesState').classList.remove('hidden');
+        }
+    }
+
+    // Guest Mode support: populate client-side favorites if not logged in
+    async function loadGuestFavorites() {
+        if (isAuthenticated) return;
+
+        const favs = getStoredFavorites();
+        const emptyState = document.getElementById('emptyFavoritesState');
+        const grid = document.getElementById('guestFavoritesGrid');
+
+        if (favs.length === 0) {
+            emptyState.classList.remove('hidden');
+            grid.classList.add('hidden');
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/pets`);
+            if (res.ok) {
+                const allPets = await res.json();
+                const matchedPets = allPets.filter(p => favs.includes(p.id));
+
+                if (matchedPets.length === 0) {
+                    emptyState.classList.remove('hidden');
+                    grid.classList.add('hidden');
+                    return;
+                }
+
+                emptyState.classList.add('hidden');
+                grid.classList.remove('hidden');
+                grid.innerHTML = '';
+
+                matchedPets.forEach(pet => {
+                    const card = document.createElement('div');
+                    card.setAttribute('data-favorite-card', pet.id);
+                    card.className = 'bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group';
+
+                    card.innerHTML = `
+                        <div class="relative h-60 overflow-hidden bg-slate-100">
+                            <img src="${pet.photo_url || '/static/img/pets/placeholder.svg'}" onerror="this.onerror=null;this.src='/static/img/pets/placeholder.svg'" alt="${pet.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <button type="button" onclick="removeFavoriteFromPage(${pet.id})" title="{{ t.fav_remove }}" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 backdrop-blur-md text-rose-500 hover:bg-rose-50 shadow-md flex items-center justify-center transition-colors">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm capitalize">
+                                ${pet.species}
+                            </div>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow justify-between">
+                            <div>
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <h3 class="text-2xl font-black text-slate-900 group-hover:text-paw-600 transition-colors">${pet.name}</h3>
+                                        <p class="text-xs font-semibold text-slate-500">${pet.breed}</p>
+                                    </div>
+                                    <span class="text-xs font-bold px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg">
+                                        ${pet.age_years} {{ t.label_years }}
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-600 mt-3 line-clamp-2">${pet.description || ''}</p>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                                <span class="text-xs text-slate-400 font-semibold truncate"></span>
+                                <a href="/pets/${pet.id}?lang=${currentLang}" class="inline-flex items-center space-x-1.5 bg-paw-50 hover:bg-paw-100 text-paw-700 font-extrabold text-xs px-4 py-2 rounded-xl border border-paw-200 transition-colors">
+                                    <span>{{ t.btn_view_details }}</span>
+                                    <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+                lucide.createIcons();
+            }
+        } catch (e) {
+            console.error("Error loading guest favorites", e);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadGuestFavorites);
+</script>
+{% endblock %}

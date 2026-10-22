@@ -33,7 +33,11 @@ class Pet(Base):
     size = Column(String(20), default="Medium")  # Small, Medium, Large
     coat_color = Column(String(50), default="Mixed")
     description = Column(Text, nullable=True)
+    description_en = Column(Text, nullable=True)
+    description_ru = Column(Text, nullable=True)
     personality = Column(String(150), nullable=True)  # comma-separated traits
+    personality_en = Column(String(150), nullable=True)
+    personality_ru = Column(String(150), nullable=True)
     photo_url = Column(String(300), nullable=True)
     status = Column(String(30), default="available", index=True)  # available, pending, adopted
     energy_level = Column(Integer, default=3)  # 1 (low) to 5 (high)
@@ -50,6 +54,23 @@ class Pet(Base):
 
     vaccines = relationship("VaccineRecord", back_populates="pet", cascade="all, delete-orphan")
     applications = relationship("AdoptionApplication", back_populates="pet", cascade="all, delete-orphan")
+    favorites = relationship("Favorite", back_populates="pet", cascade="all, delete-orphan")
+
+    def get_description(self, lang: str = "az") -> str:
+        lang = (lang or "az").lower()
+        if lang == "ru" and self.description_ru:
+            return self.description_ru
+        if lang == "en" and self.description_en:
+            return self.description_en
+        return self.description or ""
+
+    def get_personality(self, lang: str = "az") -> str:
+        lang = (lang or "az").lower()
+        if lang == "ru" and self.personality_ru:
+            return self.personality_ru
+        if lang == "en" and self.personality_en:
+            return self.personality_en
+        return self.personality or ""
 
 
 class VaccineRecord(Base):
@@ -89,3 +110,28 @@ class AdoptionApplication(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     pet = relationship("Pet", back_populates="applications")
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    email = Column(String(120), unique=True, index=True, nullable=False)
+    password_hash = Column(String(255), nullable=False)
+    role = Column(String(20), default="user", nullable=False)  # admin, user
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    favorites = relationship("Favorite", back_populates="user", cascade="all, delete-orphan")
+
+
+class Favorite(Base):
+    __tablename__ = "favorites"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    pet_id = Column(Integer, ForeignKey("pets.id"), nullable=False, index=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="favorites")
+    pet = relationship("Pet", back_populates="favorites")

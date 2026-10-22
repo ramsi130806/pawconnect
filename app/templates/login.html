@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t.login_title }} — {{ t.app_name }}{% endblock %}
+
+{% block content %}
+<div class="min-h-[75vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-paw-50/50 via-white to-slate-50">
+    <div class="max-w-md w-full space-y-6">
+        
+        <!-- Header -->
+        <div class="text-center">
+            <div class="w-16 h-16 bg-paw-100 text-paw-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                <i data-lucide="lock" class="w-8 h-8"></i>
+            </div>
+            <h1 class="text-3xl font-black text-slate-900 tracking-tight">{{ t.login_title }}</h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-2 font-medium">{{ t.login_subtitle }}</p>
+        </div>
+
+        <!-- Role Switcher Tabs -->
+        <div class="bg-slate-100 p-1 rounded-2xl grid grid-cols-2 gap-1 text-center text-xs font-bold">
+            <button type="button" id="tabUserBtn" onclick="switchLoginMode('user')" class="py-2.5 rounded-xl transition-all bg-white text-slate-900 shadow-sm">
+                {{ t.login_tab_user }}
+            </button>
+            <button type="button" id="tabAdminBtn" onclick="switchLoginMode('admin')" class="py-2.5 rounded-xl transition-all text-slate-500 hover:text-slate-900">
+                {{ t.login_tab_admin }}
+            </button>
+        </div>
+
+        <!-- Card Container -->
+        <div class="bg-white rounded-3xl border border-slate-200/80 shadow-xl p-8 space-y-6">
+            
+            {% if error %}
+            <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-center space-x-2">
+                <i data-lucide="alert-circle" class="w-4 h-4 flex-shrink-0 text-rose-600"></i>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            <form action="/login?lang={{ lang }}" method="POST" class="space-y-4">
+                <input type="hidden" name="next" value="{{ next or '' }}">
+
+                <div>
+                    <label id="usernameLabel" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                        {{ t.login_username }}
+                    </label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <i data-lucide="user" class="w-4 h-4"></i>
+                        </span>
+                        <input 
+                            type="text" 
+                            name="username" 
+                            id="usernameInput" 
+                            required 
+                            placeholder="user@pawconnect.az" 
+                            class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-paw-500 focus:bg-white transition-all"
+                        >
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                        {{ t.login_password }}
+                    </label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <i data-lucide="key" class="w-4 h-4"></i>
+                        </span>
+                        <input 
+                            type="password" 
+                            name="password" 
+                            id="passwordInput" 
+                            required 
+                            placeholder="••••••••" 
+                            class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-paw-500 focus:bg-white transition-all"
+                        >
+                    </div>
+                </div>
+
+                <div id="adminHintBox" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold">
+                    <p class="flex items-center space-x-1.5">
+                        <i data-lucide="info" class="w-4 h-4 text-amber-600 flex-shrink-0"></i>
+                        <span>{{ t.login_hint }}</span>
+                    </p>
+                </div>
+
+                <button 
+                    type="submit" 
+                    class="w-full py-3.5 px-4 bg-paw-600 hover:bg-paw-700 text-white font-extrabold text-sm rounded-xl shadow-lg shadow-paw-600/25 transition-all flex items-center justify-center space-x-2"
+                >
+                    <i data-lucide="log-in" class="w-4 h-4"></i>
+                    <span>{{ t.login_btn }}</span>
+                </button>
+            </form>
+
+            <!-- Bottom Actions -->
+            <div class="pt-2 border-t border-slate-100 flex flex-col space-y-3 text-center text-xs font-semibold">
+                <p class="text-slate-500">
+                    {{ t.login_no_account }}
+                    <a href="/register?lang={{ lang }}" class="text-paw-600 font-extrabold hover:underline ml-1">
+                        {{ t.nav_register }}
+                    </a>
+                </p>
+                <a href="/pets?lang={{ lang }}" class="text-slate-400 hover:text-slate-700 transition-colors">
+                    {{ t.login_as_guest }} →
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function switchLoginMode(mode) {
+        const userBtn = document.getElementById('tabUserBtn');
+        const adminBtn = document.getElementById('tabAdminBtn');
+        const usernameInput = document.getElementById('usernameInput');
+        const adminHint = document.getElementById('adminHintBox');
+
+        if (mode === 'admin') {
+            adminBtn.className = 'py-2.5 rounded-xl transition-all bg-white text-slate-900 shadow-sm';
+            userBtn.className = 'py-2.5 rounded-xl transition-all text-slate-500 hover:text-slate-900';
+            usernameInput.placeholder = 'admin';
+            adminHint.classList.remove('hidden');
+        } else {
+            userBtn.className = 'py-2.5 rounded-xl transition-all bg-white text-slate-900 shadow-sm';
+            adminBtn.className = 'py-2.5 rounded-xl transition-all text-slate-500 hover:text-slate-900';
+            usernameInput.placeholder = 'user@pawconnect.az';
+            adminHint.classList.add('hidden');
+        }
+        lucide.createIcons();
+    }
+</script>
+{% endblock %}

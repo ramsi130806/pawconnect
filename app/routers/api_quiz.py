@@ -130,7 +130,8 @@ def calculate_matches(
             "age_years": pet.age_years,
             "size": pet.size,
             "photo_url": pet.photo_url,
-            "personality": pet.personality,
+            "personality": pet.get_personality(lang),
+            "description": pet.get_description(lang),
             "status": pet.status,
             "compatibility_score": final_score,
             "match_reasons": match_reasons[:3]
