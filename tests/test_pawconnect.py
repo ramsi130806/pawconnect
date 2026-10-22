@@ -92,3 +92,50 @@ def test_shelters_api():
     assert response.status_code == 200
     shelters = response.json()
     assert len(shelters) >= 4
+
+
+def test_favicon_endpoint():
+    """Verify favicon is served successfully."""
+    response = client.get("/favicon.ico")
+    assert response.status_code == 200
+    assert "svg" in response.headers.get("content-type", "")
+
+
+def test_admin_unauthorized_redirects_to_login():
+    """Verify that unauthenticated user trying to access /admin is redirected to /login."""
+    response = client.get("/admin", follow_redirects=False)
+    assert response.status_code == 303
+    assert "/login" in response.headers.get("location", "")
+
+
+def test_admin_login_flow():
+    """Verify full admin login, authenticated session access, and logout."""
+    # 1. Login page loads
+    res_page = client.get("/login")
+    assert res_page.status_code == 200
+    assert "admin" in res_page.text.lower()
+
+    # 2. Invalid credentials fail with 401
+    bad_login = client.post("/login", data={"username": "admin", "password": "wrongpassword"})
+    assert bad_login.status_code == 401
+
+    # 3. Valid credentials succeed and redirect to admin
+    good_login = client.post(
+        "/login",
+        data={"username": "admin", "password": "idschool2026", "next": "/admin"},
+        follow_redirects=False
+    )
+    assert good_login.status_code == 303
+    assert "/admin" in good_login.headers.get("location", "")
+    assert "pawconnect_admin_session" in good_login.cookies
+
+    # 4. Access admin with session cookie
+    admin_session_cookie = good_login.cookies["pawconnect_admin_session"]
+    admin_res = client.get("/admin", cookies={"pawconnect_admin_session": admin_session_cookie})
+    assert admin_res.status_code == 200
+    assert "İdarəetmə Paneli" in admin_res.text or "Dashboard" in admin_res.text
+
+    # 5. Logout clears cookie
+    logout_res = client.get("/logout", follow_redirects=False)
+    assert logout_res.status_code == 303
+

@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import date
 from fastapi import APIRouter, Request, Depends, Query
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
@@ -9,6 +9,13 @@ from sqlalchemy import or_
 from app.database import get_db
 from app.models import Pet, Shelter, VaccineRecord, AdoptionApplication
 from app.i18n import get_text
+from app.auth import (
+    is_admin_authenticated,
+    check_admin_credentials,
+    generate_session_token,
+    SESSION_COOKIE_NAME,
+    SESSION_MAX_AGE
+)
 
 router = APIRouter(include_in_schema=False)
 templates = Jinja2Templates(directory="app/templates")
@@ -26,6 +33,7 @@ def get_locale(request: Request, lang: Optional[str] = None) -> str:
 def home_page(request: Request, lang: Optional[str] = None, db: Session = Depends(get_db)):
     active_lang = get_locale(request, lang)
     t = get_text(active_lang)
+    is_admin = is_admin_authenticated(request)
 
     total_pets = db.query(Pet).count()
     total_shelters = db.query(Shelter).count()
@@ -38,6 +46,7 @@ def home_page(request: Request, lang: Optional[str] = None, db: Session = Depend
         context={
             "lang": active_lang,
             "t": t,
+            "is_admin": is_admin,
             "total_pets": total_pets,
             "total_shelters": total_shelters,
             "total_adopted": total_adopted + 12,
@@ -61,6 +70,7 @@ def pets_catalog(
 ):
     active_lang = get_locale(request, lang)
     t = get_text(active_lang)
+    is_admin = is_admin_authenticated(request)
 
     query = db.query(Pet)
     if species and species != "all":
@@ -90,6 +100,7 @@ def pets_catalog(
         context={
             "lang": active_lang,
             "t": t,
+            "is_admin": is_admin,
             "pets": pets,
             "species": species or "all",
             "size": size or "all",
@@ -106,6 +117,7 @@ def pets_catalog(
 def pet_detail(request: Request, pet_id: int, lang: Optional[str] = None, db: Session = Depends(get_db)):
     active_lang = get_locale(request, lang)
     t = get_text(active_lang)
+    is_admin = is_admin_authenticated(request)
 
     pet = db.query(Pet).filter(Pet.id == pet_id).first()
     if not pet:
@@ -119,6 +131,7 @@ def pet_detail(request: Request, pet_id: int, lang: Optional[str] = None, db: Se
         context={
             "lang": active_lang,
             "t": t,
+            "is_admin": is_admin,
             "pet": pet,
             "vaccines": vaccines
         }
@@ -131,13 +144,15 @@ def pet_detail(request: Request, pet_id: int, lang: Optional[str] = None, db: Se
 def quiz_page(request: Request, lang: Optional[str] = None):
     active_lang = get_locale(request, lang)
     t = get_text(active_lang)
+    is_admin = is_admin_authenticated(request)
 
     response = templates.TemplateResponse(
         request=request,
         name="quiz.html",
         context={
             "lang": active_lang,
-            "t": t
+            "t": t,
+            "is_admin": is_admin
         }
     )
     response.set_cookie("preferred_lang", active_lang, max_age=30*86400)
@@ -148,6 +163,10 @@ def quiz_page(request: Request, lang: Optional[str] = None):
 def admin_dashboard(request: Request, lang: Optional[str] = None, db: Session = Depends(get_db)):
     active_lang = get_locale(request, lang)
     t = get_text(active_lang)
+
+    # Protect admin dashboard - only admin can see
+    if not is_admin_authenticated(request):
+        return RedirectResponse(url=f"/login?next=/admin&lang={active_lang}", status_code=303)
 
     pets = db.query(Pet).order_by(Pet.id.desc()).all()
     shelters = db.query(Shelter).all()
@@ -168,6 +187,7 @@ def admin_dashboard(request: Request, lang: Optional[str] = None, db: Session = 
         context={
             "lang": active_lang,
             "t": t,
+            "is_admin": True,
             "pets": pets,
             "shelters": shelters,
             "applications": applications,
@@ -185,14 +205,93 @@ def admin_dashboard(request: Request, lang: Optional[str] = None, db: Session = 
 def about_page(request: Request, lang: Optional[str] = None):
     active_lang = get_locale(request, lang)
     t = get_text(active_lang)
+    is_admin = is_admin_authenticated(request)
 
     response = templates.TemplateResponse(
         request=request,
         name="about.html",
         context={
             "lang": active_lang,
-            "t": t
+            "t": t,
+            "is_admin": is_admin
         }
     )
     response.set_cookie("preferred_lang", active_lang, max_age=30*86400)
+    return response
+
+
+@router.get("/login", response_class=HTMLResponse)
+def login_page(request: Request, lang: Optional[str] = None, next: Optional[str] = "/admin"):
+    active_lang = get_locale(request, lang)
+    t = get_text(active_lang)
+
+    # If already logged in, redirect straight to admin or next url
+    if is_admin_authenticated(request):
+        target = next if (next and next.startswith("/")) else "/admin"
+        return RedirectResponse(url=f"{target}?lang={active_lang}", status_code=303)
+
+    response = templates.TemplateResponse(
+        request=request,
+        name="login.html",
+        context={
+            "lang": active_lang,
+            "t": t,
+            "is_admin": False,
+            "next": next or "/admin",
+            "error": None
+        }
+    )
+    response.set_cookie("preferred_lang", active_lang, max_age=30*86400)
+    return response
+
+
+@router.post("/login", response_class=HTMLResponse)
+async def login_submit(request: Request, lang: Optional[str] = None):
+    active_lang = get_locale(request, lang)
+    t = get_text(active_lang)
+
+    form = await request.form()
+    username = str(form.get("username", "")).strip()
+    password = str(form.get("password", ""))
+    next_url = str(form.get("next", "/admin"))
+    if not next_url.startswith("/"):
+        next_url = "/admin"
+
+    if check_admin_credentials(username, password):
+        target_url = f"{next_url}?lang={active_lang}"
+        response = RedirectResponse(url=target_url, status_code=303)
+        token = generate_session_token()
+        response.set_cookie(
+            key=SESSION_COOKIE_NAME,
+            value=token,
+            max_age=SESSION_MAX_AGE,
+            httponly=True,
+            samesite="lax",
+            path="/"
+        )
+        response.set_cookie("preferred_lang", active_lang, max_age=30*86400)
+        return response
+
+    # Invalid credentials
+    response = templates.TemplateResponse(
+        request=request,
+        name="login.html",
+        context={
+            "lang": active_lang,
+            "t": t,
+            "is_admin": False,
+            "next": next_url,
+            "error": t.get("login_error_invalid", "İstifadəçi adı və ya şifrə yanlışdır. Yenidən cəhd edin.")
+        },
+        status_code=401
+    )
+    response.set_cookie("preferred_lang", active_lang, max_age=30*86400)
+    return response
+
+
+@router.get("/logout")
+def logout(request: Request, lang: Optional[str] = None):
+    active_lang = get_locale(request, lang)
+    response = RedirectResponse(url=f"/?lang={active_lang}", status_code=303)
+    response.delete_cookie(key=SESSION_COOKIE_NAME, path="/")
     return response

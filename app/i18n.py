@@ -14,6 +14,8 @@ TRANSLATIONS = {
         "nav_dashboard": "İdarəetmə Paneli",
         "nav_about": "Layihə Haqqında",
         "nav_system_ready": "Offline Hazırdır",
+        "nav_login": "Admin Girişi",
+        "nav_logout": "Çıxış",
         "lang_name": "Azərbaycan",
         
         # Hero & Home
@@ -232,6 +234,16 @@ TRANSLATIONS = {
         "footer_offline_note": "Qayda SW01.5.9 uyğun olaraq lokal və onlayn nümayişə hazırdır.",
         "footer_text": "Atlântia Beynəlxalq STEM Olimpiadası (SW01: Software Projects) üçün xüsusi hazırlanmışdır.",
         "footer_team": "PawConnect Komandası — Müəllim & Şagird Layihəsi",
+        # Authentication
+        "login_title": "Sığınacaq İdarəetmə Sisteminə Giriş",
+        "login_subtitle": "Yalnız səlahiyyətli sığınacaq əməkdaşları və sistem idarəçisi üçün",
+        "login_username": "İstifadəçi adı",
+        "login_password": "Şifrə",
+        "login_btn": "Daxil ol",
+        "login_back_home": "← Ana səhifəyə qayıt",
+        "login_error_invalid": "İstifadəçi adı və ya şifrə yanlışdır. Yenidən cəhd edin.",
+        "login_hint": "Münsif və nümayiş girişi: admin / idschool2026",
+
         "features_title": "Niyə PawConnect?",
         "feature_1_title": "Vahid Rəqəmsal Baza",
         "feature_1_desc": "Ölkə üzrə bütün sığınacaqlar tək sistemdə cəmlənir, sahiblənmə prosesi şəffaflaşır.",
@@ -251,6 +263,8 @@ TRANSLATIONS = {
         "nav_dashboard": "Admin Dashboard",
         "nav_about": "About Project",
         "nav_system_ready": "Offline Ready",
+        "nav_login": "Admin Login",
+        "nav_logout": "Logout",
         "lang_name": "English",
 
         # Hero & Home
@@ -469,6 +483,16 @@ TRANSLATIONS = {
         "footer_offline_note": "Ready for local and online demonstration according to Rule SW01.5.9.",
         "footer_text": "Engineered for Atlântia International STEM Olympiad (SW01: Software Projects).",
         "footer_team": "PawConnect Team — Mentor & Junior Innovators",
+        # Authentication
+        "login_title": "Shelter Admin Portal Sign In",
+        "login_subtitle": "Authorized shelter personnel and system administrators only",
+        "login_username": "Username",
+        "login_password": "Password",
+        "login_btn": "Sign In",
+        "login_back_home": "← Back to Home",
+        "login_error_invalid": "Invalid username or password. Please try again.",
+        "login_hint": "Jury & Demo credentials: admin / idschool2026",
+
         "features_title": "Why PawConnect?",
         "feature_1_title": "Unified Digital Registry",
         "feature_1_desc": "Consolidates municipal and private shelters into one transparent portal.",
@@ -488,6 +512,8 @@ TRANSLATIONS = {
         "nav_dashboard": "Панель управления",
         "nav_about": "О проекте",
         "nav_system_ready": "Готов к офлайну",
+        "nav_login": "Вход для администратора",
+        "nav_logout": "Выйти",
         "lang_name": "Русский",
 
         # Hero & Home
@@ -706,6 +732,16 @@ TRANSLATIONS = {
         "footer_offline_note": "Готов к локальной и онлайн-демонстрации согласно правилу SW01.5.9.",
         "footer_text": "Разработано для Международной STEM Олимпиады Atlântia (SW01: Software Projects).",
         "footer_team": "Команда PawConnect — Ментор и Юные Инноваторы",
+        # Authentication
+        "login_title": "Вход в панель управления приютом",
+        "login_subtitle": "Только для сотрудников приюта и администраторов",
+        "login_username": "Имя пользователя",
+        "login_password": "Пароль",
+        "login_btn": "Войти",
+        "login_back_home": "← Вернуться на главную",
+        "login_error_invalid": "Неверное имя пользователя или пароль. Попробуйте снова.",
+        "login_hint": "Для жюри и демонстрации: admin / idschool2026",
+
         "features_title": "Почему PawConnect?",
         "feature_1_title": "Единая цифровая база",
         "feature_1_desc": "Объединяет приюты в прозрачную платформу с легким поиском.",

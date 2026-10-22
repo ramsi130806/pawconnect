@@ -1,6 +1,7 @@
 import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -48,6 +49,11 @@ app.include_router(api_shelters.router)
 def health_check():
     """Healthcheck endpoint for Render / Railway zero-downtime deployment."""
     return {"status": "healthy", "project": "PawConnect", "version": "1.0.0"}
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    fav_path = os.path.join(static_path, "img", "favicon.svg")
+    return FileResponse(fav_path, media_type="image/svg+xml")
 
 if __name__ == "__main__":
     import uvicorn

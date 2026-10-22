@@ -23,50 +23,50 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
     <!-- KPI Counters Grid -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center space-x-4">
-            <div class="w-14 h-14 rounded-2xl bg-orange-100 text-paw-600 flex items-center justify-center flex-shrink-0">
-                <i data-lucide="paw-print" class="w-7 h-7"></i>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8">
+        <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm flex items-center space-x-3 sm:space-x-4">
+            <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-orange-100 text-paw-600 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="paw-print" class="w-5 h-5 sm:w-7 sm:h-7"></i>
             </div>
             <div>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">{{ t.admin_total_in_db }}</span>
-                <span class="text-3xl font-black text-slate-900">{{ total_pets }}</span>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider block">{{ t.admin_total_in_db }}</span>
+                <span class="text-xl sm:text-3xl font-black text-slate-900">{{ total_pets }}</span>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center space-x-4">
-            <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0">
-                <i data-lucide="inbox" class="w-7 h-7"></i>
+        <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm flex items-center space-x-3 sm:space-x-4">
+            <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="inbox" class="w-5 h-5 sm:w-7 sm:h-7"></i>
             </div>
             <div>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">{{ t.admin_pending_review }}</span>
-                <span class="text-3xl font-black text-amber-600">{{ pending_apps }}</span>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider block">{{ t.admin_pending_review }}</span>
+                <span class="text-xl sm:text-3xl font-black text-amber-600">{{ pending_apps }}</span>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center space-x-4">
-            <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0">
-                <i data-lucide="heart-handshake" class="w-7 h-7"></i>
+        <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm flex items-center space-x-3 sm:space-x-4">
+            <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="heart-handshake" class="w-5 h-5 sm:w-7 sm:h-7"></i>
             </div>
             <div>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">{{ t.admin_adopted_count }}</span>
-                <span class="text-3xl font-black text-emerald-600">{{ adopted_pets }}</span>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider block">{{ t.admin_adopted_count }}</span>
+                <span class="text-xl sm:text-3xl font-black text-emerald-600">{{ adopted_pets }}</span>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center space-x-4">
-            <div class="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center flex-shrink-0">
-                <i data-lucide="alert-triangle" class="w-7 h-7"></i>
+        <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm flex items-center space-x-3 sm:space-x-4">
+            <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="alert-triangle" class="w-5 h-5 sm:w-7 sm:h-7"></i>
             </div>
             <div>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">{{ t.admin_overdue_vaccine }}</span>
-                <span class="text-3xl font-black text-rose-600">{{ overdue_vaxes }}</span>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider block">{{ t.admin_overdue_vaccine }}</span>
+                <span class="text-xl sm:text-3xl font-black text-rose-600">{{ overdue_vaxes }}</span>
             </div>
         </div>
     </div>
 
     <!-- Main Tabs Navigation -->
-    <div class="border-b border-slate-200 mb-6 flex space-x-8">
+    <div class="border-b border-slate-200 mb-6 flex space-x-4 sm:space-x-8 overflow-x-auto pb-1 no-scrollbar">
         <button onclick="switchTab('applications')" id="tabBtnApps" class="pb-4 font-black text-sm border-b-2 border-paw-600 text-paw-600 flex items-center space-x-2">
             <i data-lucide="file-text" class="w-4 h-4"></i>
             <span>{{ t.admin_tab_apps }} ({{ applications|length }})</span>
