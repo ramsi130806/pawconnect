@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t.register_title }} — {{ t.app_name }}{% endblock %}
+
+{% block content %}
+<div class="min-h-[75vh] flex items-center justify-center px-4 py-12">
+    <div class="w-full max-w-md bg-white rounded-3xl border border-slate-200/80 shadow-xl shadow-slate-200/50 p-6 sm:p-8 space-y-6">
+        
+        <!-- Header -->
+        <div class="text-center space-y-3">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-paw-600 to-amber-500 flex items-center justify-center text-white mx-auto shadow-lg shadow-paw-500/25">
+                <i data-lucide="user-plus" class="w-7 h-7"></i>
+            </div>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight">
+                {{ t.register_title }}
+            </h1>
+            <p class="text-xs text-slate-500 font-medium max-w-xs mx-auto leading-relaxed">
+                {{ t.register_subtitle }}
+            </p>
+        </div>
+
+        <!-- Error Alert -->
+        {% if error %}
+        <div class="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center space-x-2.5 animate-shake">
+            <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0 text-rose-500"></i>
+            <span>{{ error }}</span>
+        </div>
+        {% endif %}
+
+        <!-- Form -->
+        <form method="POST" action="/register?lang={{ lang }}" class="space-y-4">
+            <!-- Full Name -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    {{ t.register_name }} *
+                </label>
+                <div class="relative">
+                    <i data-lucide="user" class="w-5 h-5 absolute left-3.5 top-3 text-slate-400"></i>
+                    <input 
+                        type="text" 
+                        name="name" 
+                        required 
+                        placeholder="Məs: Aysel Məmmədova"
+                        class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-paw-500 focus:bg-white transition-all"
+                    >
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    {{ t.register_email }} *
+                </label>
+                <div class="relative">
+                    <i data-lucide="mail" class="w-5 h-5 absolute left-3.5 top-3 text-slate-400"></i>
+                    <input 
+                        type="email" 
+                        name="email" 
+                        required 
+                        placeholder="name@email.com"
+                        class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-paw-500 focus:bg-white transition-all"
+                    >
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    {{ t.register_password }} *
+                </label>
+                <div class="relative">
+                    <i data-lucide="lock" class="w-5 h-5 absolute left-3.5 top-3 text-slate-400"></i>
+                    <input 
+                        type="password" 
+                        name="password" 
+                        required 
+                        placeholder="••••••••"
+                        class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-paw-500 focus:bg-white transition-all"
+                    >
+                </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    {{ t.register_confirm_password }} *
+                </label>
+                <div class="relative">
+                    <i data-lucide="shield-check" class="w-5 h-5 absolute left-3.5 top-3 text-slate-400"></i>
+                    <input 
+                        type="password" 
+                        name="confirm_password" 
+                        required 
+                        placeholder="••••••••"
+                        class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-paw-500 focus:bg-white transition-all"
+                    >
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button 
+                type="submit" 
+                class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-paw-600 to-amber-500 hover:from-paw-700 hover:to-amber-600 text-white font-bold text-sm shadow-md shadow-paw-500/20 flex items-center justify-center space-x-2 transition-all transform active:scale-95"
+            >
+                <i data-lucide="check-circle" class="w-4 h-4"></i>
+                <span>{{ t.register_btn }}</span>
+            </button>
+        </form>
+
+        <!-- Footer Links -->
+        <div class="space-y-3 pt-2 text-center text-xs">
+            <p class="text-slate-500">
+                {{ t.register_has_account }} 
+                <a href="/login?lang={{ lang }}" class="font-bold text-paw-600 hover:underline">
+                    {{ t.nav_login }}
+                </a>
+            </p>
+            <p>
+                <a href="/pets?lang={{ lang }}" class="text-slate-400 hover:text-slate-600 font-semibold inline-flex items-center space-x-1">
+                    <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                    <span>{{ t.login_as_guest }}</span>
+                </a>
+            </p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

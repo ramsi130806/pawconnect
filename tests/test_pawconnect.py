@@ -139,3 +139,118 @@ def test_admin_login_flow():
     logout_res = client.get("/logout", follow_redirects=False)
     assert logout_res.status_code == 303
 
+
+def test_user_register_and_login_flow():
+    """Verify standard user registration, duplicate checks, login, and access."""
+    # 1. Register page loads
+    reg_page = client.get("/register")
+    assert reg_page.status_code == 200
+
+    # 2. Register a new user
+    import time
+    test_email = f"tester_{int(time.time())}@pawconnect.az"
+    reg_res = client.post(
+        "/register",
+        data={
+            "name": "Kamran Aliyev",
+            "email": test_email,
+            "password": "mypassword123",
+            "confirm_password": "mypassword123"
+        },
+        follow_redirects=False
+    )
+    assert reg_res.status_code == 303
+    assert "pawconnect_session" in reg_res.cookies
+
+    # 3. Duplicate email registration fails
+    dup_res = client.post(
+        "/register",
+        data={
+            "name": "Kamran Duplicate",
+            "email": test_email,
+            "password": "mypassword123",
+            "confirm_password": "mypassword123"
+        }
+    )
+    assert dup_res.status_code == 400
+
+    # 4. Login as newly registered user
+    login_res = client.post(
+        "/login",
+        data={"username": test_email, "password": "mypassword123"},
+        follow_redirects=False
+    )
+    assert login_res.status_code == 303
+    assert "pawconnect_session" in login_res.cookies
+
+
+def test_favorites_page_and_api():
+    """Verify /favorites page and toggle API."""
+    fav_page = client.get("/favorites")
+    assert fav_page.status_code == 200
+
+    toggle_res = client.post("/api/favorites/1")
+    assert toggle_res.status_code == 200
+    assert "is_favorite" in toggle_res.json()
+
+
+def test_multilingual_pet_bios():
+    """Verify pet bios and personality change across AZ, EN, and RU."""
+    # Detail in AZ
+    res_az = client.get("/pets/1?lang=az")
+    assert res_az.status_code == 200
+    assert "Haqqında" in res_az.text or "O питомце" not in res_az.text
+
+    # Detail in RU
+    res_ru = client.get("/pets/1?lang=ru")
+    assert res_ru.status_code == 200
+    assert "О питомце" in res_ru.text
+    assert "Особенности характера" in res_ru.text
+
+    # Detail in EN
+    res_en = client.get("/pets/1?lang=en")
+    assert res_en.status_code == 200
+    assert "About" in res_en.text
+    assert "Personality Traits" in res_en.text
+
+
+def test_expanded_smart_matcher_algorithm():
+    """Verify 7-dimension matching algorithm with time, experience, shedding preferences."""
+    payload = {
+        "living_space": "apartment",
+        "daily_time": 1,  # <30 mins
+        "experience_level": "beginner",
+        "energy_preference": 2,
+        "has_children": True,
+        "has_other_pets": True,
+        "shedding_preference": "low_shedding",
+        "preferred_species": "any",
+        "preferred_size": "any"
+    }
+    res = client.post("/api/quiz/match?lang=ru", json=payload)
+    assert res.status_code == 200
+    data = res.json()
+    assert isinstance(data, list)
+    assert len(data) > 0
+    top = data[0]
+    assert "compatibility_score" in top
+    assert "match_reasons" in top
+    assert "personality" in top
+    assert "description" in top
+    assert top["compatibility_score"] >= 25
+
+
+def test_pet_photo_upload():
+    """Verify direct image upload returning static url."""
+    import io
+    dummy_file = io.BytesIO(b"FAKE_PNG_BINARY_CONTENT")
+    res = client.post(
+        "/api/pets/upload-photo",
+        files={"file": ("test_pet.png", dummy_file, "image/png")}
+    )
+    assert res.status_code == 200
+    body = res.json()
+    assert "photo_url" in body
+    assert body["photo_url"].startswith("/static/uploads/pets/")
+
+

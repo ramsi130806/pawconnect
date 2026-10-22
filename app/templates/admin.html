@@ -313,8 +313,25 @@
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">{{ t.admin_form_photo_url }}</label>
-                <input type="url" name="photo_url" value="" placeholder="/static/img/pets/placeholder.svg" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none">
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">{{ t.admin_form_upload_photo }}</label>
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-3">
+                        <label class="cursor-pointer inline-flex items-center space-x-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-xl text-xs transition-colors border border-slate-200">
+                            <i data-lucide="upload" class="w-4 h-4 text-slate-500"></i>
+                            <span>{{ t.admin_form_upload_photo }}</span>
+                            <input type="file" id="petPhotoFile" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="hidden" onchange="previewPetPhoto(this)">
+                        </label>
+                        <span class="text-xs text-slate-400 font-semibold">{{ t.admin_form_or_url }}</span>
+                    </div>
+                    <input type="url" name="photo_url" id="petPhotoUrlInput" value="" placeholder="https://... və ya /static/img/pets/placeholder.svg" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none">
+                    <div id="previewContainer" class="hidden flex items-center space-x-3 p-2 bg-slate-50 rounded-xl border border-slate-200">
+                        <img id="petPhotoPreview" src="" alt="Preview" class="w-16 h-16 rounded-lg object-cover border border-slate-200">
+                        <div class="text-xs">
+                            <span class="font-bold text-slate-700 block">{{ t.admin_preview_photo }}</span>
+                            <span id="previewFilename" class="text-slate-400 font-mono"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div>
@@ -397,11 +414,52 @@
         }
     }
 
+    function previewPetPhoto(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('petPhotoPreview').src = e.target.result;
+                document.getElementById('previewFilename').textContent = file.name;
+                document.getElementById('previewContainer').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
     async function handleAddPetSubmit(e) {
         e.preventDefault();
         const form = e.target;
         const btn = document.getElementById('addPetBtn');
+        const origBtnText = btn.innerHTML;
         btn.disabled = true;
+
+        let finalPhotoUrl = (form.photo_url.value || '').trim();
+
+        const fileInput = document.getElementById('petPhotoFile');
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+            btn.innerHTML = '<span class="animate-spin mr-2">⏳</span> Şəkil yüklənir...';
+            try {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                const uploadRes = await fetch('/api/pets/upload-photo', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (uploadRes.ok) {
+                    const uploadData = await uploadRes.json();
+                    finalPhotoUrl = uploadData.photo_url;
+                }
+            } catch (err) {
+                console.error("Photo upload failed:", err);
+            }
+        }
+
+        if (!finalPhotoUrl) {
+            finalPhotoUrl = '/static/img/pets/placeholder.svg';
+        }
+
+        btn.innerHTML = '<span class="animate-spin mr-2">⚙️</span> Qeydiyyat aparılır...';
 
         const payload = {
             name: form.name.value,
@@ -414,7 +472,7 @@
             coat_color: "Mixed",
             description: form.description.value,
             personality: "Friendly, Active",
-            photo_url: form.photo_url.value || '/static/img/pets/placeholder.svg',
+            photo_url: finalPhotoUrl,
             status: "available",
             energy_level: 3,
             good_with_children: form.good_with_children.checked,

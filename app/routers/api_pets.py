@@ -1,5 +1,7 @@
+import os
+import uuid
 from typing import Optional, List
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from app.database import get_db
@@ -79,3 +81,26 @@ def update_pet_status(pet_id: int, status: str = Query(..., pattern="^(available
     pet.status = status
     db.commit()
     return {"message": "Status updated successfully", "pet_id": pet.id, "new_status": pet.status}
+
+
+@router.post("/upload-photo")
+async def upload_pet_photo(file: UploadFile = File(...)):
+    """Upload a pet photo file and return the accessible static URL."""
+    allowed_exts = [".jpg", ".jpeg", ".png", ".webp", ".svg"]
+    filename = file.filename or "pet.jpg"
+    ext = os.path.splitext(filename)[1].lower()
+    if ext not in allowed_exts:
+        ext = ".jpg"
+
+    upload_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "uploads", "pets")
+    os.makedirs(upload_dir, exist_ok=True)
+
+    unique_filename = f"{uuid.uuid4().hex}{ext}"
+    target_path = os.path.join(upload_dir, unique_filename)
+
+    content = await file.read()
+    with open(target_path, "wb") as f:
+        f.write(content)
+
+    return {"photo_url": f"/static/uploads/pets/{unique_filename}"}
+

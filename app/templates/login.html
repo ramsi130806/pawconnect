@@ -9,14 +9,26 @@
         <!-- Header -->
         <div class="text-center space-y-3">
             <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-paw-600 to-amber-500 flex items-center justify-center text-white mx-auto shadow-lg shadow-paw-500/25">
-                <i data-lucide="paw-print" class="w-8 h-8"></i>
+                <i data-lucide="log-in" class="w-7 h-7"></i>
             </div>
             <h1 class="text-2xl font-black text-slate-900 tracking-tight">
-                {{ t.login_title }}
+                {{ t.nav_login }}
             </h1>
             <p class="text-xs text-slate-500 font-medium max-w-xs mx-auto leading-relaxed">
                 {{ t.login_subtitle }}
             </p>
+        </div>
+
+        <!-- Role Tabs / Quick Select -->
+        <div class="grid grid-cols-2 p-1 bg-slate-100 rounded-2xl text-xs font-bold border border-slate-200">
+            <button type="button" onclick="selectLoginRole('user')" id="btnTabUser" class="py-2 rounded-xl transition-all bg-white text-paw-600 shadow-sm font-extrabold flex items-center justify-center space-x-1.5">
+                <i data-lucide="user" class="w-3.5 h-3.5"></i>
+                <span>{{ t.login_tab_user }}</span>
+            </button>
+            <button type="button" onclick="selectLoginRole('admin')" id="btnTabAdmin" class="py-2 rounded-xl transition-all text-slate-500 hover:text-slate-800 flex items-center justify-center space-x-1.5">
+                <i data-lucide="shield" class="w-3.5 h-3.5"></i>
+                <span>{{ t.login_tab_admin }}</span>
+            </button>
         </div>
 
         <!-- Error Alert -->
@@ -31,19 +43,20 @@
         <form method="POST" action="/login?lang={{ lang }}" class="space-y-4">
             <input type="hidden" name="next" value="{{ next }}">
 
-            <!-- Username -->
+            <!-- Username or Email -->
             <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    {{ t.login_username }}
+                <label id="usernameLabel" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    {{ t.login_username }} / Email
                 </label>
                 <div class="relative">
-                    <i data-lucide="user" class="w-5 h-5 absolute left-3.5 top-3 text-slate-400"></i>
+                    <i data-lucide="mail" id="userInputIcon" class="w-5 h-5 absolute left-3.5 top-3 text-slate-400"></i>
                     <input 
                         type="text" 
+                        id="loginUsername"
                         name="username" 
                         required 
                         autocomplete="username"
-                        placeholder="admin"
+                        placeholder="name@email.com"
                         class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-paw-500 focus:bg-white transition-all"
                     >
                 </div>
@@ -85,26 +98,56 @@
             </button>
         </form>
 
-        <!-- Jury & Demo Credentials Hint -->
-        <div class="p-3 bg-amber-50/80 border border-amber-200/80 rounded-2xl text-xs text-amber-900 flex items-start space-x-2.5">
+        <!-- Jury & Demo Credentials Hint Box -->
+        <div id="demoHintBox" class="p-3 bg-amber-50/80 border border-amber-200/80 rounded-2xl text-xs text-amber-900 flex items-start space-x-2.5">
             <i data-lucide="shield-check" class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5"></i>
             <div>
                 <span class="font-bold block text-amber-950">Münsif və Təqdimat Girişi (Demo):</span>
-                <span class="text-amber-800">İstifadəçi: <code class="bg-amber-100 px-1.5 py-0.5 rounded font-mono font-bold text-amber-950">admin</code> | Şifrə: <code class="bg-amber-100 px-1.5 py-0.5 rounded font-mono font-bold text-amber-950">idschool2026</code></span>
+                <span class="text-amber-800">Admin: <code class="bg-amber-100 px-1.5 py-0.5 rounded font-mono font-bold text-amber-950">admin</code> / <code class="bg-amber-100 px-1.5 py-0.5 rounded font-mono font-bold text-amber-950">idschool2026</code></span>
+                <span class="block text-slate-500 text-[11px] mt-0.5">İstifadəçi: <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">user@pawconnect.az</code> / <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">user123456</code></span>
             </div>
         </div>
 
-        <!-- Back to Home -->
-        <div class="text-center pt-2">
-            <a href="/?lang={{ lang }}" class="text-xs font-semibold text-slate-500 hover:text-paw-600 transition-colors inline-flex items-center space-x-1">
-                <span>{{ t.login_back_home }}</span>
-            </a>
+        <!-- Footer Links: Register & Guest -->
+        <div class="space-y-3 pt-2 text-center text-xs">
+            <p class="text-slate-500">
+                {{ t.login_no_account }} 
+                <a href="/register?lang={{ lang }}" class="font-bold text-paw-600 hover:underline">
+                    {{ t.nav_register }}
+                </a>
+            </p>
+            <p>
+                <a href="/pets?lang={{ lang }}" class="text-slate-400 hover:text-slate-600 font-semibold inline-flex items-center space-x-1">
+                    <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                    <span>{{ t.login_as_guest }}</span>
+                </a>
+            </p>
         </div>
 
     </div>
 </div>
 
 <script>
+function selectLoginRole(role) {
+    const btnUser = document.getElementById('btnTabUser');
+    const btnAdmin = document.getElementById('btnTabAdmin');
+    const usernameInput = document.getElementById('loginUsername');
+    const passwordInput = document.getElementById('loginPassword');
+
+    if (role === 'admin') {
+        btnAdmin.className = 'py-2 rounded-xl transition-all bg-white text-paw-600 shadow-sm font-extrabold flex items-center justify-center space-x-1.5';
+        btnUser.className = 'py-2 rounded-xl transition-all text-slate-500 hover:text-slate-800 flex items-center justify-center space-x-1.5 font-bold';
+        usernameInput.value = 'admin';
+        passwordInput.value = 'idschool2026';
+    } else {
+        btnUser.className = 'py-2 rounded-xl transition-all bg-white text-paw-600 shadow-sm font-extrabold flex items-center justify-center space-x-1.5';
+        btnAdmin.className = 'py-2 rounded-xl transition-all text-slate-500 hover:text-slate-800 flex items-center justify-center space-x-1.5 font-bold';
+        usernameInput.value = '';
+        passwordInput.value = '';
+        usernameInput.placeholder = 'name@email.com';
+    }
+}
+
 function togglePassword() {
     const input = document.getElementById('loginPassword');
     const icon = document.getElementById('eyeIcon');

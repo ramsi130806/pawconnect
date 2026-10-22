@@ -36,6 +36,11 @@
                     </span>
                     {% endif %}
                 </div>
+
+                <!-- Favorite Button -->
+                <button type="button" onclick="toggleFavorite(event, {{ pet.id }})" data-fav-btn="{{ pet.id }}" title="{{ t.fav_add }}" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md text-slate-400 hover:text-rose-500 shadow-lg flex items-center justify-center transition-colors">
+                    <i data-lucide="heart" class="w-5 h-5"></i>
+                </button>
             </div>
 
             <!-- Shelter contact card below photo -->
@@ -102,17 +107,18 @@
                 <!-- Bio Description -->
                 <div class="prose text-slate-600 text-sm leading-relaxed mb-6">
                     <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">{{ t.label_about }}</h3>
-                    <p>{{ pet.description }}</p>
+                    <p>{{ pet.get_description(lang) }}</p>
                 </div>
 
                 <!-- Personality Badges -->
-                {% if pet.personality %}
+                {% set trait_list = translate_traits(pet.get_personality(lang), lang) %}
+                {% if trait_list %}
                 <div class="mb-6">
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{{ t.label_personality }}</h3>
                     <div class="flex flex-wrap gap-2">
-                        {% for trait in pet.personality.split(',') %}
+                        {% for trait in trait_list %}
                         <span class="px-3 py-1 bg-amber-50 text-amber-800 border border-amber-200 rounded-full text-xs font-bold">
-                            ✨ {{ trait.strip() }}
+                            ✨ {{ trait }}
                         </span>
                         {% endfor %}
                     </div>

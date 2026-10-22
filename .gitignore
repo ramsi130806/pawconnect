@@ -4,3 +4,5 @@ __pycache__/
 .pytest_cache/
 pawconnect.db
 .env
+app/static/uploads/pets/*
+!app/static/uploads/pets/.gitkeep

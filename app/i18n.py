@@ -14,8 +14,12 @@ TRANSLATIONS = {
         "nav_dashboard": "İdarəetmə Paneli",
         "nav_about": "Layihə Haqqında",
         "nav_system_ready": "Offline Hazırdır",
-        "nav_login": "Admin Girişi",
+        "nav_login": "Giriş",
         "nav_logout": "Çıxış",
+        "nav_favorites": "Sevimlilər",
+        "nav_register": "Qeydiyyat",
+        "nav_profile": "Profil",
+        "nav_guest": "Qonaq Rejimi",
         "lang_name": "Azərbaycan",
         
         # Hero & Home
@@ -244,6 +248,54 @@ TRANSLATIONS = {
         "login_error_invalid": "İstifadəçi adı və ya şifrə yanlışdır. Yenidən cəhd edin.",
         "login_hint": "Münsif və nümayiş girişi: admin / idschool2026",
 
+        # Favorites
+        "fav_title": "Sevimlilər Siyahınız",
+        "fav_subtitle": "Bəyəndiyiniz dostlarınızı burada toplayın və istədiyiniz vaxt sahiblənmək üçün müraciət edin.",
+        "fav_empty_title": "Sevimlilər siyahınız hələlik boşdur",
+        "fav_empty_desc": "Kataloqdakı ürək ikonuna klikləyərək bəyəndiyiniz heyvanları bura əlavə edə bilərsiniz.",
+        "fav_explore_btn": "Heyvanları Kəşf Et",
+        "fav_add": "Sevimlilərə əlavə et",
+        "fav_remove": "Sevimlilərdən sil",
+        "fav_badge_count": "Sevimli",
+
+        # Register & User Account
+        "register_title": "PawConnect Qeydiyyatı",
+        "register_subtitle": "Heyvanları sahiblənmək, müraciətləri izləmək və sevimlilərinizi yadda saxlamaq üçün qeydiyyatdan keçin.",
+        "register_name": "Ad və Soyad",
+        "register_email": "E-poçt ünvanı",
+        "register_password": "Şifrə",
+        "register_confirm_password": "Şifrəni təkrarla",
+        "register_btn": "Qeydiyyatı Tamamla",
+        "register_has_account": "Artıq hesabınız var?",
+        "login_no_account": "Hesabınız yoxdur?",
+        "login_as_guest": "Qonaq kimi davam et",
+        "login_tab_user": "İstifadəçi Girişi",
+        "login_tab_admin": "Admin / Sığınacaq",
+        "register_error_exists": "Bu e-poçt ünvanı ilə artıq qeydiyyat mövcuddur.",
+        "register_error_mismatch": "Şifrələr bir-biri ilə uyğun gəlmir.",
+        "register_error_short": "Şifrə ən azı 6 simvoldan ibarət olmalıdır.",
+
+        # Expanded Quiz (7 Questions)
+        "quiz_q1_country": "Bağ evi / Kənd təsərrüfatı",
+        "quiz_q1_country_sub": "Geniş təbii ərazi və açıq mühit",
+        "quiz_q_time": "2. Gün ərzində heyvanla gəzintiyə və qayğıya nə qədər vaxt ayıra bilərsiniz?",
+        "quiz_time_1": "< 30 dəq (Minimal qayğı)",
+        "quiz_time_2": "30 - 60 dəq (Mülayim rejim)",
+        "quiz_time_3": "1 - 2 saat (Aktiv gəzintilər)",
+        "quiz_time_4": "2+ saat (İntensiv qayğı və məşq)",
+        "quiz_q_exp": "3. Ev heyvanı saxlamaq təcrübəniz nə səviyyədədir?",
+        "quiz_exp_first": "İlk təcrübəmdir (Başlanğıc)",
+        "quiz_exp_some": "Orta təcrübəm var",
+        "quiz_exp_expert": "Çox təcrübəliyəm (Ekspert)",
+        "quiz_q_shedding": "6. Tük tökülməsi və ya allergiyaya qarşı həssaslığınız varmı?",
+        "quiz_shed_low": "Hipoalergenik / Az tük tökən heyvana üstünlük verirəm",
+        "quiz_shed_any": "Fərqi yoxdur, mütəmadi daraya bilərəm",
+
+        # Admin Photo Upload
+        "admin_form_upload_photo": "Şəkli fayldan yüklə",
+        "admin_form_or_url": "və ya birbaşa Şəkil URL-i daxil edin",
+        "admin_preview_photo": "Seçilmiş şəklin önbaxışı",
+
         "features_title": "Niyə PawConnect?",
         "feature_1_title": "Vahid Rəqəmsal Baza",
         "feature_1_desc": "Ölkə üzrə bütün sığınacaqlar tək sistemdə cəmlənir, sahiblənmə prosesi şəffaflaşır.",
@@ -263,8 +315,12 @@ TRANSLATIONS = {
         "nav_dashboard": "Admin Dashboard",
         "nav_about": "About Project",
         "nav_system_ready": "Offline Ready",
-        "nav_login": "Admin Login",
+        "nav_login": "Sign In",
         "nav_logout": "Logout",
+        "nav_favorites": "Favorites",
+        "nav_register": "Register",
+        "nav_profile": "Profile",
+        "nav_guest": "Guest Mode",
         "lang_name": "English",
 
         # Hero & Home
@@ -493,6 +549,54 @@ TRANSLATIONS = {
         "login_error_invalid": "Invalid username or password. Please try again.",
         "login_hint": "Jury & Demo credentials: admin / idschool2026",
 
+        # Favorites
+        "fav_title": "Your Saved Favorites",
+        "fav_subtitle": "Keep track of pets you love and apply for adoption whenever you are ready.",
+        "fav_empty_title": "Your favorites list is empty",
+        "fav_empty_desc": "Click the heart icon on any pet card to save them to your favorites.",
+        "fav_explore_btn": "Explore Adoptable Pets",
+        "fav_add": "Add to favorites",
+        "fav_remove": "Remove from favorites",
+        "fav_badge_count": "Favorites",
+
+        # Register & User Account
+        "register_title": "Create Account",
+        "register_subtitle": "Join to adopt pets, save your favorites, and track your inquiries.",
+        "register_name": "Full Name",
+        "register_email": "Email Address",
+        "register_password": "Password",
+        "register_confirm_password": "Confirm Password",
+        "register_btn": "Complete Registration",
+        "register_has_account": "Already have an account?",
+        "login_no_account": "Don't have an account?",
+        "login_as_guest": "Continue as Guest",
+        "login_tab_user": "User Sign In",
+        "login_tab_admin": "Admin / Shelter",
+        "register_error_exists": "An account with this email address already exists.",
+        "register_error_mismatch": "Passwords do not match.",
+        "register_error_short": "Password must be at least 6 characters.",
+
+        # Expanded Quiz (7 Questions)
+        "quiz_q1_country": "Country house / Farmstead",
+        "quiz_q1_country_sub": "Expansive outdoor acreage and nature",
+        "quiz_q_time": "2. How much time can you dedicate daily for walks and care?",
+        "quiz_time_1": "< 30 mins (Minimal)",
+        "quiz_time_2": "30 - 60 mins (Moderate routine)",
+        "quiz_time_3": "1 - 2 hours (Active walks)",
+        "quiz_time_4": "2+ hours (Intensive care & training)",
+        "quiz_q_exp": "3. What is your pet ownership experience level?",
+        "quiz_exp_first": "First-time owner (Beginner)",
+        "quiz_exp_some": "Some experience (Intermediate)",
+        "quiz_exp_expert": "Experienced owner (Expert)",
+        "quiz_q_shedding": "6. Do you have allergy sensitivities or coat shedding preferences?",
+        "quiz_shed_low": "Low-shedding / Hypoallergenic preferred",
+        "quiz_shed_any": "No preference, regular grooming is fine",
+
+        # Admin Photo Upload
+        "admin_form_upload_photo": "Upload Photo from File",
+        "admin_form_or_url": "or enter direct Photo URL",
+        "admin_preview_photo": "Selected photo preview",
+
         "features_title": "Why PawConnect?",
         "feature_1_title": "Unified Digital Registry",
         "feature_1_desc": "Consolidates municipal and private shelters into one transparent portal.",
@@ -512,8 +616,12 @@ TRANSLATIONS = {
         "nav_dashboard": "Панель управления",
         "nav_about": "О проекте",
         "nav_system_ready": "Готов к офлайну",
-        "nav_login": "Вход для администратора",
+        "nav_login": "Войти",
         "nav_logout": "Выйти",
+        "nav_favorites": "Избранное",
+        "nav_register": "Регистрация",
+        "nav_profile": "Профиль",
+        "nav_guest": "Гостевой режим",
         "lang_name": "Русский",
 
         # Hero & Home
@@ -742,6 +850,54 @@ TRANSLATIONS = {
         "login_error_invalid": "Неверное имя пользователя или пароль. Попробуйте снова.",
         "login_hint": "Для жюри и демонстрации: admin / idschool2026",
 
+        # Favorites
+        "fav_title": "Ваши избранные питомцы",
+        "fav_subtitle": "Сохраняйте понравившихся друзей и подавайте заявку, когда будете готовы.",
+        "fav_empty_title": "Список избранного пока пуст",
+        "fav_empty_desc": "Нажмите на сердечко на карточке любого питомца, чтобы сохранить его здесь.",
+        "fav_explore_btn": "Смотреть питомцев",
+        "fav_add": "Добавить в избранное",
+        "fav_remove": "Удалить из избранного",
+        "fav_badge_count": "В избранном",
+
+        # Register & User Account
+        "register_title": "Регистрация аккаунта",
+        "register_subtitle": "Зарегистрируйтесь для подачи заявок, сохранения избранного и общения с приютом.",
+        "register_name": "Имя и Фамилия",
+        "register_email": "Электронная почта",
+        "register_password": "Пароль",
+        "register_confirm_password": "Повторите пароль",
+        "register_btn": "Зарегистрироваться",
+        "register_has_account": "Уже есть аккаунт?",
+        "login_no_account": "Нет аккаунта?",
+        "login_as_guest": "Продолжить как гость",
+        "login_tab_user": "Вход для пользователя",
+        "login_tab_admin": "Админ / Приют",
+        "register_error_exists": "Аккаунт с таким email уже зарегистрирован.",
+        "register_error_mismatch": "Пароли не совпадают.",
+        "register_error_short": "Пароль должен содержать минимум 6 символов.",
+
+        # Expanded Quiz (7 Questions)
+        "quiz_q1_country": "Загородный дом / Усадьба",
+        "quiz_q1_country_sub": "Большая открытая территория на природе",
+        "quiz_q_time": "2. Сколько времени в день вы можете уделять прогулкам и заботе?",
+        "quiz_time_1": "< 30 минут (Минимум)",
+        "quiz_time_2": "30 - 60 минут (Умеренно)",
+        "quiz_time_3": "1 - 2 часа (Активные прогулки)",
+        "quiz_time_4": "2+ часа (Интенсивная забота и дрессировка)",
+        "quiz_q_exp": "3. Какой у вас опыт содержания домашних животных?",
+        "quiz_exp_first": "Первый питомец (Новичок)",
+        "quiz_exp_some": "Есть базовый опыт",
+        "quiz_exp_expert": "Большой опыт (Эксперт)",
+        "quiz_q_shedding": "6. Есть ли у вас аллергия или требования к линьке шерсти?",
+        "quiz_shed_low": "Предпочитаю гипоаллергенных / мало линяющих",
+        "quiz_shed_any": "Не имеет значения, готов к уходу",
+
+        # Admin Photo Upload
+        "admin_form_upload_photo": "Загрузить фото из файла",
+        "admin_form_or_url": "или введите прямую ссылку на фото",
+        "admin_preview_photo": "Предпросмотр выбранного фото",
+
         "features_title": "Почему PawConnect?",
         "feature_1_title": "Единая цифровая база",
         "feature_1_desc": "Объединяет приюты в прозрачную платформу с легким поиском.",
@@ -755,3 +911,74 @@ TRANSLATIONS = {
 def get_text(lang: str = "az") -> dict:
     """Return dictionary of localized strings, fallback to Azerbaijani."""
     return TRANSLATIONS.get((lang or "az").lower(), TRANSLATIONS["az"])
+
+
+TRAIT_TRANSLATIONS = {
+    "sadiq": {"az": "Sadiq", "en": "Loyal", "ru": "Преданный"},
+    "ağıllı": {"az": "Ağıllı", "en": "Smart", "ru": "Умный"},
+    "agilli": {"az": "Ağıllı", "en": "Smart", "ru": "Умный"},
+    "qoruyucu": {"az": "Qoruyucu", "en": "Protective", "ru": "Защитник"},
+    "aktiv": {"az": "Aktiv", "en": "Active", "ru": "Активный"},
+    "mehriban": {"az": "Mehriban", "en": "Friendly", "ru": "Дружелюбный"},
+    "gülərüz": {"az": "Gülərüz", "en": "Playful", "ru": "Жизнерадостный"},
+    "guleruz": {"az": "Gülərüz", "en": "Playful", "ru": "Жизнерадостный"},
+    "uşaqcanlı": {"az": "Uşaqcanlı", "en": "Great with kids", "ru": "Любит детей"},
+    "usaqcanli": {"az": "Uşaqcanlı", "en": "Great with kids", "ru": "Любит детей"},
+    "sakit": {"az": "Sakit", "en": "Calm", "ru": "Спокойный"},
+    "zərif": {"az": "Zərif", "en": "Gentle", "ru": "Нежная"},
+    "zerif": {"az": "Zərif", "en": "Gentle", "ru": "Нежная"},
+    "təmkinli": {"az": "Təmkinli", "en": "Patient", "ru": "Терпеливый"},
+    "temkinli": {"az": "Təmkinli", "en": "Patient", "ru": "Терпеливый"},
+    "cəsur": {"az": "Cəsur", "en": "Brave", "ru": "Смелый"},
+    "cesur": {"az": "Cəsur", "en": "Brave", "ru": "Смелый"},
+    "müstəqil": {"az": "Müstəqil", "en": "Independent", "ru": "Независимый"},
+    "musteqil": {"az": "Müstəqil", "en": "Independent", "ru": "Независимый"},
+    "təmizkar": {"az": "Təmizkar", "en": "Cleanly", "ru": "Чистоплотный"},
+    "temizkar": {"az": "Təmizkar", "en": "Cleanly", "ru": "Чистоплотный"},
+    "oynağan": {"az": "Oynağan", "en": "Playful", "ru": "Игривый"},
+    "oynagan": {"az": "Oynağan", "en": "Playful", "ru": "Игривый"},
+    "oynaq": {"az": "Oynaq", "en": "Playful", "ru": "Игривый"},
+    "sevgi dolu": {"az": "Sevgi dolu", "en": "Affectionate", "ru": "Ласковый"},
+    "sədaqətli": {"az": "Sədaqətli", "en": "Faithful", "ru": "Верный"},
+    "sedaqetli": {"az": "Sədaqətli", "en": "Faithful", "ru": "Верный"},
+    "cəld": {"az": "Cəld", "en": "Agile", "ru": "Шустрый"},
+    "celd": {"az": "Cəld", "en": "Agile", "ru": "Шустрый"},
+    "sülhsevər": {"az": "Sülhsevər", "en": "Peaceful", "ru": "Миролюбивый"},
+    "sulhsever": {"az": "Sülhsevər", "en": "Peaceful", "ru": "Миролюбивый"},
+    "həssas": {"az": "Həssas", "en": "Sensitive", "ru": "Чуткий"},
+    "hessas": {"az": "Həssas", "en": "Sensitive", "ru": "Чуткий"},
+    "sosial": {"az": "Sosial", "en": "Social", "ru": "Общительный"},
+    "dözümlü": {"az": "Dözümlü", "en": "Resilient", "ru": "Выносливый"},
+    "dozumlu": {"az": "Dözümlü", "en": "Resilient", "ru": "Выносливый"},
+    "maraqlı": {"az": "Maraqlı", "en": "Curious", "ru": "Любознательный"},
+    "maraqli": {"az": "Maraqlı", "en": "Curious", "ru": "Любознательный"},
+    "danışan": {"az": "Danışan", "en": "Talkative", "ru": "Говорящий"},
+    "danisan": {"az": "Danışan", "en": "Talkative", "ru": "Говорящий"},
+    "şən": {"az": "Şən", "en": "Cheerful", "ru": "Веселый"},
+    "sen": {"az": "Şən", "en": "Cheerful", "ru": "Веселый"},
+    "musiqisevər": {"az": "Musiqisevər", "en": "Musical", "ru": "Музыкальный"},
+    "musiqisever": {"az": "Musiqisevər", "en": "Musical", "ru": "Музыкальный"},
+    "enerjili": {"az": "Enerjili", "en": "Energetic", "ru": "Энергичный"},
+    "aristokrat": {"az": "Aristokrat", "en": "Aristocratic", "ru": "Аристократичный"},
+    "şirin": {"az": "Şirin", "en": "Sweet", "ru": "Милый"},
+    "səbirli": {"az": "Səbirli", "en": "Patient", "ru": "Терпеливый"},
+    "sebirli": {"az": "Səbirli", "en": "Patient", "ru": "Терпеливый"},
+    "tənbəl": {"az": "Tənbəl", "en": "Laid-back", "ru": "Ленивый"},
+    "tenbel": {"az": "Tənbəl", "en": "Laid-back", "ru": "Ленивый"}
+}
+
+def translate_personality_traits(traits_str: str, lang: str = "az") -> list:
+    """Translate comma-separated traits into the active language."""
+    if not traits_str:
+        return []
+    lang = (lang or "az").lower()
+    traits = [t.strip() for t in traits_str.split(",") if t.strip()]
+    result = []
+    for trait in traits:
+        key = trait.lower()
+        if key in TRAIT_TRANSLATIONS:
+            result.append(TRAIT_TRANSLATIONS[key].get(lang, trait))
+        else:
+            result.append(trait)
+    return result
+

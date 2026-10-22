@@ -116,9 +116,12 @@ class AdoptionApplicationOut(BaseModel):
 
 # --- Smart Matcher Quiz Schema ---
 class QuizAnswers(BaseModel):
-    living_space: str  # apartment, house_with_yard
-    energy_preference: int  # 1-5
-    has_children: bool
-    has_other_pets: bool
+    living_space: str = "apartment"  # apartment, house_with_yard, countryside
+    daily_time: Optional[int] = 2    # 1 (<30m), 2 (30-60m), 3 (1-2h), 4 (2h+)
+    experience_level: Optional[str] = "intermediate"  # beginner, intermediate, experienced
+    energy_preference: int = 3       # 1 to 5
+    has_children: bool = False
+    has_other_pets: bool = False
+    shedding_preference: Optional[str] = "any"  # low_shedding, any
     preferred_species: Optional[str] = "any"
     preferred_size: Optional[str] = "any"
