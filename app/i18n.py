@@ -842,9 +842,303 @@ TRANSLATIONS = {
     }
 }
 
+# ---------------------------------------------------------------------------
+# Additional UI strings (home page badges, My Applications, favorites auth,
+# overdue vaccine alerts, JS messages). Merged into TRANSLATIONS below.
+# ---------------------------------------------------------------------------
+_EXTRA_TRANSLATIONS = {
+    "az": {
+        "home_luna_title": "Luna & Qayıdan Təbəssümlər",
+        "home_innovation_badge": "İnnovasiya Xüsusiyyəti",
+        "home_quiz_extra": "Alqoritm evinizin sahəsini, gündəlik məşğulluğunuzu və ailə tərkibinizi hesablayaraq ən uyğun heyvanları təyin edir.",
+        "home_quiz_btn": "Testə Başla (1 Dəqiqə)",
+        "features_subtitle": "Müasir texnologiyaların heyvanların rifahı və cəmiyyət üçün tətbiqi.",
+        "default_city": "Bakı",
+        "register_name_placeholder": "Nuran Əliyev",
+        "err_prefix": "Xəta",
+        "err_invalid_data": "Məlumatlar yanlışdır",
+        "err_connection": "Serverlə əlaqə xətası.",
+        "quiz_error": "Test hesablanarkən xəta baş verdi.",
+        "admin_confirm_status": "Müraciətin statusunu dəyişmək istədiyinizə əminsiniz?",
+        "admin_update_failed": "Yeniləmə alınmadı.",
+        "admin_pet_added": "Heyvan uğurla qeydiyyata alındı!",
+        "admin_pet_add_error": "Qeydiyyat xətası",
+        "btn_cancel": "Ləğv et",
+
+        # Favorites (account only)
+        "fav_login_required_title": "Sevimlilər yalnız hesab sahibləri üçündür",
+        "fav_login_required_desc": "Bəyəndiyiniz heyvanları yadda saxlamaq üçün şəxsi hesabınıza daxil olun və ya qeydiyyatdan keçin.",
+
+        # My Applications
+        "nav_my_applications": "Müraciətlərim",
+        "myapps_title": "Müraciətlərim",
+        "myapps_subtitle": "Göndərdiyiniz sahibləndirmə müraciətlərinin cari statusunu buradan izləyin.",
+        "myapps_empty_title": "Hələ heç bir müraciət göndərməmisiniz",
+        "myapps_empty_desc": "Bəyəndiyiniz heyvanın profilində «Sahiblənmək Üçün Müraciət Et» düyməsini sıxın.",
+        "myapps_submitted_on": "Göndərilmə tarixi",
+        "myapps_app_no": "Müraciət №",
+        "myapps_step_submitted": "Göndərildi",
+        "myapps_step_reviewing": "Baxılır",
+        "myapps_step_decision": "Qərar",
+        "myapps_msg_pending": "Müraciətiniz qəbul edildi və sığınacaq əməkdaşının baxışını gözləyir.",
+        "myapps_msg_reviewing": "Sığınacaq müraciətinizi hazırda nəzərdən keçirir. Tezliklə sizinlə əlaqə saxlanılacaq.",
+        "myapps_msg_approved": "Təbriklər! Müraciətiniz təsdiqləndi. Sığınacaq görüş üçün sizinlə əlaqə saxlayacaq.",
+        "myapps_msg_rejected": "Təəssüf ki, bu müraciət təsdiqlənmədi. Digər dostlarımıza baxa bilərsiniz.",
+        "myapps_total": "Cəmi müraciət",
+        "myapps_view_pet": "Heyvana bax",
+        "adopt_login_required": "Müraciət etmək üçün daxil olun",
+        "adopt_login_hint": "Müraciətinizin statusunu izləyə bilmək üçün hesabınıza daxil olmalısınız.",
+        "app_submitted_track": "Müraciətiniz qəbul olundu! Statusunu «Müraciətlərim» səhifəsində izləyə bilərsiniz.",
+
+        # Vaccine alerts
+        "vaccine_overdue_alert_title": "Diqqət: vaxtı keçmiş peyvənd(lər)",
+        "vaccine_overdue_alert_desc": "Bu heyvanın bəzi peyvəndlərinin növbəti dozasının vaxtı keçib. Sığınacaq baytarı ilə əlaqə saxlanılmalıdır.",
+        "vaccine_days_overdue": "{n} gün gecikir",
+        "vaccine_days_left": "{n} gün qalıb",
+    },
+    "en": {
+        "home_luna_title": "Luna & Returning Smiles",
+        "home_innovation_badge": "Innovation Feature",
+        "home_quiz_extra": "The algorithm analyses your living space, daily schedule and family to find the best-matching pets.",
+        "home_quiz_btn": "Start the Quiz (1 Minute)",
+        "features_subtitle": "Applying modern technology for animal welfare and society.",
+        "default_city": "Baku",
+        "register_name_placeholder": "John Smith",
+        "err_prefix": "Error",
+        "err_invalid_data": "Invalid data",
+        "err_connection": "Server connection error.",
+        "quiz_error": "An error occurred while calculating the quiz.",
+        "admin_confirm_status": "Are you sure you want to change this application's status?",
+        "admin_update_failed": "Update failed.",
+        "admin_pet_added": "Pet registered successfully!",
+        "admin_pet_add_error": "Registration error",
+        "btn_cancel": "Cancel",
+
+        "fav_login_required_title": "Favorites are for signed-in users",
+        "fav_login_required_desc": "Sign in to your personal account or register to save the pets you like.",
+
+        "nav_my_applications": "My Applications",
+        "myapps_title": "My Adoption Applications",
+        "myapps_subtitle": "Track the current status of the adoption applications you have submitted.",
+        "myapps_empty_title": "You haven't submitted any applications yet",
+        "myapps_empty_desc": "Open a pet's profile and press “Apply to Adopt” to get started.",
+        "myapps_submitted_on": "Submitted on",
+        "myapps_app_no": "Application #",
+        "myapps_step_submitted": "Submitted",
+        "myapps_step_reviewing": "Under review",
+        "myapps_step_decision": "Decision",
+        "myapps_msg_pending": "Your application was received and is waiting for shelter staff review.",
+        "myapps_msg_reviewing": "The shelter is currently reviewing your application. They will contact you soon.",
+        "myapps_msg_approved": "Congratulations! Your application was approved. The shelter will contact you to arrange a meeting.",
+        "myapps_msg_rejected": "Unfortunately, this application was not approved. You are welcome to explore other pets.",
+        "myapps_total": "Total applications",
+        "myapps_view_pet": "View pet",
+        "adopt_login_required": "Sign in to apply",
+        "adopt_login_hint": "You need to sign in so you can track the status of your application.",
+        "app_submitted_track": "Application received! You can track its status on the “My Applications” page.",
+
+        "vaccine_overdue_alert_title": "Attention: overdue vaccination(s)",
+        "vaccine_overdue_alert_desc": "Some of this pet's booster doses are past due. The shelter veterinarian should be contacted.",
+        "vaccine_days_overdue": "{n} days overdue",
+        "vaccine_days_left": "{n} days left",
+    },
+    "ru": {
+        "home_luna_title": "Луна и вернувшиеся улыбки",
+        "home_innovation_badge": "Инновационная функция",
+        "home_quiz_extra": "Алгоритм учитывает ваше жильё, распорядок дня и состав семьи, чтобы подобрать самых подходящих питомцев.",
+        "home_quiz_btn": "Начать тест (1 минута)",
+        "features_subtitle": "Современные технологии на благо животных и общества.",
+        "default_city": "Баку",
+        "register_name_placeholder": "Иван Петров",
+        "err_prefix": "Ошибка",
+        "err_invalid_data": "Неверные данные",
+        "err_connection": "Ошибка соединения с сервером.",
+        "quiz_error": "Произошла ошибка при расчёте теста.",
+        "admin_confirm_status": "Вы уверены, что хотите изменить статус заявки?",
+        "admin_update_failed": "Не удалось обновить.",
+        "admin_pet_added": "Питомец успешно зарегистрирован!",
+        "admin_pet_add_error": "Ошибка регистрации",
+        "btn_cancel": "Отмена",
+
+        "fav_login_required_title": "Избранное доступно только после входа",
+        "fav_login_required_desc": "Войдите в личный аккаунт или зарегистрируйтесь, чтобы сохранять понравившихся питомцев.",
+
+        "nav_my_applications": "Мои заявки",
+        "myapps_title": "Мои заявки на усыновление",
+        "myapps_subtitle": "Отслеживайте текущий статус отправленных вами заявок на усыновление.",
+        "myapps_empty_title": "Вы ещё не отправили ни одной заявки",
+        "myapps_empty_desc": "Откройте профиль питомца и нажмите «Подать заявку на усыновление».",
+        "myapps_submitted_on": "Дата подачи",
+        "myapps_app_no": "Заявка №",
+        "myapps_step_submitted": "Отправлена",
+        "myapps_step_reviewing": "На рассмотрении",
+        "myapps_step_decision": "Решение",
+        "myapps_msg_pending": "Ваша заявка получена и ожидает рассмотрения сотрудником приюта.",
+        "myapps_msg_reviewing": "Приют сейчас рассматривает вашу заявку. С вами скоро свяжутся.",
+        "myapps_msg_approved": "Поздравляем! Ваша заявка одобрена. Приют свяжется с вами, чтобы договориться о встрече.",
+        "myapps_msg_rejected": "К сожалению, эта заявка не была одобрена. Посмотрите других питомцев.",
+        "myapps_total": "Всего заявок",
+        "myapps_view_pet": "Смотреть питомца",
+        "adopt_login_required": "Войдите, чтобы подать заявку",
+        "adopt_login_hint": "Чтобы отслеживать статус заявки, необходимо войти в аккаунт.",
+        "app_submitted_track": "Заявка принята! Следить за её статусом можно на странице «Мои заявки».",
+
+        "vaccine_overdue_alert_title": "Внимание: просроченные прививки",
+        "vaccine_overdue_alert_desc": "Срок следующей дозы некоторых прививок этого питомца истёк. Необходимо связаться с ветеринаром приюта.",
+        "vaccine_days_overdue": "просрочено на {n} дн.",
+        "vaccine_days_left": "осталось {n} дн.",
+    },
+}
+
+for _lang_code, _extra in _EXTRA_TRANSLATIONS.items():
+    TRANSLATIONS[_lang_code].update(_extra)
+
+SUPPORTED_LANGS = ("az", "en", "ru")
+
+
+class LocalizedDict(dict):
+    """
+    Translation dictionary with a safe fallback chain.
+    If a key is missing in the active language it falls back to English,
+    then Azerbaijani, and finally returns the key itself — so a page never
+    renders an empty gap or crashes because of a missing translation.
+    """
+
+    def __init__(self, lang: str):
+        super().__init__(TRANSLATIONS[lang])
+        self.lang = lang
+
+    def __missing__(self, key):
+        for fallback in ("en", "az"):
+            if key in TRANSLATIONS[fallback]:
+                return TRANSLATIONS[fallback][key]
+        return key
+
+
+_LOCALIZED_CACHE = {code: LocalizedDict(code) for code in SUPPORTED_LANGS}
+
+
 def get_text(lang: str = "az") -> dict:
     """Return dictionary of localized strings, fallback to Azerbaijani."""
-    return TRANSLATIONS.get((lang or "az").lower(), TRANSLATIONS["az"])
+    code = (lang or "az").lower()
+    return _LOCALIZED_CACHE.get(code, _LOCALIZED_CACHE["az"])
+
+
+# ---------------------------------------------------------------------------
+# DATABASE CONTENT TRANSLATIONS
+# Values stored in the database (breeds, shelters, cities, addresses, vaccine
+# names, clinics, vets) are written in Azerbaijani. This dictionary maps them
+# to English and Russian so they are translated when rendered.
+# Unknown values (e.g. a new breed typed by an admin) are shown unchanged.
+# ---------------------------------------------------------------------------
+DATA_TRANSLATIONS = {
+    # Breeds
+    "Alman Çoban İti (Qarışıq)": {"en": "German Shepherd (Mix)", "ru": "Немецкая овчарка (метис)"},
+    "Golden Retriever": {"en": "Golden Retriever", "ru": "Золотистый ретривер"},
+    "Kokker Spaniel": {"en": "Cocker Spaniel", "ru": "Кокер-спаниель"},
+    "Azərbaycan Çoban İti (Qurdbasar)": {"en": "Azerbaijani Shepherd Dog (Gurdbasar)", "ru": "Азербайджанская овчарка (Гурдбасар)"},
+    "Baqi (Beagle)": {"en": "Beagle", "ru": "Бигль"},
+    "Samoyed (Mix)": {"en": "Samoyed (Mix)", "ru": "Самоед (метис)"},
+    "Cek Rassel Teryer": {"en": "Jack Russell Terrier", "ru": "Джек-рассел-терьер"},
+    "Labrador Retriever": {"en": "Labrador Retriever", "ru": "Лабрадор-ретривер"},
+    "Britaniya Qısatüklüsü (Mix)": {"en": "British Shorthair (Mix)", "ru": "Британская короткошёрстная (метис)"},
+    "Şotland Sallanqulaq (Scottish Fold)": {"en": "Scottish Fold", "ru": "Шотландская вислоухая"},
+    "Meyn-Kun (Maine Coon Mix)": {"en": "Maine Coon (Mix)", "ru": "Мейн-кун (метис)"},
+    "Van Pişiyi (Mix)": {"en": "Van Cat (Mix)", "ru": "Ванская кошка (метис)"},
+    "Bombey Pişiyi (Təmiz Qara)": {"en": "Bombay Cat (Pure Black)", "ru": "Бомбейская кошка (чисто чёрная)"},
+    "Ev Pişiyi (Tabby)": {"en": "Domestic Cat (Tabby)", "ru": "Домашняя кошка (табби)"},
+    "Siam Pişiyi (Mix)": {"en": "Siamese Cat (Mix)", "ru": "Сиамская кошка (метис)"},
+    "Holland Sallanqulaq Dovşan (Lop)": {"en": "Holland Lop Rabbit", "ru": "Голландский вислоухий кролик"},
+    "Şirbaş Dovşan (Lionhead)": {"en": "Lionhead Rabbit", "ru": "Львиноголовый кролик"},
+    "Dalğalı Tutuquşu (Budgerigar)": {"en": "Budgerigar", "ru": "Волнистый попугай"},
+    "Korella Tutuquşu (Cockatiel)": {"en": "Cockatiel", "ru": "Попугай корелла"},
+    "Qızılı Labrador": {"en": "Golden Labrador", "ru": "Золотистый лабрадор"},
+    "Sibiri Haskisi (Husky)": {"en": "Siberian Husky", "ru": "Сибирский хаски"},
+    "Fars Pişiyi (Persian)": {"en": "Persian Cat", "ru": "Персидская кошка"},
+    "Pudel (Maltipoo Mix)": {"en": "Poodle (Maltipoo Mix)", "ru": "Пудель (метис мальтипу)"},
+    "Kaliko (Üçrəngli Uğur Pişiyi)": {"en": "Calico (Tricolour Lucky Cat)", "ru": "Калико (трёхцветная кошка удачи)"},
+    "Fars Pişiyi (Mix)": {"en": "Persian Cat (Mix)", "ru": "Персидская кошка (метис)"},
+    "Yerli Qırmızı Təbii": {"en": "Local Ginger Cat", "ru": "Местная рыжая кошка"},
+    "Avropa Qısatüklüsü": {"en": "European Shorthair", "ru": "Европейская короткошёрстная"},
+    "Sibir Pişiyi (Mix)": {"en": "Siberian Cat (Mix)", "ru": "Сибирская кошка (метис)"},
+    "Hollandiya Lop-qulağı": {"en": "Holland Lop", "ru": "Голландский вислоухий кролик"},
+    "Dalğalı Tutuquşu": {"en": "Budgerigar", "ru": "Волнистый попугай"},
+
+    # Shelters
+    "Bakı Heyvanları Xilasetmə Mərkəzi": {"en": "Baku Animal Rescue Center", "ru": "Бакинский центр спасения животных"},
+    "Gəncə Ümid Sığınacağı": {"en": "Ganja Hope Shelter", "ru": "Гянджинский приют «Надежда»"},
+    "Sumqayıt Can Dostları Mərkəzi": {"en": "Sumgait Loyal Friends Center", "ru": "Сумгаитский центр «Верные друзья»"},
+    "Şamaxı Şəfqət Evi": {"en": "Shamakhi House of Compassion", "ru": "Шамахинский дом милосердия"},
+
+    # Cities
+    "Bakı": {"en": "Baku", "ru": "Баку"},
+    "Gəncə": {"en": "Ganja", "ru": "Гянджа"},
+    "Sumqayıt": {"en": "Sumgait", "ru": "Сумгаит"},
+    "Şamaxı": {"en": "Shamakhi", "ru": "Шамахы"},
+
+    # Addresses
+    "Nərimanov r., Təbriz küç. 45": {"en": "45 Tabriz St., Narimanov district", "ru": "Наримановский р-н, ул. Тебриз, 45"},
+    "Nizami r., Heydər Əliyev pr. 112": {"en": "112 Heydar Aliyev Ave., Nizami district", "ru": "Низаминский р-н, пр. Гейдара Алиева, 112"},
+    "Sülh küçəsi, Məhəllə 18": {"en": "Sulh St., Block 18", "ru": "ул. Сульх, квартал 18"},
+    "Şamaxı-Çuxuryurd yolu, km 4": {"en": "Shamakhi–Chukhuryurd road, km 4", "ru": "Дорога Шамахы–Чухурюрд, 4 км"},
+
+    # Vaccines
+    "Quduzluq Əleyhinə (Nobivac Rabies)": {"en": "Anti-Rabies (Nobivac Rabies)", "ru": "Против бешенства (Nobivac Rabies)"},
+    "DHPPi Kompleks Polivalent": {"en": "DHPPi Polyvalent Complex", "ru": "Комплексная поливалентная DHPPi"},
+    "FVRCP Pişik Kompleks Vaksini": {"en": "FVRCP Feline Combo Vaccine", "ru": "Комплексная вакцина для кошек FVRCP"},
+    "Quduzluq Vaksini (Rabisin)": {"en": "Rabies Vaccine (Rabisin)", "ru": "Вакцина от бешенства (Rabisin)"},
+    "Filavac VHD / Miksomatoz": {"en": "Filavac VHD / Myxomatosis", "ru": "Filavac VHD / Миксоматоз"},
+    "Quduzluq (Rabies)": {"en": "Rabies", "ru": "Бешенство"},
+    "Kompleks DHPPi": {"en": "DHPPi Complex", "ru": "Комплексная DHPPi"},
+    "Leptospiroz (Nobivac Lepto)": {"en": "Leptospirosis (Nobivac Lepto)", "ru": "Лептоспироз (Nobivac Lepto)"},
+    "Bordetella (Kennel öskürəyi)": {"en": "Bordetella (Kennel Cough)", "ru": "Бордетеллёз (вольерный кашель)"},
+    "FeLV (Pişik Leykemiyası)": {"en": "FeLV (Feline Leukemia)", "ru": "FeLV (лейкемия кошек)"},
+    "Antiparazitar Müalicə (Dehelmintizasiya)": {"en": "Antiparasitic Treatment (Deworming)", "ru": "Антипаразитарная обработка (дегельминтизация)"},
+    "RHDV2 Dovşan Vaksini (Eravac)": {"en": "RHDV2 Rabbit Vaccine (Eravac)", "ru": "Вакцина для кроликов RHDV2 (Eravac)"},
+    "Poliomavirus (APV) Quş Vaksini": {"en": "Avian Polyomavirus (APV) Vaccine", "ru": "Вакцина от полиомавируса птиц (APV)"},
+
+    # Clinics
+    "Baku Vet Clinic": {"en": "Baku Vet Clinic", "ru": "Бакинская ветклиника"},
+    "VetCare Mərkəzi": {"en": "VetCare Center", "ru": "Центр VetCare"},
+    "VetCare Bakı": {"en": "VetCare Baku", "ru": "VetCare Баку"},
+    "Cat Health Center": {"en": "Cat Health Center", "ru": "Центр здоровья кошек"},
+    "Exotic Vet Baku": {"en": "Exotic Vet Baku", "ru": "Экзотик Вет Баку"},
+
+    # Veterinarians
+    "Dr. Rəşad Əliyev": {"en": "Dr. Rashad Aliyev", "ru": "Д-р Рашад Алиев"},
+    "Dr. Leyla Məmmədova": {"en": "Dr. Leyla Mammadova", "ru": "Д-р Лейла Мамедова"},
+    "Dr. Nigar Qasımova": {"en": "Dr. Nigar Gasimova", "ru": "Д-р Нигяр Гасымова"},
+    "Dr. Əliyev": {"en": "Dr. Aliyev", "ru": "Д-р Алиев"},
+}
+
+# Case/whitespace-insensitive lookup index
+_DATA_INDEX = {k.strip().lower(): v for k, v in DATA_TRANSLATIONS.items()}
+
+SPECIES_KEYS = {"dog": "filter_dog", "cat": "filter_cat", "rabbit": "filter_rabbit", "bird": "filter_bird"}
+SIZE_KEYS = {"Small": "filter_small", "Medium": "filter_medium", "Large": "filter_large"}
+
+
+def translate_data(value, lang: str = "az") -> str:
+    """Translate a database value (breed, shelter, city, vaccine...) into the active language."""
+    if value is None:
+        return ""
+    text = str(value)
+    lang = (lang or "az").lower()
+    if lang == "az":
+        return text
+    entry = _DATA_INDEX.get(text.strip().lower())
+    if entry and entry.get(lang):
+        return entry[lang]
+    return text
+
+
+def translate_species(species: str, lang: str = "az") -> str:
+    return get_text(lang)[SPECIES_KEYS.get((species or "").lower(), "filter_other")]
+
+
+def translate_size(size: str, lang: str = "az") -> str:
+    key = SIZE_KEYS.get(size or "")
+    return get_text(lang)[key] if key else (size or "")
 
 
 TRAIT_TRANSLATIONS = {
@@ -899,7 +1193,39 @@ TRAIT_TRANSLATIONS = {
     "səbirli": {"az": "Səbirli", "en": "Patient", "ru": "Терпеливый"},
     "sebirli": {"az": "Səbirli", "en": "Patient", "ru": "Терпеливый"},
     "tənbəl": {"az": "Tənbəl", "en": "Laid-back", "ru": "Ленивый"},
-    "tenbel": {"az": "Tənbəl", "en": "Laid-back", "ru": "Ленивый"}
+    "tenbel": {"az": "Tənbəl", "en": "Laid-back", "ru": "Ленивый"},
+    "ciddi": {"az": "Ciddi", "en": "Serious", "ru": "Серьёзный"},
+    "sevimli": {"az": "Sevimli", "en": "Lovely", "ru": "Милый"},
+    "canlı": {"az": "Canlı", "en": "Lively", "ru": "Живой"},
+    "dostcanlı": {"az": "Dostcanlı", "en": "Friendly", "ru": "Дружелюбный"},
+    "ailəpərəst": {"az": "Ailəpərəst", "en": "Family-loving", "ru": "Любит семью"},
+    "ailəcanlı": {"az": "Ailəcanlı", "en": "Family-loving", "ru": "Любит семью"},
+    "məlahətli": {"az": "Məlahətli", "en": "Charming", "ru": "Обаятельный"},
+    "balaca": {"az": "Balaca", "en": "Little", "ru": "Малыш"},
+    "nəhəng": {"az": "Nəhəng", "en": "Giant", "ru": "Огромный"},
+    "su sevən": {"az": "Su sevən", "en": "Water-loving", "ru": "Любит воду"},
+    "nadir": {"az": "Nadir", "en": "Rare", "ru": "Редкий"},
+    "oyunaq": {"az": "Oyunaq", "en": "Playful", "ru": "Игривый"},
+    "diqqətçəkən": {"az": "Diqqətçəkən", "en": "Eye-catching", "ru": "Яркий"},
+    "sirli": {"az": "Sirli", "en": "Mysterious", "ru": "Загадочный"},
+    "qucağı sevən": {"az": "Qucağı sevən", "en": "Cuddly", "ru": "Любит руки"},
+    "ünsiyyətcil": {"az": "Ünsiyyətcil", "en": "Sociable", "ru": "Общительный"},
+    "göygöz": {"az": "Göygöz", "en": "Blue-eyed", "ru": "Голубоглазый"},
+    "ipək kimi": {"az": "İpək kimi", "en": "Silky", "ru": "Шелковистый"},
+    "zərərsiz": {"az": "Zərərsiz", "en": "Harmless", "ru": "Безобидный"},
+    "yumşaq": {"az": "Yumşaq", "en": "Soft", "ru": "Мягкий"},
+    "musiqili": {"az": "Musiqili", "en": "Musical", "ru": "Музыкальный"},
+    "rəngarəng": {"az": "Rəngarəng", "en": "Colourful", "ru": "Яркий"},
+    "melodik": {"az": "Melodik", "en": "Melodic", "ru": "Мелодичный"},
+    "sərbəst": {"az": "Sərbəst", "en": "Free-spirited", "ru": "Свободолюбивый"},
+    "idmançı": {"az": "İdmançı", "en": "Athletic", "ru": "Спортивный"},
+    "güclü": {"az": "Güclü", "en": "Strong", "ru": "Сильный"},
+    "əzəmətli": {"az": "Əzəmətli", "en": "Majestic", "ru": "Величественный"},
+    "hipolallergen": {"az": "Hipolallergen", "en": "Hypoallergenic", "ru": "Гипоаллергенный"},
+    "uğurlu": {"az": "Uğurlu", "en": "Lucky", "ru": "Приносит удачу"},
+    "həlim": {"az": "Həlim", "en": "Gentle", "ru": "Кроткий"},
+    "friendly": {"az": "Mehriban", "en": "Friendly", "ru": "Дружелюбный"},
+    "active": {"az": "Aktiv", "en": "Active", "ru": "Активный"},
 }
 
 def translate_personality_traits(traits_str: str, lang: str = "az") -> list:

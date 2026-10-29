@@ -73,11 +73,17 @@
                     <a href="/pets?lang={{ lang }}" class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold hover:bg-slate-100 transition-colors {% if request.url.path == '/pets' %}text-paw-600 bg-paw-50{% else %}text-slate-700{% endif %}">
                         <i data-lucide="dog" class="w-4 h-4 inline-block mr-1"></i> {{ t.nav_pets }}
                     </a>
+                    {% if user and user.user_id %}
                     <a href="/favorites?lang={{ lang }}" class="relative px-3 py-2 rounded-xl text-xs sm:text-sm font-bold hover:bg-slate-100 transition-colors {% if request.url.path == '/favorites' %}text-rose-600 bg-rose-50{% else %}text-slate-700{% endif %}">
                         <i data-lucide="heart" class="w-4 h-4 inline-block mr-1 text-rose-500"></i>
                         <span>{{ t.nav_favorites }}</span>
                         <span id="navFavBadge" class="hidden ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-black bg-rose-500 text-white leading-none">0</span>
                     </a>
+                    <a href="/my-applications?lang={{ lang }}" class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold hover:bg-slate-100 transition-colors {% if request.url.path == '/my-applications' %}text-paw-600 bg-paw-50{% else %}text-slate-700{% endif %}">
+                        <i data-lucide="clipboard-list" class="w-4 h-4 inline-block mr-1 text-paw-600"></i>
+                        <span>{{ t.nav_my_applications }}</span>
+                    </a>
+                    {% endif %}
                     <a href="/match?lang={{ lang }}" class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold hover:bg-slate-100 transition-colors {% if request.url.path == '/match' %}text-paw-600 bg-paw-50{% else %}text-slate-700{% endif %}">
                         <i data-lucide="sparkles" class="w-4 h-4 inline-block mr-1 text-amber-500"></i> {{ t.nav_match }}
                     </a>
@@ -158,6 +164,7 @@
             <a href="/pets?lang={{ lang }}" class="block px-3 py-2 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-100">
                 <i data-lucide="dog" class="w-4 h-4 inline-block mr-2"></i> {{ t.nav_pets }}
             </a>
+            {% if user and user.user_id %}
             <a href="/favorites?lang={{ lang }}" class="flex items-center justify-between px-3 py-2 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-100">
                 <span class="flex items-center">
                     <i data-lucide="heart" class="w-4 h-4 inline-block mr-2 text-rose-500"></i>
@@ -165,6 +172,10 @@
                 </span>
                 <span id="mobileFavBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-500 text-white">0</span>
             </a>
+            <a href="/my-applications?lang={{ lang }}" class="block px-3 py-2 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-100">
+                <i data-lucide="clipboard-list" class="w-4 h-4 inline-block mr-2 text-paw-600"></i> {{ t.nav_my_applications }}
+            </a>
+            {% endif %}
             <a href="/match?lang={{ lang }}" class="block px-3 py-2 rounded-lg text-sm font-bold text-slate-800 hover:bg-slate-100">
                 <i data-lucide="sparkles" class="w-4 h-4 inline-block mr-2 text-amber-500"></i> {{ t.nav_match }}
             </a>
@@ -229,7 +240,10 @@
                     <ul class="space-y-2 text-sm">
                         <li><a href="/?lang={{ lang }}" class="hover:text-paw-400 transition-colors">{{ t.nav_home }}</a></li>
                         <li><a href="/pets?lang={{ lang }}" class="hover:text-paw-400 transition-colors">{{ t.nav_pets }}</a></li>
+                        {% if user and user.user_id %}
                         <li><a href="/favorites?lang={{ lang }}" class="hover:text-paw-400 transition-colors">{{ t.nav_favorites }}</a></li>
+                        <li><a href="/my-applications?lang={{ lang }}" class="hover:text-paw-400 transition-colors">{{ t.nav_my_applications }}</a></li>
+                        {% endif %}
                         <li><a href="/match?lang={{ lang }}" class="hover:text-paw-400 transition-colors">{{ t.nav_match }}</a></li>
                         <li><a href="/about?lang={{ lang }}" class="hover:text-paw-400 transition-colors">{{ t.nav_about }}</a></li>
                         {% if is_admin %}
@@ -278,18 +292,13 @@
             window.location.href = currentUrl.pathname + currentUrl.search;
         }
 
-        // Global Favorites Manager (Client-side localStorage + Server Sync)
-        function getStoredFavorites() {
-            try {
-                return JSON.parse(localStorage.getItem('pawconnect_favorites') || '[]');
-            } catch (e) {
-                return [];
-            }
-        }
+        // Account-Only Favorites Manager (Server-Backed Session)
+        const IS_USER_ACCOUNT = {{ 'true' if (user and user.user_id) else 'false' }};
+        const ACTIVE_LANG = "{{ lang }}";
+        let userFavoriteIds = [];
 
-        function updateNavbarFavoritesBadge() {
-            const favs = getStoredFavorites();
-            const count = favs.length;
+        function renderFavoriteState() {
+            const count = userFavoriteIds.length;
             const desktopBadge = document.getElementById('navFavBadge');
             const mobileBadge = document.getElementById('mobileFavBadge');
 
@@ -310,24 +319,35 @@
                 }
             }
 
-            // Sync visual heart states on page
             document.querySelectorAll('[data-fav-btn]').forEach(btn => {
                 const petId = parseInt(btn.getAttribute('data-fav-btn'));
                 const icon = btn.querySelector('svg') || btn.querySelector('i');
-                if (favs.includes(petId)) {
+                if (IS_USER_ACCOUNT && userFavoriteIds.includes(petId)) {
                     btn.classList.add('text-rose-500');
                     btn.classList.remove('text-slate-400');
-                    if (icon) {
-                        icon.setAttribute('fill', '#f43f5e');
-                    }
+                    if (icon) icon.setAttribute('fill', '#f43f5e');
                 } else {
                     btn.classList.remove('text-rose-500');
                     btn.classList.add('text-slate-400');
-                    if (icon) {
-                        icon.setAttribute('fill', 'none');
-                    }
+                    if (icon) icon.setAttribute('fill', 'none');
                 }
             });
+        }
+
+        async function updateNavbarFavoritesBadge() {
+            if (!IS_USER_ACCOUNT) {
+                userFavoriteIds = [];
+                renderFavoriteState();
+                return;
+            }
+            try {
+                const res = await fetch('/api/favorites');
+                if (res.ok) {
+                    const data = await res.json();
+                    userFavoriteIds = Array.isArray(data.favorites) ? data.favorites : [];
+                }
+            } catch (e) {}
+            renderFavoriteState();
         }
 
         async function toggleFavorite(event, petId) {
@@ -336,18 +356,28 @@
                 event.stopPropagation();
             }
 
-            let favs = getStoredFavorites();
-            if (favs.includes(petId)) {
-                favs = favs.filter(id => id !== petId);
-            } else {
-                favs.push(petId);
+            if (!IS_USER_ACCOUNT) {
+                const nextPath = encodeURIComponent(window.location.pathname);
+                window.location.href = `/login?next=${nextPath}&lang=${ACTIVE_LANG}`;
+                return;
             }
-            localStorage.setItem('pawconnect_favorites', JSON.stringify(favs));
-            updateNavbarFavoritesBadge();
 
-            // Sync with backend if authenticated
             try {
-                await fetch(`/api/favorites/${petId}`, { method: 'POST' });
+                const res = await fetch(`/api/favorites/${petId}`, { method: 'POST' });
+                if (res.status === 401) {
+                    const nextPath = encodeURIComponent(window.location.pathname);
+                    window.location.href = `/login?next=${nextPath}&lang=${ACTIVE_LANG}`;
+                    return;
+                }
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.is_favorite) {
+                        if (!userFavoriteIds.includes(petId)) userFavoriteIds.push(petId);
+                    } else {
+                        userFavoriteIds = userFavoriteIds.filter(id => id !== petId);
+                    }
+                    renderFavoriteState();
+                }
             } catch (e) {}
         }
 

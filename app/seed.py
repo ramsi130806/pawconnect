@@ -22,6 +22,12 @@ def migrate_database_schema():
                 conn.execute(text("ALTER TABLE pets ADD COLUMN personality_en VARCHAR(150)"))
             if "personality_ru" not in columns:
                 conn.execute(text("ALTER TABLE pets ADD COLUMN personality_ru VARCHAR(150)"))
+
+            # Link adoption applications to user accounts (for "My Applications")
+            result = conn.execute(text("PRAGMA table_info(adoption_applications)"))
+            app_columns = [row[1] for row in result.fetchall()]
+            if app_columns and "user_id" not in app_columns:
+                conn.execute(text("ALTER TABLE adoption_applications ADD COLUMN user_id INTEGER REFERENCES users(id)"))
             conn.commit()
     except Exception as e:
         print(f"Schema migration notice (already applied or not SQLite): {e}")
@@ -118,8 +124,154 @@ PETS_I18N = {
         "desc_ru": "Яркий попугай с изумрудно-желтым оперением. Насвистывает веселые мелодии и может повторять короткие звуки.",
         "pers_en": "Musical, Talkative, Cheerful",
         "pers_ru": "Музыкальный, Говорящий, Веселый"
+    },
+    "Zümrüd": {
+        "desc_en": "With her big amber eyes and folded ears, Zümrüd is a true aristocrat. She adores cuddles and gentle petting.",
+        "desc_ru": "С большими янтарными глазами и загнутыми ушками Зюмрюд — настоящая кошка-аристократка. Обожает объятия и ласку.",
+        "pers_en": "Gentle, Sweet, Patient",
+        "pers_ru": "Нежная, Милая, Терпеливая"
+    },
+    "Leo": {
+        "desc_en": "Despite his giant body, Leo has a heart as tender as a bird's. You'll love watching him play with the water tap and purr.",
+        "desc_ru": "Несмотря на огромное тело, у Лео нежное, как у птички, сердце. Вы будете в восторге от того, как он играет с краном и мурлычет.",
+        "pers_en": "Giant, Friendly, Water-loving",
+        "pers_ru": "Огромный, Дружелюбный, Любит воду"
+    },
+    "Pamuk": {
+        "desc_en": "Pamuk catches every eye with her stunning odd-coloured eyes. She was rescued from the street as a kitten and is now completely healthy.",
+        "desc_ru": "Памук притягивает взгляды своими удивительными разноцветными глазами. Её спасли с улицы котёнком, и теперь она полностью здорова.",
+        "pers_en": "Rare, Playful, Eye-catching",
+        "pers_ru": "Редкая, Игривая, Яркая"
+    },
+    "Kömür": {
+        "desc_en": "With his shiny black coat and yellow eyes, Kömür looks like a little panther. Very smart and quiet.",
+        "desc_ru": "Блестящей чёрной шерстью и жёлтыми глазами Кёмюр похож на маленькую пантеру. Очень умный и тихий.",
+        "pers_en": "Mysterious, Gentle, Cuddly",
+        "pers_ru": "Загадочный, Нежный, Любит руки"
+    },
+    "Maya": {
+        "desc_en": "A beautiful girl who loves to 'talk' (meow), bonds deeply with her owner and doesn't like being left home alone.",
+        "desc_ru": "Красавица, которая любит «поговорить» (помяукать), сильно привязывается к хозяину и не любит оставаться дома одна.",
+        "pers_en": "Sociable, Sensitive, Blue-eyed",
+        "pers_ru": "Общительная, Чуткая, Голубоглазая"
+    },
+    "Topuş": {
+        "desc_en": "Topuş is very calm and adores fresh carrots and clover. He patiently waits to be petted and have his nose stroked.",
+        "desc_ru": "Топуш очень спокойный, обожает свежую морковку и клевер. Терпеливо ждёт, когда его погладят по носику.",
+        "pers_en": "Calm, Silky, Harmless",
+        "pers_ru": "Спокойный, Шелковистый, Безобидный"
+    },
+    "Kökə": {
+        "desc_en": "With the thick fur around his head, Kökə looks like a little lion. He loves roaming the room outside his cage.",
+        "desc_ru": "Благодаря густой шерсти вокруг головы Кёкя похож на маленького льва. Любит гулять по комнате вне клетки.",
+        "pers_en": "Curious, Cheerful, Soft",
+        "pers_ru": "Любознательный, Весёлый, Мягкий"
+    },
+    "Çiko": {
+        "desc_en": "Çiko is a real music lover — he chirps every morning and is learning to repeat the word 'Salam'.",
+        "desc_ru": "Чико — настоящий меломан: щебечет по утрам и учится повторять слово «Салам».",
+        "pers_en": "Musical, Lively, Colourful",
+        "pers_ru": "Музыкальный, Живой, Яркий"
+    },
+    "Riko": {
+        "desc_en": "A talented parrot who can whistle and repeat melodies. Loves sitting on your shoulder and watching around.",
+        "desc_ru": "Талантливый попугай, умеющий свистеть и повторять мелодии. Любит сидеть на плече и наблюдать за всем вокруг.",
+        "pers_en": "Smart, Melodic, Friendly",
+        "pers_ru": "Умный, Мелодичный, Дружелюбный"
+    },
+    "Çarli": {
+        "desc_en": "With the qualities of a perfect companion and guide dog, Çarli is fully ready for a family.",
+        "desc_ru": "Обладая качествами идеального компаньона и собаки-поводыря, Чарли полностью готов к жизни в семье.",
+        "pers_en": "Patient, Loyal, Family-loving",
+        "pers_ru": "Терпеливый, Преданный, Любит семью"
+    },
+    "Oskar": {
+        "desc_en": "With ice-blue eyes and an endless love of running, Oskar is looking for an owner who enjoys mountain hikes and jogging.",
+        "desc_ru": "С ледяными голубыми глазами и безграничной любовью к бегу, Оскар ищет хозяина, который любит горные походы и пробежки.",
+        "pers_en": "Free-spirited, Athletic, Strong",
+        "pers_ru": "Свободолюбивый, Спортивный, Сильный"
+    },
+    "Pudra": {
+        "desc_en": "The calmest and most elegant cat in the world. She spends 90% of her life resting on soft pillows.",
+        "desc_ru": "Самая спокойная и благородная кошка на свете. 90% жизни проводит, отдыхая на мягких подушках.",
+        "pers_en": "Laid-back, Calm, Majestic",
+        "pers_ru": "Ленивая, Спокойная, Величественная"
+    },
+    "Tobi": {
+        "desc_en": "With his hypoallergenic coat, Tobi is an irreplaceable friend for apartment living. Very eager to learn.",
+        "desc_ru": "Благодаря гипоаллергенной шерсти Тоби — незаменимый друг для квартиры. Очень любит учиться.",
+        "pers_en": "Smart, Hypoallergenic, Cheerful",
+        "pers_ru": "Умный, Гипоаллергенный, Весёлый"
+    },
+    "Badam": {
+        "desc_en": "According to tradition, tricolour cats bring abundance and luck to a home — Badam shows her love by purring.",
+        "desc_ru": "По народному поверью, трёхцветные кошки приносят в дом достаток и удачу — Бадам выражает свою любовь мурлыканьем.",
+        "pers_en": "Lucky, Gentle, Friendly",
+        "pers_ru": "Приносящая удачу, Кроткая, Дружелюбная"
     }
 }
+
+
+# Medical passport update: additional vaccine records, several of them overdue.
+# Format: (pet name, vaccine name, administered days ago, next dose in days (negative = overdue),
+#          batch number, vet, clinic, note)
+VACCINE_UPDATES = [
+    ("Baron", "Leptospiroz (Nobivac Lepto)", 410, -45, "LEP-2025-3310", "Dr. Rəşad Əliyev", "Baku Vet Clinic", "Annual booster missed"),
+    ("Qaytar", "Bordetella (Kennel öskürəyi)", 395, -30, "BOR-2025-0712", "Dr. Leyla Məmmədova", "VetCare Mərkəzi", "Booster overdue"),
+    ("Qaytar", "Antiparazitar Müalicə (Dehelmintizasiya)", 120, -30, "DEW-2026-0410", "Dr. Leyla Məmmədova", "VetCare Mərkəzi", "Quarterly deworming overdue"),
+    ("Reks", "Leptospiroz (Nobivac Lepto)", 380, -15, "LEP-2025-3388", "Dr. Rəşad Əliyev", "Baku Vet Clinic", "Annual booster missed"),
+    ("Zümrüd", "FeLV (Pişik Leykemiyası)", 390, -25, "FLV-2025-1150", "Dr. Nigar Qasımova", "Cat Health Center", "Booster overdue"),
+    ("Leo", "Antiparazitar Müalicə (Dehelmintizasiya)", 135, -45, "DEW-2026-0322", "Dr. Nigar Qasımova", "Cat Health Center", "Quarterly deworming overdue"),
+    ("Kökə", "RHDV2 Dovşan Vaksini (Eravac)", 385, -20, "RHD-2025-0901", "Dr. Rəşad Əliyev", "Exotic Vet Baku", "Annual booster missed"),
+    ("Riko", "Poliomavirus (APV) Quş Vaksini", 400, -35, "APV-2025-0077", "Dr. Rəşad Əliyev", "Exotic Vet Baku", "Booster overdue"),
+    ("Çiko", "Poliomavirus (APV) Quş Vaksini", 200, 165, "APV-2026-0145", "Dr. Rəşad Əliyev", "Exotic Vet Baku", None),
+    ("Oskar", "Bordetella (Kennel öskürəyi)", 372, -7, "BOR-2025-0790", "Dr. Leyla Məmmədova", "VetCare Mərkəzi", "Booster overdue"),
+    ("Tobi", "Leptospiroz (Nobivac Lepto)", 350, 15, "LEP-2025-3402", "Dr. Rəşad Əliyev", "Baku Vet Clinic", "Booster due soon"),
+    # Pets from the default seed (fresh deployments)
+    ("Koko", "Poliomavirus (APV) Quş Vaksini", 400, -35, "APV-2025-0081", "Dr. Rəşad Əliyev", "Exotic Vet Baku", "Booster overdue"),
+    ("Boncuk", "RHDV2 Dovşan Vaksini (Eravac)", 385, -20, "RHD-2025-0915", "Dr. Rəşad Əliyev", "Exotic Vet Baku", "Annual booster missed"),
+]
+
+
+def apply_vaccine_updates(db):
+    """Idempotently add the medical passport updates (skips records that already exist)."""
+    today = date.today()
+    added = 0
+    for pet_name, vax_name, given_ago, due_in, batch, vet, clinic, note in VACCINE_UPDATES:
+        pet = db.query(Pet).filter(Pet.name == pet_name).first()
+        if not pet:
+            continue
+        exists = db.query(VaccineRecord).filter(
+            VaccineRecord.pet_id == pet.id,
+            VaccineRecord.vaccine_name == vax_name
+        ).first()
+        if exists:
+            continue
+        next_due = today + timedelta(days=due_in)
+        db.add(VaccineRecord(
+            pet_id=pet.id,
+            vaccine_name=vax_name,
+            administered_date=today - timedelta(days=given_ago),
+            next_due_date=next_due,
+            batch_number=batch,
+            vet_name=vet,
+            clinic_name=clinic,
+            status="overdue" if due_in < 0 else ("upcoming" if due_in <= 30 else "valid"),
+            notes=note
+        ))
+        added += 1
+    if added:
+        db.commit()
+
+    # Keep stored status column in sync with the real due dates
+    changed = False
+    for record in db.query(VaccineRecord).all():
+        live = record.computed_status
+        if record.status != live:
+            record.status = live
+            changed = True
+    if changed:
+        db.commit()
 
 
 def seed_database():
@@ -338,17 +490,18 @@ def seed_database():
             db.commit()
 
         # 3. Synchronize multilingual columns for existing pets if missing
+        #    (also repairs EN/RU fields that were filled with a copy of the Azerbaijani text)
         existing_pets = db.query(Pet).all()
         for pet in existing_pets:
             data = PETS_I18N.get(pet.name)
             if data:
-                if not pet.description_en:
+                if not pet.description_en or pet.description_en == pet.description:
                     pet.description_en = data["desc_en"]
-                if not pet.description_ru:
+                if not pet.description_ru or pet.description_ru == pet.description:
                     pet.description_ru = data["desc_ru"]
-                if not pet.personality_en:
+                if not pet.personality_en or pet.personality_en == pet.personality:
                     pet.personality_en = data["pers_en"]
-                if not pet.personality_ru:
+                if not pet.personality_ru or pet.personality_ru == pet.personality:
                     pet.personality_ru = data["pers_ru"]
             else:
                 if not pet.description_en:
@@ -404,6 +557,9 @@ def seed_database():
                 )
                 db.add_all([v1, v2])
             db.commit()
+
+        # 6. Medical passport updates (late / overdue vaccines) + live status sync
+        apply_vaccine_updates(db)
 
         print(f"Database successfully verified! Total Pets: {db.query(Pet).count()}, Shelters: {db.query(Shelter).count()}")
 

@@ -89,12 +89,34 @@ class VaccineRecord(Base):
 
     pet = relationship("Pet", back_populates="vaccines")
 
+    UPCOMING_WINDOW_DAYS = 30
+
+    @property
+    def days_until_due(self):
+        """Days until the next dose (negative = overdue). None if no next dose."""
+        if not self.next_due_date:
+            return None
+        return (self.next_due_date - date.today()).days
+
+    @property
+    def computed_status(self) -> str:
+        """Live status based on today's date: valid, upcoming (≤30 days) or overdue."""
+        days = self.days_until_due
+        if days is None:
+            return self.status or "valid"
+        if days < 0:
+            return "overdue"
+        if days <= self.UPCOMING_WINDOW_DAYS:
+            return "upcoming"
+        return "valid"
+
 
 class AdoptionApplication(Base):
     __tablename__ = "adoption_applications"
 
     id = Column(Integer, primary_key=True, index=True)
     pet_id = Column(Integer, ForeignKey("pets.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)  # owner account (if signed in)
     applicant_name = Column(String(100), nullable=False)
     applicant_email = Column(String(100), nullable=False)
     applicant_phone = Column(String(50), nullable=False)

@@ -194,7 +194,7 @@
                                     <i data-lucide="heart" class="w-4 h-4"></i>
                                 </button>
                                 <div class="bg-white/90 backdrop-blur-sm text-slate-900 text-xs font-bold px-3 py-1 rounded-full capitalize">
-                                    ${item.species}
+                                    ${item.species_label || item.species}
                                 </div>
                             </div>
                         </div>
@@ -204,7 +204,7 @@
                                     <h3 class="text-xl font-black text-slate-900">${item.name}</h3>
                                     <span class="text-xs font-bold px-2 py-1 bg-slate-100 rounded-lg text-slate-600">${item.age_years} {{ t.label_years }}</span>
                                 </div>
-                                <p class="text-xs text-slate-500 font-semibold mb-3">${item.breed} • ${item.size}</p>
+                                <p class="text-xs text-slate-500 font-semibold mb-3">${item.breed} • ${item.size_label || item.size}</p>
                                 
                                 <div class="space-y-1.5 mb-4">
                                     ${item.match_reasons.map(r => `
@@ -229,7 +229,7 @@
                 updateNavbarFavoritesBadge();
             }
         } catch (err) {
-            alert('Quiz error');
+            alert('{{ t.quiz_error }}');
         } finally {
             btn.disabled = false;
             btn.innerHTML = '<i data-lucide="sparkles" class="w-5 h-5"></i><span>{{ t.quiz_calculate }}</span>';

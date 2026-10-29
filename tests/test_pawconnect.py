@@ -154,14 +154,73 @@ def test_user_registration_and_isolation():
 
 
 def test_favorites_api():
-    """Verify toggle favorite API."""
-    fav_res = client.post("/api/favorites/1")
+    """Verify favorites require a signed-in user session and work when authenticated."""
+    client.cookies.clear()
+    # Guest request must be rejected (401 on API, 303 redirect on page)
+    guest_api = client.post("/api/favorites/1")
+    assert guest_api.status_code == 401
+    guest_page = client.get("/favorites", follow_redirects=False)
+    assert guest_page.status_code == 303
+    assert "/login" in guest_page.headers.get("location", "")
+
+    # Authenticated user can toggle favorite
+    login_res = client.post(
+        "/login",
+        data={"username": "user@pawconnect.az", "password": "user123456"},
+        follow_redirects=False
+    )
+    user_cookie = login_res.cookies["pawconnect_session"]
+    fav_res = client.post("/api/favorites/1", cookies={"pawconnect_session": user_cookie})
     assert fav_res.status_code == 200
     assert "is_favorite" in fav_res.json()
+    assert fav_res.json()["authenticated"] is True
+
+
+def test_my_applications_page_and_overdue_vaccines():
+    """Verify My Applications page shows user adoption status and overdue vaccines exist."""
+    client.cookies.clear()
+    # Guest redirects to login
+    guest_res = client.get("/my-applications", follow_redirects=False)
+    assert guest_res.status_code == 303
+    assert "/login" in guest_res.headers.get("location", "")
+
+    # Signed-in user can submit an application and see it on /my-applications
+    login_res = client.post(
+        "/login",
+        data={"username": "user@pawconnect.az", "password": "user123456"},
+        follow_redirects=False
+    )
+    user_cookie = login_res.cookies["pawconnect_session"]
+
+    app_payload = {
+        "pet_id": 2,
+        "applicant_name": "Nuran Əliyev",
+        "applicant_email": "user@pawconnect.az",
+        "applicant_phone": "+994 (50) 222-33-44",
+        "applicant_city": "Bakı",
+        "living_space": "apartment",
+        "has_other_pets": False,
+        "has_children": True,
+        "experience_level": "intermediate",
+        "hours_alone_per_day": 3,
+        "message": "Müraciət statusunun yoxlanılması"
+    }
+    post_res = client.post("/api/adoptions", json=app_payload, cookies={"pawconnect_session": user_cookie})
+    assert post_res.status_code == 201
+
+    my_apps_en = client.get("/my-applications?lang=en", cookies={"pawconnect_session": user_cookie})
+    assert my_apps_en.status_code == 200
+    assert "My Adoption Applications" in my_apps_en.text
+    assert "Luna" in my_apps_en.text
+
+    # Overdue vaccines endpoint and pet passport alert
+    overdue_res = client.get("/api/vaccines/alerts/overdue")
+    assert overdue_res.status_code == 200
+    assert len(overdue_res.json()) >= 5
 
 
 def test_multilingual_localization():
-    """Verify that pet descriptions and personality traits translate properly across AZ, EN, and RU."""
+    """Verify that UI, breeds, shelters, vaccines, pet descriptions and traits translate across AZ, EN, and RU."""
     # Azerbaijani
     res_az = client.get("/pets/1?lang=az")
     assert res_az.status_code == 200
@@ -172,10 +231,17 @@ def test_multilingual_localization():
     assert res_ru.status_code == 200
     assert "О питомце" in res_ru.text
     assert "Особенности характера" in res_ru.text
-    assert "немецкой овчарки" in res_ru.text or "Барон" in res_ru.text
+    assert "Немецкая овчарка" in res_ru.text
+    assert "Бакинский центр спасения животных" in res_ru.text
 
-    # English
+    # English (including home page & previously untranslated pets like Zümrüd #10)
     res_en = client.get("/pets/1?lang=en")
     assert res_en.status_code == 200
     assert "About" in res_en.text
-    assert "German Shepherd" in res_en.text or "Baron" in res_en.text
+    assert "German Shepherd (Mix)" in res_en.text
+    assert "Baku Animal Rescue Center" in res_en.text
+
+    home_en = client.get("/?lang=en")
+    assert home_en.status_code == 200
+    assert "Verified Shelters" in home_en.text
+    assert "Yoxlanmış Sığınacaqlar" not in home_en.text

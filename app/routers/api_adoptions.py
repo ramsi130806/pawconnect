@@ -1,17 +1,20 @@
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import AdoptionApplication, Pet
 from app.schemas import AdoptionApplicationCreate, AdoptionApplicationOut, AdoptionApplicationStatusUpdate
+from app.auth import get_authenticated_user
 
 router = APIRouter(prefix="/api/adoptions", tags=["Adoption Applications API"])
 
 @router.post("", response_model=AdoptionApplicationOut, status_code=201)
-def submit_adoption_application(app_in: AdoptionApplicationCreate, db: Session = Depends(get_db)):
+def submit_adoption_application(app_in: AdoptionApplicationCreate, request: Request, db: Session = Depends(get_db)):
     """
     Submit an online adoption inquiry for a pet.
     Automatically flags pet status as 'pending' to alert shelter staff.
+    If the applicant is signed in, the application is linked to their account
+    so it appears on the "My Applications" page.
     """
     pet = db.query(Pet).filter(Pet.id == app_in.pet_id).first()
     if not pet:
@@ -21,6 +24,9 @@ def submit_adoption_application(app_in: AdoptionApplicationCreate, db: Session =
         raise HTTPException(status_code=400, detail="This pet has already been adopted")
 
     new_app = AdoptionApplication(**app_in.model_dump())
+    user = get_authenticated_user(request)
+    if user and user.get("user_id") and user["user_id"] > 0:
+        new_app.user_id = user["user_id"]
     db.add(new_app)
 
     # Set pet status to pending if it was available

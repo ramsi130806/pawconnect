@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t.myapps_title }} — {{ t.app_name }}{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-b from-paw-50/50 via-white to-slate-50 py-10 min-h-[75vh]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-6 border-b border-slate-200">
+            <div>
+                <span class="inline-flex items-center space-x-1.5 bg-paw-100 text-paw-800 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+                    <i data-lucide="clipboard-list" class="w-3.5 h-3.5 text-paw-600"></i>
+                    <span>{{ t.myapps_total }}: {{ applications|length }}</span>
+                </span>
+                <h1 class="text-3xl sm:text-4xl font-black text-slate-900">{{ t.myapps_title }}</h1>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl">{{ t.myapps_subtitle }}</p>
+            </div>
+            <a href="/pets?lang={{ lang }}" class="mt-4 sm:mt-0 inline-flex items-center space-x-2 bg-paw-600 hover:bg-paw-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-md transition-all">
+                <i data-lucide="compass" class="w-4 h-4"></i>
+                <span>{{ t.fav_explore_btn }}</span>
+            </a>
+        </div>
+
+        {% if applications|length > 0 %}
+        <div class="space-y-6">
+            {% for app in applications %}
+            <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all p-6 sm:p-8">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+
+                    <!-- Left: Pet Info -->
+                    <div class="flex items-start sm:items-center space-x-4">
+                        <a href="/pets/{{ app.pet.id }}?lang={{ lang }}" class="flex-shrink-0">
+                            <img src="{{ app.pet.photo_url or '/static/img/pets/placeholder.svg' }}" onerror="this.onerror=null;this.src='/static/img/pets/placeholder.svg'" alt="{{ app.pet.name }}" class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover border border-slate-200">
+                        </a>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2 mb-1">
+                                <span class="text-xs font-mono font-bold text-slate-400">{{ t.myapps_app_no }}{{ app.id }}</span>
+                                <span class="text-slate-300">•</span>
+                                <span class="text-xs font-semibold text-slate-500">
+                                    {{ t.myapps_submitted_on }}: {{ app.created_at.strftime('%Y-%m-%d') if app.created_at else '—' }}
+                                </span>
+                            </div>
+                            <a href="/pets/{{ app.pet.id }}?lang={{ lang }}" class="text-2xl font-black text-slate-900 hover:text-paw-600 transition-colors">
+                                {{ app.pet.name }}
+                            </a>
+                            <p class="text-xs font-semibold text-slate-500 mt-0.5">
+                                {{ app.pet.breed|tr(lang) }} • {{ app.pet.shelter.name|tr(lang) }} ({{ app.pet.shelter.city|tr(lang) }})
+                            </p>
+                            {% if app.message %}
+                            <p class="text-xs text-slate-600 mt-2 italic bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 max-w-xl">
+                                "{{ app.message }}"
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Right: Status Badge + Action -->
+                    <div class="flex sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between gap-3">
+                        {% if app.status == 'approved' %}
+                        <span class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+                            {{ t.admin_status_approved }}
+                        </span>
+                        {% elif app.status == 'rejected' %}
+                        <span class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-black bg-rose-100 text-rose-800 border border-rose-200">
+                            {{ t.admin_status_rejected }}
+                        </span>
+                        {% elif app.status == 'reviewing' %}
+                        <span class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-black bg-sky-100 text-sky-800 border border-sky-200">
+                            {{ t.admin_status_reviewing }}
+                        </span>
+                        {% else %}
+                        <span class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-black bg-amber-100 text-amber-800 border border-amber-200">
+                            {{ t.admin_status_pending }}
+                        </span>
+                        {% endif %}
+
+                        <a href="/pets/{{ app.pet.id }}?lang={{ lang }}" class="inline-flex items-center space-x-1.5 bg-paw-50 hover:bg-paw-100 text-paw-700 font-extrabold text-xs px-4 py-2 rounded-xl border border-paw-200 transition-colors">
+                            <span>{{ t.myapps_view_pet }}</span>
+                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Step Progress Bar & Status Details -->
+                <div class="mt-6 pt-5 border-t border-slate-100">
+                    <div class="grid grid-cols-3 gap-2 mb-3">
+                        <!-- Step 1: Submitted -->
+                        <div class="flex items-center space-x-2">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500 text-white text-xs font-black flex items-center justify-center">✓</span>
+                            <span class="text-xs font-bold text-slate-800">{{ t.myapps_step_submitted }}</span>
+                        </div>
+                        <!-- Step 2: Reviewing -->
+                        <div class="flex items-center space-x-2">
+                            {% if app.status in ['reviewing', 'approved', 'rejected'] %}
+                            <span class="w-6 h-6 rounded-full bg-sky-500 text-white text-xs font-black flex items-center justify-center">✓</span>
+                            <span class="text-xs font-bold text-slate-800">{{ t.myapps_step_reviewing }}</span>
+                            {% else %}
+                            <span class="w-6 h-6 rounded-full bg-amber-100 text-amber-700 text-xs font-black flex items-center justify-center">2</span>
+                            <span class="text-xs font-semibold text-slate-500">{{ t.myapps_step_reviewing }}</span>
+                            {% endif %}
+                        </div>
+                        <!-- Step 3: Decision -->
+                        <div class="flex items-center space-x-2">
+                            {% if app.status == 'approved' %}
+                            <span class="w-6 h-6 rounded-full bg-emerald-500 text-white text-xs font-black flex items-center justify-center">✓</span>
+                            <span class="text-xs font-bold text-emerald-700">{{ t.myapps_step_decision }}</span>
+                            {% elif app.status == 'rejected' %}
+                            <span class="w-6 h-6 rounded-full bg-rose-500 text-white text-xs font-black flex items-center justify-center">✕</span>
+                            <span class="text-xs font-bold text-rose-700">{{ t.myapps_step_decision }}</span>
+                            {% else %}
+                            <span class="w-6 h-6 rounded-full bg-slate-100 text-slate-400 text-xs font-black flex items-center justify-center">3</span>
+                            <span class="text-xs font-semibold text-slate-400">{{ t.myapps_step_decision }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 rounded-2xl text-xs font-semibold flex items-center space-x-2.5
+                        {% if app.status == 'approved' %}bg-emerald-50 text-emerald-800 border border-emerald-200
+                        {% elif app.status == 'rejected' %}bg-rose-50 text-rose-800 border border-rose-200
+                        {% elif app.status == 'reviewing' %}bg-sky-50 text-sky-800 border border-sky-200
+                        {% else %}bg-amber-50 text-amber-800 border border-amber-200{% endif %}">
+                        <i data-lucide="info" class="w-4 h-4 flex-shrink-0"></i>
+                        <span>
+                            {% if app.status == 'approved' %}{{ t.myapps_msg_approved }}
+                            {% elif app.status == 'rejected' %}{{ t.myapps_msg_rejected }}
+                            {% elif app.status == 'reviewing' %}{{ t.myapps_msg_reviewing }}
+                            {% else %}{{ t.myapps_msg_pending }}{% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-20 bg-white rounded-3xl border border-slate-200/80 shadow-sm p-8 max-w-lg mx-auto">
+            <div class="w-16 h-16 rounded-full bg-paw-50 text-paw-600 flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="clipboard-list" class="w-8 h-8"></i>
+            </div>
+            <h2 class="text-xl font-black text-slate-900 mb-2">{{ t.myapps_empty_title }}</h2>
+            <p class="text-xs text-slate-500 mb-6 leading-relaxed">{{ t.myapps_empty_desc }}</p>
+            <a href="/pets?lang={{ lang }}" class="inline-flex items-center space-x-2 bg-paw-600 hover:bg-paw-700 text-white font-extrabold text-xs px-6 py-3 rounded-xl shadow-lg shadow-paw-600/25 transition-all">
+                <i data-lucide="compass" class="w-4 h-4"></i>
+                <span>{{ t.fav_explore_btn }}</span>
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

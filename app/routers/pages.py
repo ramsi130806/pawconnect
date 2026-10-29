@@ -4,11 +4,11 @@ from fastapi import APIRouter, Request, Depends, Query, Form
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 
 from app.database import get_db
 from app.models import Pet, Shelter, VaccineRecord, AdoptionApplication, User, Favorite
-from app.i18n import get_text, translate_personality_traits
+from app.i18n import get_text, translate_personality_traits, translate_data, translate_species, translate_size
 from app.auth import (
     check_admin_credentials,
     generate_session_token,
@@ -25,6 +25,10 @@ templates = Jinja2Templates(directory="app/templates")
 
 # Register global template helpers
 templates.env.globals["translate_traits"] = translate_personality_traits
+# Database content translation filters, e.g. {{ pet.breed|tr(lang) }}
+templates.env.filters["tr"] = translate_data
+templates.env.filters["species_name"] = translate_species
+templates.env.filters["size_name"] = translate_size
 
 
 def get_locale(request: Request, lang: Optional[str] = None) -> str:
@@ -35,6 +39,17 @@ def get_locale(request: Request, lang: Optional[str] = None) -> str:
     if cookie_lang in ["az", "en", "ru"]:
         return cookie_lang
     return "az"
+
+
+def has_personal_account(user: Optional[dict]) -> bool:
+    """True when the session belongs to a registered user account (favorites / applications)."""
+    return bool(user and user.get("user_id") and user.get("user_id") > 0)
+
+
+def with_lang(url: str, lang: str) -> str:
+    """Append ?lang= / &lang= to a URL safely."""
+    sep = "&" if "?" in url else "?"
+    return f"{url}{sep}lang={lang}"
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -134,6 +149,12 @@ def pet_detail(request: Request, pet_id: int, lang: Optional[str] = None, db: Se
         return HTMLResponse(content="<h1>Heyvan tapılmadı / Pet not found</h1>", status_code=404)
 
     vaccines = db.query(VaccineRecord).filter(VaccineRecord.pet_id == pet_id).order_by(VaccineRecord.administered_date.desc()).all()
+    overdue_count = sum(1 for v in vaccines if v.computed_status == "overdue")
+
+    # Signed-in account details (to prefill and link the adoption application)
+    account = None
+    if has_personal_account(user):
+        account = db.query(User).filter(User.id == user["user_id"]).first()
 
     response = templates.TemplateResponse(
         request=request,
@@ -144,7 +165,9 @@ def pet_detail(request: Request, pet_id: int, lang: Optional[str] = None, db: Se
             "user": user,
             "is_admin": is_admin_authenticated(request),
             "pet": pet,
-            "vaccines": vaccines
+            "vaccines": vaccines,
+            "overdue_count": overdue_count,
+            "account": account
         }
     )
     response.set_cookie("preferred_lang", active_lang, max_age=30*86400)
@@ -191,19 +214,20 @@ def about_page(request: Request, lang: Optional[str] = None):
     return response
 
 
-# --- FAVORITES SYSTEM ---
+# --- FAVORITES SYSTEM (available only for signed-in user accounts) ---
 @router.get("/favorites", response_class=HTMLResponse)
 def favorites_page(request: Request, lang: Optional[str] = None, db: Session = Depends(get_db)):
     active_lang = get_locale(request, lang)
     t = get_text(active_lang)
     user = get_authenticated_user(request)
 
-    favorite_pets = []
-    if user and user.get("user_id"):
-        fav_records = db.query(Favorite).filter(Favorite.user_id == user["user_id"]).all()
-        fav_ids = [f.pet_id for f in fav_records]
-        if fav_ids:
-            favorite_pets = db.query(Pet).filter(Pet.id.in_(fav_ids)).all()
+    # Guests must sign in to their own account to use favorites
+    if not has_personal_account(user):
+        return RedirectResponse(url=f"/login?next=/favorites&lang={active_lang}", status_code=303)
+
+    fav_records = db.query(Favorite).filter(Favorite.user_id == user["user_id"]).order_by(Favorite.created_at.desc()).all()
+    fav_ids = [f.pet_id for f in fav_records]
+    favorite_pets = db.query(Pet).filter(Pet.id.in_(fav_ids)).all() if fav_ids else []
 
     response = templates.TemplateResponse(
         request=request,
@@ -222,33 +246,73 @@ def favorites_page(request: Request, lang: Optional[str] = None, db: Session = D
 
 @router.post("/api/favorites/{pet_id}")
 def toggle_favorite(request: Request, pet_id: int, db: Session = Depends(get_db)):
-    """Toggle a pet in favorites. If authenticated, persists in DB; otherwise client manages localStorage."""
+    """Toggle a pet in the signed-in user's favorites. Guests receive 401."""
     user = get_authenticated_user(request)
-    is_fav = False
+    if not has_personal_account(user):
+        return JSONResponse(status_code=401, content={"detail": "login_required", "authenticated": False})
 
-    if user and user.get("user_id"):
-        existing = db.query(Favorite).filter(Favorite.user_id == user["user_id"], Favorite.pet_id == pet_id).first()
-        if existing:
-            db.delete(existing)
-            db.commit()
-            is_fav = False
-        else:
-            new_fav = Favorite(user_id=user["user_id"], pet_id=pet_id)
-            db.add(new_fav)
-            db.commit()
-            is_fav = True
+    if not db.query(Pet.id).filter(Pet.id == pet_id).first():
+        return JSONResponse(status_code=404, content={"detail": "Pet not found"})
 
-    return {"pet_id": pet_id, "is_favorite": is_fav, "authenticated": bool(user and user.get("user_id"))}
+    existing = db.query(Favorite).filter(Favorite.user_id == user["user_id"], Favorite.pet_id == pet_id).first()
+    if existing:
+        db.delete(existing)
+        is_fav = False
+    else:
+        db.add(Favorite(user_id=user["user_id"], pet_id=pet_id))
+        is_fav = True
+    db.commit()
+
+    count = db.query(Favorite).filter(Favorite.user_id == user["user_id"]).count()
+    return {"pet_id": pet_id, "is_favorite": is_fav, "authenticated": True, "count": count}
 
 
 @router.get("/api/favorites")
 def get_user_favorites(request: Request, db: Session = Depends(get_db)):
     """Get list of favorite pet IDs for authenticated user."""
     user = get_authenticated_user(request)
-    if not user or not user.get("user_id"):
-        return {"favorites": []}
+    if not has_personal_account(user):
+        return {"favorites": [], "authenticated": False}
     favs = db.query(Favorite.pet_id).filter(Favorite.user_id == user["user_id"]).all()
-    return {"favorites": [f[0] for f in favs]}
+    return {"favorites": [f[0] for f in favs], "authenticated": True}
+
+
+# --- MY APPLICATIONS (adoption request status tracking) ---
+@router.get("/my-applications", response_class=HTMLResponse)
+def my_applications_page(request: Request, lang: Optional[str] = None, db: Session = Depends(get_db)):
+    active_lang = get_locale(request, lang)
+    t = get_text(active_lang)
+    user = get_authenticated_user(request)
+
+    if not has_personal_account(user):
+        return RedirectResponse(url=f"/login?next=/my-applications&lang={active_lang}", status_code=303)
+
+    account = db.query(User).filter(User.id == user["user_id"]).first()
+    filters = [AdoptionApplication.user_id == user["user_id"]]
+    if account and account.email:
+        # Also include applications sent earlier with the same e-mail address
+        filters.append(func.lower(AdoptionApplication.applicant_email) == account.email.lower())
+
+    applications = (
+        db.query(AdoptionApplication)
+        .filter(or_(*filters))
+        .order_by(AdoptionApplication.created_at.desc())
+        .all()
+    )
+
+    response = templates.TemplateResponse(
+        request=request,
+        name="my_applications.html",
+        context={
+            "lang": active_lang,
+            "t": t,
+            "user": user,
+            "is_admin": is_admin_authenticated(request),
+            "applications": applications
+        }
+    )
+    response.set_cookie("preferred_lang", active_lang, max_age=30*86400)
+    return response
 
 
 # --- AUTHENTICATION & ACCESS CONTROL ---
@@ -335,7 +399,7 @@ async def login_submit(request: Request, lang: Optional[str] = None, db: Session
     # 1. Admin Login Check (admin / idschool)
     if check_admin_credentials(username, password):
         target = next_url if (next_url and next_url.startswith("/")) else "/admin"
-        response = RedirectResponse(url=f"{target}?lang={active_lang}", status_code=303)
+        response = RedirectResponse(url=with_lang(target, active_lang), status_code=303)
         token = generate_session_token(role="admin", user_id=0, name="Admin")
         response.set_cookie(
             key=SESSION_COOKIE_NAME,
@@ -360,7 +424,7 @@ async def login_submit(request: Request, lang: Optional[str] = None, db: Session
     db_user = db.query(User).filter(User.email == username.lower()).first()
     if db_user and verify_password(password, db_user.password_hash):
         target = next_url if (next_url and next_url.startswith("/")) else "/pets"
-        response = RedirectResponse(url=f"{target}?lang={active_lang}", status_code=303)
+        response = RedirectResponse(url=with_lang(target, active_lang), status_code=303)
         token = generate_session_token(role=db_user.role, user_id=db_user.id, name=db_user.name)
         response.set_cookie(
             key=SESSION_COOKIE_NAME,

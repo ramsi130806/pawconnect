@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Pet
 from app.schemas import QuizAnswers
+from app.i18n import translate_data, translate_species, translate_size
 
 router = APIRouter(prefix="/api/quiz", tags=["Smart Matcher Algorithm"])
 
@@ -125,10 +126,12 @@ def calculate_matches(
             "pet_id": pet.id,
             "name": pet.name,
             "species": pet.species,
-            "breed": pet.breed,
+            "species_label": translate_species(pet.species, lang),
+            "breed": translate_data(pet.breed, lang),
             "gender": pet.gender,
             "age_years": pet.age_years,
             "size": pet.size,
+            "size_label": translate_size(pet.size, lang),
             "photo_url": pet.photo_url,
             "personality": pet.get_personality(lang),
             "description": pet.get_description(lang),

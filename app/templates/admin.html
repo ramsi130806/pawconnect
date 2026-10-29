@@ -108,7 +108,7 @@
                                 <span>{{ app.pet.name }}</span>
                                 <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
                             </a>
-                            <span class="text-xs text-slate-400">{{ app.pet.breed }}</span>
+                            <span class="text-xs text-slate-400">{{ app.pet.breed|tr(lang) }}</span>
                         </td>
                         <td class="py-4 px-6 text-xs">
                             <span class="font-bold text-slate-800 block capitalize">
@@ -205,7 +205,7 @@
                             <span class="block font-bold text-slate-800 capitalize">
                                 {% if p.species == 'dog' %}🐶 {{ t.filter_dog }}{% elif p.species == 'cat' %}🐱 {{ t.filter_cat }}{% elif p.species == 'rabbit' %}🐰 {{ t.filter_rabbit }}{% elif p.species == 'bird' %}🦜 {{ t.filter_bird }}{% else %}🐾 {{ t.filter_other }}{% endif %}
                             </span>
-                            <span class="block text-xs text-slate-500">{{ p.breed }}</span>
+                            <span class="block text-xs text-slate-500">{{ p.breed|tr(lang) }}</span>
                         </td>
                         <td class="py-4 px-6 text-xs text-slate-600">
                             {{ p.age_years }} {{ t.label_years }} • {% if p.size == 'Small' %}{{ t.filter_small }}{% elif p.size == 'Medium' %}{{ t.filter_medium }}{% else %}{{ t.filter_large }}{% endif %}
@@ -214,7 +214,7 @@
                             {{ p.microchip_id or t.admin_unregistered_chip }}
                         </td>
                         <td class="py-4 px-6 text-xs text-slate-600">
-                            {{ p.shelter.name }}
+                            {{ p.shelter.name|tr(lang) }}
                         </td>
                         <td class="py-4 px-6">
                             {% if p.status == 'available' %}
@@ -306,7 +306,7 @@
                     <label class="block text-xs font-bold text-slate-700 uppercase mb-1">{{ t.label_shelter }}</label>
                     <select name="shelter_id" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold outline-none">
                         {% for s in shelters %}
-                        <option value="{{ s.id }}">{{ s.name }} ({{ s.city }})</option>
+                        <option value="{{ s.id }}">{{ s.name|tr(lang) }} ({{ s.city|tr(lang) }})</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -378,7 +378,7 @@
     }
 
     async function updateAppStatus(appId, newStatus) {
-        if (!confirm(`Are you sure you want to update status to "${newStatus}"?`)) return;
+        if (!confirm(`{{ t.admin_confirm_status }}`)) return;
 
         try {
             const res = await fetch(`/api/adoptions/${appId}/status`, {
@@ -390,7 +390,7 @@
             if (res.ok) {
                 window.location.reload();
             } else {
-                alert('Update failed.');
+                alert('{{ t.admin_update_failed }}');
             }
         } catch (e) {
             alert('Connection error.');
@@ -433,10 +433,10 @@
             });
 
             if (res.ok) {
-                alert('Pet registered successfully!');
+                alert('{{ t.admin_pet_added }}');
                 window.location.reload();
             } else {
-                alert('Registration error');
+                alert('{{ t.admin_pet_add_error }}');
             }
         } catch (e) {
             alert('Connection error');
