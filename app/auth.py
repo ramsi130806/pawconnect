@@ -8,9 +8,15 @@ from fastapi import Request
 
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "1234567!"
-SESSION_SECRET = "pawconnect-stem-secret-key-idschool-2026-auth"
+SESSION_SECRET = "pawconnect-stem-secret-key-rotated-2026-v2-revoke-all-admins"
 SESSION_COOKIE_NAME = "pawconnect_session"
 SESSION_MAX_AGE = 7 * 24 * 3600  # 7 days
+
+
+def _signing_key(role: str) -> bytes:
+    """Derive HMAC key; binds admin sessions to the current ADMIN_PASSWORD so changing it logs out all admins."""
+    extra = ADMIN_PASSWORD if role == "admin" else ""
+    return f"{SESSION_SECRET}:{extra}".encode("utf-8")
 
 
 def hash_password(password: str) -> str:
@@ -49,7 +55,7 @@ def generate_session_token(role: str, user_id: int, name: str) -> str:
 
     payload = f"{role}:{user_id}:{b64_name}:{timestamp}"
     signature = hmac.new(
-        SESSION_SECRET.encode("utf-8"),
+        _signing_key(role),
         payload.encode("utf-8"),
         hashlib.sha256
     ).hexdigest()
@@ -67,7 +73,7 @@ def decode_session_token(token: str) -> Optional[Dict[str, Any]]:
     role, user_id_str, b64_name, timestamp_str, signature = parts
     payload = f"{role}:{user_id_str}:{b64_name}:{timestamp_str}"
     expected_sig = hmac.new(
-        SESSION_SECRET.encode("utf-8"),
+        _signing_key(role),
         payload.encode("utf-8"),
         hashlib.sha256
     ).hexdigest()
