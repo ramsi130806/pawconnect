@@ -1,11 +1,12 @@
 import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import engine, Base
 from app.seed import seed_database
+from app.auth import get_authenticated_user, SESSION_COOKIE_NAME
 from app.routers import pages, api_pets, api_adoptions, api_vaccines, api_quiz, api_shelters
 
 @asynccontextmanager
@@ -30,6 +31,25 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def enforce_session_validity(request: Request, call_next):
+    had_cookie = bool(
+        request.cookies.get(SESSION_COOKIE_NAME)
+        or request.cookies.get("pawconnect_admin_session")
+    )
+    valid_user = get_authenticated_user(request)
+    response = await call_next(request)
+    # Prevent browser caching of admin or auth pages
+    if request.url.path.startswith("/admin"):
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+    # Purge any invalid/revoked session cookies from the browser immediately
+    if had_cookie and valid_user is None and request.url.path != "/login":
+        response.delete_cookie(key=SESSION_COOKIE_NAME, path="/")
+        response.delete_cookie(key="pawconnect_admin_session", path="/")
+    return response
 
 # Mount static assets
 static_path = os.path.join(os.path.dirname(__file__), "static")

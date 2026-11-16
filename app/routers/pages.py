@@ -316,6 +316,14 @@ def my_applications_page(request: Request, lang: Optional[str] = None, db: Sessi
 
 
 # --- AUTHENTICATION & ACCESS CONTROL ---
+@router.get("/api/auth/admin-check")
+def admin_session_check(request: Request):
+    """Live heartbeat check used by /admin to immediately kick out revoked admin tabs."""
+    if not is_admin_authenticated(request):
+        return JSONResponse(status_code=401, content={"authenticated": False})
+    return {"authenticated": True}
+
+
 @router.get("/admin", response_class=HTMLResponse)
 def admin_dashboard(request: Request, lang: Optional[str] = None, db: Session = Depends(get_db)):
     active_lang = get_locale(request, lang)
@@ -323,7 +331,10 @@ def admin_dashboard(request: Request, lang: Optional[str] = None, db: Session = 
 
     # STRICT ACCESS CONTROL: Only users with 'admin' role can view /admin
     if not is_admin_authenticated(request):
-        return RedirectResponse(url=f"/login?next=/admin&lang={active_lang}", status_code=303)
+        resp = RedirectResponse(url=f"/login?next=/admin&lang={active_lang}", status_code=303)
+        resp.delete_cookie(key=SESSION_COOKIE_NAME, path="/")
+        resp.delete_cookie(key="pawconnect_admin_session", path="/")
+        return resp
 
     user = get_authenticated_user(request)
     pets = db.query(Pet).order_by(Pet.id.desc()).all()
@@ -420,8 +431,8 @@ async def login_submit(request: Request, lang: Optional[str] = None, db: Session
         response.set_cookie("preferred_lang", active_lang, max_age=30*86400)
         return response
 
-    # 2. Regular User Login Check (Email & Password)
-    db_user = db.query(User).filter(User.email == username.lower()).first()
+    # 2. Regular User Login Check (Email & Password — strictly non-admin accounts)
+    db_user = db.query(User).filter(User.email == username.lower(), User.role != "admin").first()
     if db_user and verify_password(password, db_user.password_hash):
         target = next_url if (next_url and next_url.startswith("/")) else "/pets"
         response = RedirectResponse(url=with_lang(target, active_lang), status_code=303)
