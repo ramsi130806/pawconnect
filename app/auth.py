@@ -8,15 +8,17 @@ from fastapi import Request
 
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "1234567!"
-SESSION_SECRET = "pawconnect-stem-secret-key-rotated-2026-v3-force-admin-logout-now"
+SESSION_SECRET = "pawconnect-stem-secret-key-rotated-2026-v4-revoke-all-admins"
 SESSION_COOKIE_NAME = "pawconnect_session"
-ADMIN_COOKIE_NAME = "pawconnect_admin_v3"
+ADMIN_COOKIE_NAME = "pawconnect_admin_v4"
 SESSION_MAX_AGE = 7 * 24 * 3600  # 7 days
+# Server boot timestamp: any admin session minted before this server process started is rejected
+ADMIN_BOOT_EPOCH = int(time.time())
 
 
 def _signing_key(role: str) -> bytes:
-    """Derive HMAC key; binds admin sessions to the current ADMIN_PASSWORD so changing it logs out all admins."""
-    extra = f"admin-v3:{ADMIN_PASSWORD}" if role == "admin" else "user-v2"
+    """Derive HMAC key; binds admin sessions to current ADMIN_PASSWORD and server boot epoch."""
+    extra = f"admin-v4:{ADMIN_PASSWORD}:{ADMIN_BOOT_EPOCH}" if role == "admin" else "user-v2"
     return f"{SESSION_SECRET}:{extra}".encode("utf-8")
 
 
