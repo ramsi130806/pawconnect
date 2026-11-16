@@ -520,10 +520,12 @@ def seed_database():
             admin_user = User(
                 name="Admin İdarəçi",
                 email="admin@pawconnect.az",
-                password_hash=hash_password("idschool"),
+                password_hash=hash_password("1234567!"),
                 role="admin"
             )
             db.add(admin_user)
+        else:
+            admin_user.password_hash = hash_password("1234567!")
 
         demo_user = db.query(User).filter(User.email == "user@pawconnect.az").first()
         if not demo_user:

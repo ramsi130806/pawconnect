@@ -7,7 +7,7 @@ from typing import Optional, Dict, Any
 from fastapi import Request
 
 ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "idschool"
+ADMIN_PASSWORD = "1234567!"
 SESSION_SECRET = "pawconnect-stem-secret-key-idschool-2026-auth"
 SESSION_COOKIE_NAME = "pawconnect_session"
 SESSION_MAX_AGE = 7 * 24 * 3600  # 7 days

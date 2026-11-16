@@ -107,7 +107,7 @@ def test_admin_login_flow():
     # Correct admin credentials
     good_login = client.post(
         "/login",
-        data={"username": "admin", "password": "idschool", "next": "/admin"},
+        data={"username": "admin", "password": "1234567!", "next": "/admin"},
         follow_redirects=False
     )
     assert good_login.status_code == 303
